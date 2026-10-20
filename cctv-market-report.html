@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Report: The Indian CCTV Video Intelligence Market</title>
+    <!-- Chosen Palette: Calm Tech -->
+    <!-- Application Structure Plan: The SPA is designed as an interactive dashboard with four main thematic sections: 1) Market Overview, 2) Competitive Landscape, 3) The Opportunity, and 4) Regulatory & Tech Environment. This non-linear, dashboard-style structure was chosen over the report's linear format to empower users to explore data based on their interests. It starts with a high-level summary and allows progressive drill-down into competitors, strategy, and regulations. Key interactions include chart visualizations for market data, a tabbed interface for comparing competitor types, and accordions for dense information like challenges and regulations. This user-flow facilitates easier synthesis of complex information by breaking it into digestible, interactive modules. -->
+    <!-- Visualization & Content Choices: 
+        - Market Size: Report Info -> Market projection data (2024 vs 2033). Goal -> Show massive growth. Viz -> Bar Chart (Chart.js). Interaction -> Tooltips on hover. Justification -> Instantly visualizes the scale of growth.
+        - AI Market Growth: Report Info -> CAGR for general vs. AI CCTV market. Goal -> Compare growth rates. Viz -> Donut Chart (Chart.js). Interaction -> Tooltips on hover. Justification -> Highlights the higher growth and opportunity in the AI sub-market effectively.
+        - Competitors: Report Info -> Lists of direct/indirect competitors. Goal -> Organize and compare players. Presentation -> Interactive Cards with Tabs. Interaction -> Click tabs to switch views. Justification -> Cleanly separates competitor types and presents them in a structured, comparable format.
+        - Challenges/Regulations: Report Info -> Detailed text on risks and rules. Goal -> Organize dense text. Presentation -> Accordion List (HTML/JS). Interaction -> Click to expand/collapse. Justification -> Prevents information overload by hiding details until requested by the user.
+        - Tech Trends: Report Info -> Shift from Analog to IP/AI. Goal -> Show technological evolution. Presentation -> Styled HTML/CSS process flow. Interaction -> Static visual. Justification -> A simple, clear visual representation of a key market trend without complex charts.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #3f3c3a;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 4px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #4a90e2;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .competitor-tab.active {
+            background-color: #4a90e2;
+            color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-gray-800">Indian Video Intelligence Market</h1>
+            <div class="hidden md:flex items-center space-x-6 text-gray-600">
+                <a href="#market-overview" class="nav-link">Overview</a>
+                <a href="#competitors" class="nav-link">Competition</a>
+                <a href="#opportunity" class="nav-link">Opportunity</a>
+                <a href="#regulations" class="nav-link">Environment</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white/90">
+            <a href="#market-overview" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Overview</a>
+            <a href="#competitors" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Competition</a>
+            <a href="#opportunity" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Opportunity</a>
+            <a href="#regulations" class="block py-2 px-6 text-gray-700 hover:bg-gray-100">Environment</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="market-overview" class="scroll-mt-24 mb-20">
+            <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">The Big Picture: A Market in Hyper-Growth</h2>
+            <p class="text-center text-lg text-gray-600 max-w-3xl mx-auto mb-12">
+                India's video surveillance market is on a trajectory of explosive growth, driven by security demands and smart city initiatives. This section provides a high-level overview of the key financial projections and growth drivers, highlighting the significant opportunity within the AI-powered segment.
+            </p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-center mb-4">Indian CCTV Market Growth (USD Billions)</h3>
+                    <div class="chart-container">
+                        <canvas id="marketGrowthChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold text-center mb-4">AI Powers Ahead: CAGR Comparison (2025-2033)</h3>
+                     <div class="chart-container">
+                        <canvas id="cagrComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12">
+                <h3 class="text-2xl font-bold text-center mb-8 text-gray-800">Key Market Drivers</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <h4 class="font-bold text-lg mb-2 text-blue-600">Smart Cities Mission</h4>
+                        <p class="text-gray-600 text-sm">Government investment in 100 Smart Cities with integrated command centers and over 84,000 CCTV cameras fuels demand for advanced analytics.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <h4 class="font-bold text-lg mb-2 text-blue-600">Rising Security Concerns</h4>
+                        <p class="text-gray-600 text-sm">Increased adoption in commercial and residential sectors to protect assets and ensure personal safety.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <h4 class="font-bold text-lg mb-2 text-blue-600">Tech Advancements</h4>
+                        <p class="text-gray-600 text-sm">The evolution of AI, IoT, and 5G is enabling more powerful, real-time intelligent surveillance solutions.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <h4 class="font-bold text-lg mb-2 text-blue-600">"Make in India" Initiative</h4>
+                        <p class="text-gray-600 text-sm">Promotes local manufacturing and software localization, creating opportunities for domestic companies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-200">
+
+        <section id="competitors" class="scroll-mt-24 mb-20">
+            <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">Who's in the Game?</h2>
+             <p class="text-center text-lg text-gray-600 max-w-3xl mx-auto mb-12">
+                The competitive landscape is a dynamic mix of startups pioneering natural language search and established giants with broad video analytics platforms. Use the tabs below to explore the key players and understand their offerings. This will help identify where a new entrant can differentiate itself.
+            </p>
+            <div class="flex justify-center mb-8">
+                <div class="bg-gray-200 p-1 rounded-full flex space-x-1">
+                    <button data-tab="direct" class="competitor-tab px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-300 active">Direct Competitors (NLQ)</button>
+                    <button data-tab="indirect" class="competitor-tab px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-300">Indirect Competitors</button>
+                    <button data-tab="potential" class="competitor-tab px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-300">Potential Entrants</button>
+                </div>
+            </div>
+
+            <div id="competitor-content">
+                <!-- Content will be injected by JS -->
+            </div>
+        </section>
+        
+        <hr class="my-16 border-gray-200">
+
+        <section id="opportunity" class="scroll-mt-24 mb-20">
+            <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">The Startup Opportunity: Strategy & Success</h2>
+            <p class="text-center text-lg text-gray-600 max-w-3xl mx-auto mb-12">
+                For a startup entering this market, success hinges on a clear strategy. This involves understanding the key performance indicators (KPIs) that matter, navigating significant challenges, and following strategic recommendations. Explore these elements to see the path to building a successful video intelligence company.
+            </p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-gray-800">Key Performance Indicators</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-semibold text-lg text-blue-700 mb-3">Technical Performance</h4>
+                            <ul class="space-y-2 list-disc list-inside text-gray-600">
+                                <li>Accuracy of NLQ Interpretation</li>
+                                <li>Retrieval Speed & Low Latency</li>
+                                <li>Object Detection & Tracking Accuracy</li>
+                                <li>False Alarm Rate Reduction</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-blue-700 mb-3">Business & Operational</h4>
+                            <ul class="space-y-2 list-disc list-inside text-gray-600">
+                                <li>Customer Acquisition Cost (CAC) & LTV</li>
+                                <li>User Engagement (Query Frequency)</li>
+                                <li>Customer Retention Rate</li>
+                                <li>Compliance Adherence Rate</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-gray-800">Challenges & Risks</h3>
+                    <div id="challenges-accordion" class="space-y-2">
+                        <!-- Challenges will be injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold mb-6 text-center text-gray-800">Strategic Recommendations for Success</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+                    <div class="border border-gray-200 p-4 rounded-lg">
+                        <div class="text-3xl text-blue-500 mb-2">1</div>
+                        <h4 class="font-semibold mb-1">Prioritize Compliance</h4>
+                        <p class="text-sm text-gray-600">Embed regulatory adherence (BIS, DPDP Act) and privacy-by-design from day one.</p>
+                    </div>
+                    <div class="border border-gray-200 p-4 rounded-lg">
+                        <div class="text-3xl text-blue-500 mb-2">2</div>
+                        <h4 class="font-semibold mb-1">Focus on High-ROI Niches</h4>
+                        <p class="text-sm text-gray-600">Target specific use cases like smart city safety or retail analytics to prove value quickly.</p>
+                    </div>
+                    <div class="border border-gray-200 p-4 rounded-lg">
+                        <div class="text-3xl text-blue-500 mb-2">3</div>
+                        <h4 class="font-semibold mb-1">Invest in Multi-lingual NLP</h4>
+                        <p class="text-sm text-gray-600">Develop capabilities for regional Indian languages to unlock a larger market.</p>
+                    </div>
+                     <div class="border border-gray-200 p-4 rounded-lg">
+                        <div class="text-3xl text-blue-500 mb-2">4</div>
+                        <h4 class="font-semibold mb-1">Emphasize Edge Processing</h4>
+                        <p class="text-sm text-gray-600">Address bandwidth, latency, and privacy concerns with an edge-native approach.</p>
+                    </div>
+                     <div class="border border-gray-200 p-4 rounded-lg">
+                        <div class="text-3xl text-blue-500 mb-2">5</div>
+                        <h4 class="font-semibold mb-1">Explore Partnerships</h4>
+                        <p class="text-sm text-gray-600">Collaborate with hardware makers or system integrators to accelerate market reach.</p>
+                    </div>
+                     <div class="border border-gray-200 p-4 rounded-lg">
+                        <div class="text-3xl text-blue-500 mb-2">6</div>
+                        <h4 class="font-semibold mb-1">Develop Clear Value Metrics</h4>
+                        <p class="text-sm text-gray-600">Quantify benefits like 'time saved' to demonstrate ROI and attract investment.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <hr class="my-16 border-gray-200">
+        
+        <section id="regulations" class="scroll-mt-24 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">The Regulatory & Tech Environment</h2>
+             <p class="text-center text-lg text-gray-600 max-w-3xl mx-auto mb-12">
+                The ground rules and technology are constantly shifting. Success requires navigating a complex web of new government regulations while capitalizing on emerging technological trends. This section breaks down these crucial environmental factors.
+            </p>
+             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                     <h3 class="text-2xl font-bold mb-6 text-gray-800">Key Regulations to Watch</h3>
+                     <div id="regulations-accordion" class="space-y-2">
+                        <!-- Regulations will be injected by JS -->
+                     </div>
+                </div>
+                <div>
+                     <h3 class="text-2xl font-bold mb-6 text-gray-800">Key Technology Trends</h3>
+                     <div class="relative pl-8">
+                        <div class="absolute left-0 h-full w-0.5 bg-gray-300"></div>
+                        <div class="relative mb-8">
+                            <div class="absolute -left-[42px] top-0 h-10 w-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold ring-8 ring-white">1</div>
+                            <h4 class="font-bold text-lg">Analog to IP & Cloud</h4>
+                            <p class="text-gray-600">Shift to higher-resolution, scalable IP cameras and cloud storage for remote access and lower maintenance.</p>
+                        </div>
+                         <div class="relative mb-8">
+                            <div class="absolute -left-[42px] top-0 h-10 w-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold ring-8 ring-white">2</div>
+                            <h4 class="font-bold text-lg">Rise of AI-based Analytics</h4>
+                            <p class="text-gray-600">AI cameras move beyond recording to real-time analysis, object recognition, and anomaly detection.</p>
+                        </div>
+                         <div class="relative">
+                            <div class="absolute -left-[42px] top-0 h-10 w-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold ring-8 ring-white">3</div>
+                            <h4 class="font-bold text-lg">IoT & 5G Integration</h4>
+                            <p class="text-gray-600">Enhanced connectivity enables seamless real-time monitoring and automation of security systems.</p>
+                        </div>
+                     </div>
+                </div>
+             </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Video Intelligence Market Analysis. All rights reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">This interactive report is based on synthesized public data and market analysis.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const marketData = {
+                growth: {
+                    labels: ['2024 (Est.)', '2033 (Proj.)'],
+                    values: [4.22, 20.33]
+                },
+                cagr: {
+                    labels: ['Overall CCTV Market', 'AI CCTV Market'],
+                    values: [19.08, 21.79]
+                }
+            };
+
+            const competitorsData = {
+                direct: [
+                    { name: 'VOGIC AI', desc: 'Gurugram-based startup using Vision Language Models (VLM) for conversational video search. SaaS model targeting security teams and smart cities.' },
+                    { name: 'Coram AI', desc: 'Offers "Modern Business Video Security" with natural language search to find footage in seconds. Focus on operational optimization.' },
+                    { name: 'Hikvision AcuSeek', desc: 'Major global player with an NVR integrating natural language for precise video retrieval, including semantic search for objects and anomalies.' },
+                    { name: 'Bosch IVA Pro Context', desc: 'Upcoming AI-driven tech for open-ended scene interpretation and NLQ, aiming to understand context, not just detect events.' },
+                ],
+                indirect: [
+                    { name: 'AIRPIX', desc: 'Indian provider of AI-powered video analytics (facial recognition, ANPR) deployable on edge, cloud, or hybrid systems.' },
+                    { name: 'Videonetics', desc: 'Indian market leader with a unified video management platform, serving airports, cities, and industrial sectors.' },
+                    { name: 'AllGoVision', desc: 'Bengaluru-based firm with 50+ AI video analytics features for traffic, security, and business intelligence.' },
+                    { name: 'Genetec Security Center', desc: 'Enterprise SaaS unifying video, access control, and ALPR. Includes forensic search with NLP and voice commands.' },
+                ],
+                potential: [
+                    { name: 'SoftmaxAI', desc: 'Offers NLP solutions and leverages AWS video services (Rekognition, Kinesis), suggesting potential for video integration.'},
+                    { name: 'Reverie Language Tech', desc: 'Focuses on Indian language solutions (text, voice, video), making them a strong potential partner for multi-lingual NLQ.'},
+                    { name: 'Nofrills AI', desc: 'India\'s first AI live search engine with regional language support. Core NLP tech could be adapted for video data.'},
+                    { name: 'Other NLP Startups', desc: 'The ecosystem has many NLP firms (e.g., SoundHound, LimeChat) whose core tech could be pivoted to video intelligence.'}
+                ]
+            };
+            
+            const challengesData = [
+                { title: 'Data Privacy & Ethical Concerns', content: 'The DPDP Act 2023 imposes strict consent, security, and breach notification rules. Risk of mass surveillance requires privacy-by-design solutions.' },
+                { title: 'High Cost of AI Infrastructure', content: 'Advanced AI systems have high initial costs, which can deter smaller businesses. Indian market is less receptive to subscription models to offset this.' },
+                { title: 'Lack of Accredited Testing Labs', content: 'A shortage of labs to certify new CCTV regulations (effective Apr 2025) could cause significant compliance delays and impact market entry.' },
+                { title: 'Linguistic Diversity & Code-Switching', content: 'India\'s hundreds of languages, dialects, and the common practice of code-switching pose a massive challenge for NLP accuracy.' },
+                { title: 'Competition from Established Players', content: 'Market is dominated by global giants (Hikvision, Bosch) who are also investing heavily in AI and NLQ capabilities, creating intense competition.' }
+            ];
+
+            const regulationsData = [
+                { title: 'New CCTV Regulations (2025)', content: 'Mandates strict BIS/STQC certification for cybersecurity, safety, and quality. Requires trusted supply chain assessment, impacting foreign players and encouraging local manufacturing.'},
+                { title: 'DPDP Act 2023 Implications', content: 'India\'s new data privacy law requires explicit consent, robust data protection measures (encryption), breach notifications, and data erasure policies.'},
+                { title: 'Data Storage & Retention', content: 'Footage storage is generally mandated for 30+ days. It requires explicit consent for sensitive data, strong encryption, and secure physical storage.'},
+            ];
+
+            function wrapText(text, maxChars) {
+                const words = text.split(' ');
+                let lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).length > maxChars) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine = currentLine ? currentLine + ' ' + word : word;
+                    }
+                });
+                lines.push(currentLine);
+                return lines;
+            }
+            
+            const renderMarketGrowthChart = () => {
+                const ctx = document.getElementById('marketGrowthChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: marketData.growth.labels,
+                        datasets: [{
+                            label: 'Market Size in USD Billion',
+                            data: marketData.growth.values,
+                            backgroundColor: ['#60a5fa', '#2563eb'],
+                            borderColor: ['#3b82f6', '#1d4ed8'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `$${context.parsed.y} Billion`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#e5e7eb' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            };
+
+            const renderCagrComparisonChart = () => {
+                const ctx = document.getElementById('cagrComparisonChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: marketData.cagr.labels,
+                        datasets: [{
+                            data: marketData.cagr.values,
+                            backgroundColor: ['#60a5fa', '#f59e0b'],
+                            borderColor: ['#ffffff', '#ffffff'],
+                            borderWidth: 2,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                             tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed + '% CAGR';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            const competitorContainer = document.getElementById('competitor-content');
+            const renderCompetitors = (tab = 'direct') => {
+                const data = competitorsData[tab];
+                let content = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+                data.forEach(item => {
+                    content += `
+                        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500 hover:shadow-lg transition-shadow duration-300">
+                            <h4 class="font-bold text-lg mb-2 text-gray-800">${item.name}</h4>
+                            <p class="text-gray-600 text-sm">${item.desc}</p>
+                        </div>
+                    `;
+                });
+                content += '</div>';
+                competitorContainer.innerHTML = content;
+            };
+
+            const challengesContainer = document.getElementById('challenges-accordion');
+            challengesData.forEach((item, index) => {
+                challengesContainer.innerHTML += `
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <button class="accordion-button w-full flex justify-between items-center text-left p-4 font-semibold text-gray-700 focus:outline-none">
+                            <span>${item.title}</span>
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content px-4 pb-4">
+                            <p class="text-gray-600 text-sm">${item.content}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            const regulationsContainer = document.getElementById('regulations-accordion');
+            regulationsData.forEach((item, index) => {
+                regulationsContainer.innerHTML += `
+                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <button class="accordion-button w-full flex justify-between items-center text-left p-4 font-semibold text-gray-700 focus:outline-none">
+                            <span>${item.title}</span>
+                            <svg class="w-5 h-5 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content px-4 pb-4">
+                            <p class="text-gray-600 text-sm">${item.content}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+
+            document.querySelectorAll('.accordion-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const icon = button.querySelector('svg');
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.competitor-tab').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.competitor-tab').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderCompetitors(button.dataset.tab);
+                });
+            });
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            renderMarketGrowthChart();
+            renderCagrComparisonChart();
+            renderCompetitors();
+        });
+    </script>
+</body>
+</html>
