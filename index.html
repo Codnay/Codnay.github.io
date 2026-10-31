@@ -24,6 +24,18 @@
   .latest a { color: var(--fg); }
   @media (max-width: 480px) { .intro { flex-direction: column; gap: 16px; } }
 
+  .lede { font: 400 1.28rem/1.4 var(--serif); text-wrap: balance; }
+
+  /* Interests: research topics as outlined chips, life outside the lab as a label/sentence list */
+  .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .chips { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips li { font-size: 12px; border: 1px solid var(--line-strong); padding: 2px 8px; }
+  .facts { margin: 0; display: flex; flex-direction: column; gap: 14px; }
+  .facts div { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 12px; }
+  .facts dt { font-weight: 600; font-size: 13px; line-height: 1.5; }
+  .facts dd { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
+  @media (max-width: 480px) { .facts div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
   .thesis { font: 400 1.28rem/1.5 var(--serif); max-width: 36rem; }
 
   /* Timeline */
@@ -75,9 +87,11 @@
   <section class="intro" aria-label="Introduction">
     <img src="pranay.jpg" alt="Pranay Gupta" width="72" height="72">
     <div class="intro-text">
-      <p>I'm co-founder and CTO of <a href="https://argonrobotics.ai">Argon Robotics</a>. I work on robot learning for manipulation: making policies general enough to work outside the scenes they were trained in, and fast enough to be worth deploying. Most of my time goes into real bimanual arms and the simulators we build to train and evaluate them.</p>
+      <p class="lede">I work on robot learning: making policies fast, and making them hold up outside the lab.</p>
+      <p>I'm co-founder and CTO of <a href="https://argonrobotics.ai">Argon Robotics</a> in San Francisco, which I started with <a href="https://deepanshu-rohilla.github.io/">Deepanshu Rohilla</a>. We build simulated worlds where robot models practise, then check on real arms that what they learned holds up. <a href="https://www.argonrobotics.ai/discovery">Our latest result</a>: a model trained only in our simulated kitchens closed a commercial dishwasher in a customer's kitchen, with no real-world data for the task.</p>
+      <p>Before robots, I trained models to recognise faces and dishes at Zomato, priced options as a quant in Amsterdam, and studied computer science at IIT Delhi.</p>
       <!-- latest:start -->
-      <p class="latest">Latest: Scaling and speeding up robots in the real world. <a href="https://argonrobotics.ai/research/scaling-and-speeding-up-robots-in-the-real-world">Read the post →</a></p>
+      <p class="latest">Latest: Discovery-0, zero-shot sim-to-real. <a href="https://www.argonrobotics.ai/discovery">Read the post →</a></p>
       <!-- latest:end -->
     </div>
   </section>
@@ -92,15 +106,15 @@
     <p class="muted">Two things keep robot policies in the lab: they are slow, and they break outside the scenes they were trained in. I work on both, on real arms and in simulation built to match them.</p>
     <div class="timeline">
 
-      <a class="entry featured" href="https://argonrobotics.ai/research/scaling-and-speeding-up-robots-in-the-real-world">
-        <div class="entry-head"><span class="entry-title">Policies faster than their demonstrations</span><span class="entry-meta">2026 · blog</span></div>
+      <div class="entry featured">
+        <div class="entry-head"><span class="entry-title">Policies faster than their demonstrations</span><span class="entry-meta">2026</span></div>
         <p class="entry-text">Teleoperated deployment data is two to four times slower than demo data, and policies trained on it inherit that pace. We speed up free-space motion in the training data while keeping contact-rich motion at normal speed, skip predicted action chunks only when the arm barely moves and no grasp or release is due, and retrain on sped-up operator interventions. With π0.5 on two AgileX PiPER arms, a bimanual dish task takes 9.4 s against 37.3 s for teleoperation.</p>
         <div class="stats">
           <div><b>3.97×</b><span>faster than teleop</span></div>
           <div><b>95.2%</b><span>success rate</span></div>
           <div><b>500</b><span>real runs per setting</span></div>
         </div>
-      </a>
+      </div>
 
       <div class="entry card">
         <div class="entry-head"><span class="entry-title">Real-to-sim evaluation, checked trial by trial</span><span class="entry-meta">2026 · CoRL workshop</span></div>
@@ -198,6 +212,23 @@
         <p class="entry-text">All India Rank 82 in JEE Advanced 2019. Computer vision projects on HOG + SVM pedestrian detection and Lucas–Kanade template tracking.</p>
       </div>
     </div>
+  </section>
+
+  <section class="section" id="interests">
+    <h2>Interests</h2>
+    <p class="label">In research</p>
+    <ul class="chips">
+      <li>fast robot policies</li><li>sim-to-real</li><li>RL post-training</li>
+      <li>bimanual manipulation</li><li>evaluation in simulation</li><li>VLAs</li>
+    </ul>
+    <p class="label">Outside the lab</p>
+    <dl class="facts">
+      <div><dt>3D printing</dt><dd>I design parts in code and print them on a Bambu P1S: gripper fingers for our arms, and once a multi-colour plaque as a gift for a chef.</dd></div>
+      <div><dt>Agents on call</dt><dd>Most of my code is now written by AI agents that run around the clock. I built a phone app and a Telegram bot to steer them from anywhere. They built this page too.</dd></div>
+      <div><dt>Kitchens</dt><dd>Food keeps finding me: dish photos at Zomato, and now robots for restaurant kitchens.</dd></div>
+      <div><dt>Hard chores</dt><dd>I collect everyday tasks that are still hard for robots. Tying a shoelace is the current favourite.</dd></div>
+      <div><dt>Videos in code</dt><dd>I made Argon's launch video in code, one scene per file.</dd></div>
+    </dl>
   </section>
 
   <footer>
