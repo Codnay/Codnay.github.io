@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Pranay Gupta</title>
+    <link>https://codnay.github.io/blog/</link>
+    <description>Notes on robot learning, simulation and RL post-training.</description>
+    <language>en</language>
+    <item>
+      <title>Discovery-0: zero-shot sim-to-real</title>
+      <link>https://www.argonrobotics.ai/discovery</link>
+      <guid>https://www.argonrobotics.ai/discovery</guid>
+      <pubDate>Wed, 21 Oct 2026 12:00:00 +0000</pubDate>
+      <description>A model trained only on trajectories from our simulated kitchens closed a commercial dishwasher in a live customer kitchen, with no real-world data for the task.</description>
+    </item>
+    <item>
+      <title>The Turing test for virtual worlds</title>
+      <link>https://www.argonrobotics.ai/simreal</link>
+      <guid>https://www.argonrobotics.ai/simreal</guid>
+      <pubDate>Wed, 14 Oct 2026 12:00:00 +0000</pubDate>
+      <description>Ten frames from the same robot stations, some from the real robot and some from our simulation of it. A game: can you tell which is which?</description>
+    </item>
+  </channel>
+</rss>
