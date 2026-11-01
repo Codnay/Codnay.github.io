@@ -38,7 +38,7 @@
   <article class="post-view" aria-labelledby="post-title">
     <a class="back" href="../">← writing</a>
     <header class="post-head">
-      <span class="kicker"><time datetime="2026-09-18">September 18, 2026</time> · 11 min read</span>
+      <span class="kicker"><time datetime="2026-09-18">September 18, 2026</time> · 10 min read</span>
       <h1 id="post-title">Scaling and speeding up robots in the real world</h1>
       <span class="byline">Pranay Gupta and Deepanshu Rohilla</span>
     </header>
@@ -262,15 +262,14 @@
 </ol>
 </div>
 <h2 id="citation">Citation<a class="headerlink" href="#citation" title="Link to this section">#</a></h2>
-<p>Please cite this post as:</p>
-<p>Pranay Gupta and Deepanshu Rohilla. &ldquo;Scaling and speeding up robots in the real world.&rdquo; September 2026. <a href="https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/">https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/</a></p>
-<pre><code class="language-bibtex">@misc{gupta2026speeding,
-  title  = {Scaling and Speeding Up Robots in the Real World},
-  author = {Gupta, Pranay and Rohilla, Deepanshu},
-  year   = {2026},
-  month  = sep,
-  note   = {Blog post},
-  url    = {https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/}
+<p>Please cite this work as:</p>
+<pre><code class="language-bibtex">@article{gupta2026speedingup,
+  author  = {Pranay Gupta and Deepanshu Rohilla},
+  title   = {{Scaling and speeding up robots in the real world}},
+  journal = {codnay.github.io},
+  year    = {2026},
+  month   = {September},
+  url     = {https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/},
 }
 </code></pre>
     </div>
@@ -279,6 +278,22 @@
       <a href="../feed.xml">follow by rss</a>
     </div>
   </article>
+  <script>
+    // A Copy button on each BibTeX block.
+    document.querySelectorAll(".prose pre > code.language-bibtex").forEach(function (code) {
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "copy"; btn.textContent = "Copy"; btn.setAttribute("aria-label", "Copy BibTeX");
+      btn.addEventListener("click", function () {
+        function done(label) { btn.textContent = label; setTimeout(function () { btn.textContent = "Copy"; }, 1500); }
+        if (navigator.clipboard) navigator.clipboard.writeText(code.textContent).then(function () { done("Copied"); }, function () { done("Select and copy"); });
+        else done("Select and copy");
+      });
+      var pre = code.parentNode, box = document.createElement("div");
+      box.className = "codebox";
+      pre.parentNode.insertBefore(box, pre);
+      box.appendChild(pre); box.appendChild(btn);
+    });
+  </script>
 
 
   <footer>

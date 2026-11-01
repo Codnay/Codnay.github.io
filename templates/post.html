@@ -13,3 +13,19 @@ $body
       <a href="../feed.xml">follow by rss</a>
     </div>
   </article>
+  <script>
+    // A Copy button on each BibTeX block.
+    document.querySelectorAll(".prose pre > code.language-bibtex").forEach(function (code) {
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "copy"; btn.textContent = "Copy"; btn.setAttribute("aria-label", "Copy BibTeX");
+      btn.addEventListener("click", function () {
+        function done(label) { btn.textContent = label; setTimeout(function () { btn.textContent = "Copy"; }, 1500); }
+        if (navigator.clipboard) navigator.clipboard.writeText(code.textContent).then(function () { done("Copied"); }, function () { done("Select and copy"); });
+        else done("Select and copy");
+      });
+      var pre = code.parentNode, box = document.createElement("div");
+      box.className = "codebox";
+      pre.parentNode.insertBefore(box, pre);
+      box.appendChild(pre); box.appendChild(btn);
+    });
+  </script>

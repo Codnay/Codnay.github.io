@@ -25,6 +25,10 @@
 .prose code { font: 12.5px/1.5 var(--mono); background: color-mix(in srgb, var(--paper) 80%, transparent); border: 1px solid var(--line); padding: 0 4px; }
 .prose pre { margin: 0; font: 12.5px/1.6 var(--mono); background: color-mix(in srgb, var(--paper) 80%, transparent); border: 1px solid var(--line); padding: 12px 14px; overflow-x: auto; }
 .prose pre code { background: none; border: 0; padding: 0; }
+.prose .codebox { position: relative; }
+.prose .codebox pre { padding-right: 72px; }
+.prose .codebox .copy { position: absolute; top: 8px; right: 8px; font: 500 11.5px/1 var(--mono); color: var(--ink); background: var(--paper); border: 1px solid var(--line); padding: 6px 9px; cursor: pointer; }
+.prose .codebox .copy:hover { color: var(--box); border-color: var(--box); }
 .prose img, .prose video { display: block; max-width: 100%; height: auto; }
 .prose p:has(> img:only-child) + p > em:only-child { display: block; font-style: normal; font-size: 12px; color: var(--ink-2); margin-top: -8px; }
 .prose table { border-collapse: collapse; width: 100%; font-size: 12.5px; line-height: 19px; display: block; overflow-x: auto; background: color-mix(in srgb, var(--paper) 80%, transparent); }

@@ -244,15 +244,14 @@
 </ol>
 </div>
 <h2 id="citation">Citation<a class="headerlink" href="#citation" title="Link to this section">#</a></h2>
-<p>Please cite this post as:</p>
-<p>Pranay Gupta and Deepanshu Rohilla. &ldquo;Scaling and speeding up robots in the real world.&rdquo; September 2026. <a href="https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/">https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/</a></p>
-<pre><code class="language-bibtex">@misc{gupta2026speeding,
-  title  = {Scaling and Speeding Up Robots in the Real World},
-  author = {Gupta, Pranay and Rohilla, Deepanshu},
-  year   = {2026},
-  month  = sep,
-  note   = {Blog post},
-  url    = {https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/}
+<p>Please cite this work as:</p>
+<pre><code class="language-bibtex">@article{gupta2026speedingup,
+  author  = {Pranay Gupta and Deepanshu Rohilla},
+  title   = {{Scaling and speeding up robots in the real world}},
+  journal = {codnay.github.io},
+  year    = {2026},
+  month   = {September},
+  url     = {https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/},
 }
 </code></pre>]]></content:encoded>
     </item>

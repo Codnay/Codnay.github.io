@@ -111,18 +111,16 @@ Our next line of research is RL post-training with no humans in the loop. We pla
 
 ## Citation
 
-Please cite this post as:
-
-Pranay Gupta and Deepanshu Rohilla. "Scaling and speeding up robots in the real world." September 2026. <https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/>
+Please cite this work as:
 
 ```bibtex
-@misc{gupta2026speeding,
-  title  = {Scaling and Speeding Up Robots in the Real World},
-  author = {Gupta, Pranay and Rohilla, Deepanshu},
-  year   = {2026},
-  month  = sep,
-  note   = {Blog post},
-  url    = {https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/}
+@article{gupta2026speedingup,
+  author  = {Pranay Gupta and Deepanshu Rohilla},
+  title   = {{Scaling and speeding up robots in the real world}},
+  journal = {codnay.github.io},
+  year    = {2026},
+  month   = {September},
+  url     = {https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/},
 }
 ```
 
