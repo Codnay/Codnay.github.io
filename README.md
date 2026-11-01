@@ -15,7 +15,7 @@ Personal site and blog of Pranay Gupta. Plain static HTML served by GitHub Pages
    The post, in Markdown.
    ```
 
-   To list a post published elsewhere, add `external: <url>` and `where: <site>` and leave the body empty.
+   Add `authors: A and B` for a co-written post (the byline defaults to Pranay Gupta). To list a post published elsewhere, add `external: <url>` and `where: <site>` and leave the body empty.
 2. Run `uv run build.py`. It writes `blog/`, the RSS feed and the homepage's Writing list.
 3. Commit everything, including the generated files, and push.
 

@@ -3,244 +3,190 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
 <title>Pranay Gupta</title>
-<meta name="description" content="Pranay Gupta, co-founder and CTO of Argon Robotics. Research on fast, general robot policies: real-robot learning, real-to-sim evaluation and RL post-training in simulation.">
+<meta name="description" content="Pranay Gupta, co-founder and CTO of Argon Robotics. Robot learning: fast, general manipulation policies, real-to-sim evaluation and RL post-training in simulation.">
+<meta name="author" content="Pranay Gupta">
 <meta property="og:title" content="Pranay Gupta">
-<meta property="og:description" content="Robot learning: fast, general manipulation policies, real-to-sim evaluation and RL post-training in simulation.">
+<meta property="og:description" content="Co-founder and CTO, Argon Robotics. I work on robot learning: making policies fast, and making them hold up outside the lab.">
 <meta property="og:image" content="https://codnay.github.io/pranay.jpg">
 <meta property="og:url" content="https://codnay.github.io/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f4f3ee'/%3E%3Crect x='12.5' y='12.5' width='7' height='7' rx='1.5' fill='%23111'/%3E%3C/svg%3E">
+<link rel="alternate" type="application/rss+xml" title="Pranay Gupta" href="blog/feed.xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f2ed'/%3E%3Crect x='10' y='10' width='12' height='12' fill='none' stroke='%232a4f8f' stroke-width='2.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/site.css">
-<link rel="alternate" type="application/rss+xml" title="Pranay Gupta" href="blog/feed.xml">
-<style>
-  /* Homepage only: intro, thesis and the work timeline with square markers. Shared styles live in assets/site.css. */
-  .intro { display: flex; gap: 20px; align-items: flex-start; }
-  .intro img { width: 72px; height: 72px; flex: none; border: 1px solid var(--line); border-radius: 2px; object-fit: cover; }
-  .intro-text { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-  .latest { font-size: 13px; color: var(--muted); }
-  .latest a { color: var(--fg); }
-  @media (max-width: 480px) { .intro { flex-direction: column; gap: 16px; } }
-
-  .lede { font: 400 1.28rem/1.4 var(--serif); text-wrap: balance; }
-
-  /* Interests: research topics as outlined chips, life outside the lab as a label/sentence list */
-  .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-  .chips { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-  .chips li { font-size: 12px; border: 1px solid var(--line-strong); padding: 2px 8px; }
-  .facts { margin: 0; display: flex; flex-direction: column; gap: 14px; }
-  .facts div { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 12px; }
-  .facts dt { font-weight: 600; font-size: 13px; line-height: 1.5; }
-  .facts dd { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
-  @media (max-width: 480px) { .facts div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
-
-  .thesis { font: 400 1.28rem/1.5 var(--serif); max-width: 36rem; }
-
-  /* Timeline */
-  .timeline { position: relative; margin-left: 8px; border-left: 1px solid var(--line); padding-block: 16px; display: flex; flex-direction: column; gap: 14px; }
-  .timeline::before, .timeline::after { content: ""; position: absolute; left: -1px; width: 1px; height: 24px; }
-  .timeline::before { top: 0; background: linear-gradient(to bottom, var(--bg), transparent); }
-  .timeline::after { bottom: 0; background: linear-gradient(to top, var(--bg), transparent); }
-  .entry {
-    position: relative; display: flex; flex-direction: column; gap: 6px;
-    margin-left: 24px; padding: 10px 12px; border: 1px solid transparent; text-decoration: none;
-    transition: box-shadow .15s, border-color .15s, background-color .15s;
-  }
-  .entry::before {
-    content: ""; position: absolute; left: -29px; top: 16px; width: 7px; height: 7px; border-radius: 1.5px;
-    background: var(--fg); outline: 2px solid var(--bg);
-  }
-  .entry.card { background: var(--card); border-color: var(--line); }
-  .entry.featured { background: var(--card); border-color: var(--fg); box-shadow: 3px 3px 0 var(--fg); }
-  a.entry.card:hover { border-color: var(--line-strong); box-shadow: 3px 3px 0 var(--line-strong); }
-  a.entry.featured:hover { box-shadow: 5px 5px 0 var(--fg); }
-  a.entry:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
-  .entry-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 12px; }
-  .entry-title { font-weight: 600; font-size: 13px; line-height: 1.45; min-width: 0; }
-  .entry-meta { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .entry-text { font-size: 12.5px; line-height: 1.6; color: var(--muted); }
-  .entry-link { font-size: 12px; color: var(--fg); text-decoration: underline; text-underline-offset: 4px; }
-
-  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 4px 0 2px; padding-top: 10px; border-top: 1px dashed var(--line); }
-  .stats div { display: flex; flex-direction: column; min-width: 0; }
-  .stats b { font: 400 1.45rem/1.1 var(--serif); font-variant-numeric: tabular-nums; }
-  .stats span { font-size: 11px; color: var(--muted); line-height: 1.4; }
-
-  @media (prefers-reduced-motion: reduce) { .entry { transition: none; } }
-</style>
 </head>
 <body>
-<div class="page">
-
-  <header>
-    <a class="name" href="#">Pranay Gupta</a>
-    <nav aria-label="Sections">
-      <a href="#research">Research</a>
-      <a href="#papers">Papers</a>
-      <a href="blog/">Blog</a>
-      <a href="#about">About</a>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="./"><span class="dot" aria-hidden="true"></span>pranay gupta</a>
+    <nav aria-label="Main">
+      <a href="./" aria-current="page">home</a><span class="sep">/</span>
+      <a href="#research">research</a><span class="sep">/</span>
+      <a href="blog/">writing</a><span class="sep">/</span>
+      <a href="#papers">papers</a><span class="sep">/</span>
+      <a href="#about">about</a>
     </nav>
   </header>
 
-  <section class="intro" aria-label="Introduction">
-    <img src="pranay.jpg" alt="Pranay Gupta" width="72" height="72">
-    <div class="intro-text">
-      <p class="lede">I work on robot learning: making policies fast, and making them hold up outside the lab.</p>
-      <p>I'm co-founder and CTO of <a href="https://argonrobotics.ai">Argon Robotics</a> in San Francisco, which I started with <a href="https://deepanshu-rohilla.github.io/">Deepanshu Rohilla</a>. We build simulated worlds where robot models practise, then check on real arms that what they learned holds up. <a href="https://www.argonrobotics.ai/discovery">Our latest result</a>: a model trained only in our simulated kitchens closed a commercial dishwasher in a customer's kitchen, with no real-world data for the task.</p>
+  <section class="profile" id="home" aria-label="Profile">
+    <div class="bbox portrait">
+      <span class="label">person 0.99</span>
+      <img src="pranay.jpg" alt="Pranay Gupta" width="240" height="240">
+    </div>
+    <div>
+      <h1>Pranay Gupta</h1>
+      <div class="meta">
+        <span>Co-founder and CTO</span>
+        <span class="muted"><a class="link" href="https://www.argonrobotics.ai/">Argon Robotics</a> · San Francisco</span>
+      </div>
+      <div class="socials">
+        <span class="email">pranay@argonrobotics.ai</span>
+        <a class="link" href="https://github.com/Codnay">github</a>
+        <a class="link" href="https://www.linkedin.com/in/pranay1gupta">linkedin</a>
+        <a class="link" href="https://www.argonrobotics.ai/">argonrobotics.ai</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="about" aria-labelledby="h-about">
+    <div class="sec-head"><h2 id="h-about"><span>01</span> about</h2></div>
+    <div class="intro">
+      <p class="lede">I work on robot learning: making policies <em>fast</em>, and making them hold up outside the lab.</p>
+      <p>At <a class="link" href="https://www.argonrobotics.ai/">Argon Robotics</a>, which I started with <a class="link" href="https://deepanshu-rohilla.github.io/">Deepanshu Rohilla</a>, we build simulated worlds where robot models practise, then check on real arms that what they learned holds up. Our latest result: a model trained only in our simulated kitchens closed a commercial dishwasher in a customer's kitchen, with no real-world data for the task.</p>
       <p>Before robots, I trained models to recognise faces and dishes at Zomato, priced options as a quant in Amsterdam, and studied computer science at IIT Delhi.</p>
-      <!-- latest:start -->
-      <p class="latest">Latest: Discovery-0, zero-shot sim-to-real. <a href="https://www.argonrobotics.ai/discovery">Read the post →</a></p>
-      <!-- latest:end -->
+      <p class="muted">Working on fast or general robot policies? Email me.</p>
+    </div>
+    <div class="cols">
+      <div>
+        <h3 class="sub">interests</h3>
+        <ul class="tags">
+          <li>fast robot policies</li>
+          <li>sim-to-real</li>
+          <li>RL post-training</li>
+          <li>bimanual manipulation</li>
+          <li>evaluation in simulation</li>
+          <li>VLAs</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="sub">education</h3>
+        <ul class="edu">
+          <li><span>B.Tech, Computer Science</span><span class="muted">IIT Delhi · 2019–2023</span><span class="muted">All India Rank 82, JEE Advanced</span></li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <h3 class="sub">outside the lab</h3>
+      <dl class="people">
+        <dt>3D printing</dt><dd>I design parts in code and print them on a Bambu P1S: gripper fingers for our arms, and once a multi-colour plaque as a gift for a chef.</dd>
+        <dt>Agents on call</dt><dd>Most of my code is now written by AI agents that run around the clock. I built a phone app and a Telegram bot to steer them from anywhere. They built this page too.</dd>
+        <dt>Kitchens</dt><dd>Food keeps finding me: dish photos at Zomato, and now robots for restaurant kitchens.</dd>
+        <dt>Hard chores</dt><dd>I collect everyday tasks that are still hard for robots. Tying a shoelace is the current favourite.</dd>
+        <dt>Videos in code</dt><dd>I made Argon's launch video in code, one scene per file.</dd>
+      </dl>
     </div>
   </section>
 
-  <section class="section" id="thesis">
-    <div class="section-head"><h2>Thesis</h2><span class="tag">Draft</span></div>
-    <p class="thesis">Robots get deployed when they are fast and reliable in places nobody trained them for. Human demonstrations can't get us there alone. They carry human pace, they are slower still when collected remotely, and they cover only the scenes people happened to record. I think the next gains come from experience robots generate themselves, first in simulation that has been checked against reality and then on real hardware, with reinforcement learning doing the post-training that more human data cannot.</p>
-  </section>
-
-  <section class="section" id="research">
-    <h2>Current research</h2>
-    <p class="muted">Two things keep robot policies in the lab: they are slow, and they break outside the scenes they were trained in. I work on both, on real arms and in simulation built to match them.</p>
-    <div class="timeline">
-
-      <div class="entry featured">
-        <div class="entry-head"><span class="entry-title">Policies faster than their demonstrations</span><span class="entry-meta">2026</span></div>
-        <p class="entry-text">Teleoperated deployment data is two to four times slower than demo data, and policies trained on it inherit that pace. We speed up free-space motion in the training data while keeping contact-rich motion at normal speed, skip predicted action chunks only when the arm barely moves and no grasp or release is due, and retrain on sped-up operator interventions. With π0.5 on two AgileX PiPER arms, a bimanual dish task takes 9.4 s against 37.3 s for teleoperation.</p>
-        <div class="stats">
-          <div><b>3.97×</b><span>faster than teleop</span></div>
-          <div><b>95.2%</b><span>success rate</span></div>
-          <div><b>500</b><span>real runs per setting</span></div>
-        </div>
-      </div>
-
-      <div class="entry card">
-        <div class="entry-head"><span class="entry-title">Real-to-sim evaluation, checked trial by trial</span><span class="entry-meta">2026 · CoRL workshop</span></div>
-        <p class="entry-text">Real evaluation of generalist policies is slow and hard to reproduce. We built a simulated twin of ABC's public bimanual evaluation cell from separately validated assets and paired it with ABC's scored real trials. The twin keeps the real-world ordering of the checkpoints we evaluated and reproduces per-grasp success, handovers and insertion at a small fraction of the cost. The things that matter most to match are the geometry and dynamics of the manipulated objects, the instruction given to the policy, and the arm calibration.</p>
-      </div>
-
-      <div class="entry card">
-        <div class="entry-head"><span class="entry-title">RL post-training in simulated kitchens</span><span class="entry-meta">ongoing</span></div>
-        <p class="entry-text">Demonstrations only cover the scenes people recorded. I post-train vision-language-action policies with GRPO-style reinforcement learning in batched, randomized simulated kitchens, starting from hard and mid-task states that demonstrations rarely visit. In a first pilot on π0.5, held-out pick success in simulation rose from 18.5% to 58.9% after 9.3 H100-hours.</p>
-      </div>
-
-      <div class="entry card">
-        <div class="entry-head"><span class="entry-title">One simulation stack for many real cells</span><span class="entry-meta">ongoing</span></div>
-        <p class="entry-text">Each real robot cell gets a twin assembled from a shared library of validated parts: arms, grippers, cameras, fixtures and objects. Everything runs on the Newton physics engine with batched GPU rendering, so one scene serves data generation, RL and evaluation. New environments are built bottom up and promoted only after they replay real episodes faithfully.</p>
-      </div>
-
-    </div>
-  </section>
-
-  <section class="section" id="papers">
-    <h2>Papers</h2>
-    <ul class="list">
-      <li>
-        <span class="year">2026</span>
-        <div class="item">
-          <span class="item-title">Evaluating Real-World Bimanual Policies in Simulation: A Paired Real-to-Sim Study on ABC</span>
-          <span class="item-sub">CoRL 2026 Workshop on Sim2Real2Field, late-breaking track. Under review.</span>
-        </div>
-      </li>
-      <li>
-        <span class="year">2022</span>
-        <div class="item">
-          <span class="item-title">CaPE: Category Preserving Embeddings for Similarity-Search in Financial Graphs</span>
-          <span class="item-sub">Gaurav Oberoi, Pranav Poduval, Karamjit Singh, Sangam Verma, <span class="me">Pranay Gupta</span></span>
-          <span class="item-sub">ICAIF '22, ACM International Conference on AI in Finance, pp. 420–427</span>
-          <span class="item-links"><a href="https://doi.org/10.1145/3533271.3561788">Paper</a></span>
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <section class="section" id="writing">
-    <div class="section-head"><h2>Writing</h2><a class="where" href="blog/">All posts →</a></div>
-    <ul class="list">
-      <!-- writing:start -->
-      <li>
-        <span class="year">2026</span>
-        <div class="item">
-          <a class="item-title" href="https://www.argonrobotics.ai/discovery">Discovery-0: zero-shot sim-to-real</a>
-          <span class="item-sub">A model trained only on trajectories from our simulated kitchens closed a commercial dishwasher in a live customer kitchen, with no real-world data for the task.</span>
-          <span class="where">Oct 21 · Argon Robotics ↗</span>
-        </div>
-      </li>
-      <li>
-        <span class="year"></span>
-        <div class="item">
-          <a class="item-title" href="https://www.argonrobotics.ai/simreal">The Turing test for virtual worlds</a>
-          <span class="item-sub">Ten frames from the same robot stations, some from the real robot and some from our simulation of it. A game: can you tell which is which?</span>
-          <span class="where">Oct 14 · Argon Robotics ↗</span>
-        </div>
-      </li>
-      <!-- writing:end -->
-    </ul>
-  </section>
-
-  <section class="section" id="about">
-    <h2>About</h2>
-    <div class="timeline">
-      <div class="entry">
-        <div class="entry-head"><span class="entry-title">Co-founder &amp; CTO, Argon Robotics</span><span class="entry-meta">2026 – now</span></div>
-        <p class="entry-text">Fast autonomous manipulation for kitchens: real-robot policy learning, simulation and RL post-training.</p>
-      </div>
-      <div class="entry">
-        <div class="entry-head"><span class="entry-title">Founder, Dwine</span><span class="entry-meta">2025</span></div>
-        <p class="entry-text">A multi-agent system that generates fully editable UI screens from a team's design system. 200+ active users.</p>
-      </div>
-      <div class="entry">
-        <div class="entry-head"><span class="entry-title">Machine Learning Engineer, Zomato</span><span class="entry-meta">2024 – 2025</span></div>
-        <p class="entry-text">Vision and language models in production: face recognition fine-tuned with hard-sample mining (+15% accuracy), CLIP fine-tuned with a triplet loss to match dish names to photos, food segmentation and image quality scoring.</p>
-      </div>
-      <div class="entry">
-        <div class="entry-head"><span class="entry-title">Quantitative Researcher, Da Vinci Derivatives</span><span class="entry-meta">2023 – 2024</span></div>
-        <p class="entry-text">Amsterdam. Automated medium-frequency strategies on Indian index derivatives, with execution tuned for latency and liquidity, and option pricing models.</p>
-      </div>
-      <div class="entry">
-        <div class="entry-head"><span class="entry-title">ML/AI Research Intern, Mastercard</span><span class="entry-meta">2022</span></div>
-        <p class="entry-text">Graph embeddings that preserve high-cardinality categories for merchant similarity search. Published at ICAIF '22.</p>
-      </div>
-      <div class="entry">
-        <div class="entry-head"><span class="entry-title">ML Research Intern, Kroop AI</span><span class="entry-meta">2021 – 2022</span></div>
-        <p class="entry-text">GANs that synthesize facial expressions from facial landmarks, deployed for real-time use.</p>
-      </div>
-      <div class="entry">
-        <div class="entry-head"><span class="entry-title">B.Tech in Computer Science, IIT Delhi</span><span class="entry-meta">2019 – 2023</span></div>
-        <p class="entry-text">All India Rank 82 in JEE Advanced 2019. Computer vision projects on HOG + SVM pedestrian detection and Lucas–Kanade template tracking.</p>
+  <section class="sec" aria-labelledby="h-featured">
+    <div class="sec-head"><h2 id="h-featured"><span>02</span> featured</h2></div>
+    <div class="featured">
+      <a class="bbox fcard" href="https://www.argonrobotics.ai/discovery">
+        <span class="label">result 0.99</span>
+        <span class="t">Discovery-0: zero-shot sim-to-real</span>
+        <span class="d">A model trained only in our simulated kitchens closed a commercial dishwasher in a live customer kitchen, with no real-world data for the task.</span>
+        <span class="when">Oct 21, 2026 · Argon Robotics ↗</span>
+      </a>
+      <a class="bbox fcard" href="blog/scaling-and-speeding-up-robots-in-the-real-world/">
+        <span class="label">result 0.99</span>
+        <span class="t">Policies faster than their demonstrations</span>
+        <span class="d">π0.5 on two PiPER arms does a bimanual dish task in 9.4 s, against 37.3 s for teleoperation, at 95.2% success over 500 real runs.</span>
+        <span class="when">Sep 18, 2026 · blog post</span>
+      </a>
+      <div class="bbox fcard">
+        <span class="label">paper 0.99</span>
+        <span class="t">Real-to-sim evaluation on ABC</span>
+        <span class="d">A simulated twin of ABC's bimanual evaluation cell that keeps the real-world ranking of the checkpoints we tested, trial by trial.</span>
+        <span class="when">2026 · CoRL workshop, under review</span>
       </div>
     </div>
   </section>
 
-  <section class="section" id="interests">
-    <h2>Interests</h2>
-    <p class="label">In research</p>
-    <ul class="chips">
-      <li>fast robot policies</li><li>sim-to-real</li><li>RL post-training</li>
-      <li>bimanual manipulation</li><li>evaluation in simulation</li><li>VLAs</li>
-    </ul>
-    <p class="label">Outside the lab</p>
-    <dl class="facts">
-      <div><dt>3D printing</dt><dd>I design parts in code and print them on a Bambu P1S: gripper fingers for our arms, and once a multi-colour plaque as a gift for a chef.</dd></div>
-      <div><dt>Agents on call</dt><dd>Most of my code is now written by AI agents that run around the clock. I built a phone app and a Telegram bot to steer them from anywhere. They built this page too.</dd></div>
-      <div><dt>Kitchens</dt><dd>Food keeps finding me: dish photos at Zomato, and now robots for restaurant kitchens.</dd></div>
-      <div><dt>Hard chores</dt><dd>I collect everyday tasks that are still hard for robots. Tying a shoelace is the current favourite.</dd></div>
-      <div><dt>Videos in code</dt><dd>I made Argon's launch video in code, one scene per file.</dd></div>
-    </dl>
+  <section class="sec" id="research" aria-labelledby="h-research">
+    <div class="sec-head"><h2 id="h-research"><span>03</span> research</h2><span class="aside">thesis, draft</span></div>
+    <p class="lede thesis">Robots get deployed when they are fast and reliable in places nobody trained them for. Human demonstrations can't get us there alone: they carry human pace, and they cover only the scenes people happened to record. The next gains come from experience robots generate themselves, first in simulation checked against reality, then on real hardware, with reinforcement learning doing the post-training that more human data cannot.</p>
+    <ol class="timeline">
+      <li><span class="when">2026</span><div><div class="t">Policies faster than their demonstrations</div><p class="d">Teleoperated deployment data is two to four times slower than demo data, and policies trained on it inherit that pace. We speed up free-space motion in the training data while keeping contact-rich motion at normal speed, skip predicted action chunks only when the arm barely moves and no grasp or release is due, and retrain on sped-up operator interventions. A bimanual dish task drops from 37.3 s under teleoperation to 9.4 s, at 95.2% success.</p></div></li>
+      <li><span class="when">2026</span><div><div class="t">Real-to-sim evaluation, checked trial by trial</div><p class="d">Real evaluation of generalist policies is slow and hard to reproduce. We built a simulated twin of ABC's public bimanual evaluation cell from separately validated assets and paired it with ABC's scored real trials. The twin keeps the real-world ordering of the checkpoints we evaluated. What matters most to match: the geometry and dynamics of the manipulated objects, the instruction given to the policy, and the arm calibration.</p></div></li>
+      <li><span class="when">ongoing</span><div><div class="t">RL post-training in simulated kitchens</div><p class="d">I post-train vision-language-action policies with GRPO-style reinforcement learning in batched, randomized simulated kitchens, starting from hard and mid-task states that demonstrations rarely visit. In a first pilot on π0.5, held-out pick success in simulation rose from 18.5% to 58.9% after 9.3 H100-hours.</p></div></li>
+      <li><span class="when">ongoing</span><div><div class="t">One simulation stack for many real cells</div><p class="d">Each real robot cell gets a twin assembled from a shared library of validated parts: arms, grippers, cameras, fixtures and objects. Everything runs on the Newton physics engine with batched GPU rendering, so one scene serves data generation, RL and evaluation. New environments are built bottom up and promoted only after they replay real episodes faithfully.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="writing" aria-labelledby="h-writing">
+    <div class="sec-head"><h2 id="h-writing"><span>04</span> writing</h2><a class="aside" href="blog/">all posts →</a></div>
+    <!-- writing:start -->
+    <div class="year">
+      <div class="yr-label">2026</div>
+      <ul class="posts">
+        <li><a class="row" href="https://www.argonrobotics.ai/discovery" rel="noopener">
+          <span class="t">Discovery-0: zero-shot sim-to-real<span class="new">Argon Robotics ↗</span></span><span class="date">Oct 21</span>
+          <span class="d">A model trained only on trajectories from our simulated kitchens closed a commercial dishwasher in a live customer kitchen, with no real-world data for the task.</span>
+        </a></li>
+        <li><a class="row" href="https://www.argonrobotics.ai/simreal" rel="noopener">
+          <span class="t">The Turing test for virtual worlds<span class="new">Argon Robotics ↗</span></span><span class="date">Oct 14</span>
+          <span class="d">Ten frames from the same robot stations, some from the real robot and some from our simulation of it. A game: can you tell which is which?</span>
+        </a></li>
+        <li><a class="row" href="blog/scaling-and-speeding-up-robots-in-the-real-world/">
+          <span class="t">Scaling and speeding up robots in the real world</span><span class="date">Sep 18</span>
+          <span class="d">Three levers that make robot policies run nearly four times faster than the remote-teleoperation data they learned from, without losing accuracy.</span>
+        </a></li>
+      </ul>
+    </div>
+    <!-- writing:end -->
+  </section>
+
+  <section class="sec" id="papers" aria-labelledby="h-papers">
+    <div class="sec-head"><h2 id="h-papers"><span>05</span> papers</h2></div>
+    <div class="year">
+      <div class="yr-label">2026</div>
+      <ul class="posts">
+        <li><div class="row">
+          <span class="t">Evaluating Real-World Bimanual Policies in Simulation: A Paired Real-to-Sim Study on ABC</span><span class="date">under review</span>
+          <span class="d">CoRL 2026 Workshop on Sim2Real2Field, late-breaking track</span>
+        </div></li>
+      </ul>
+    </div>
+    <div class="year">
+      <div class="yr-label">2022</div>
+      <ul class="posts">
+        <li><a class="row" href="https://doi.org/10.1145/3533271.3561788">
+          <span class="t">CaPE: Category Preserving Embeddings for Similarity-Search in Financial Graphs</span><span class="date">ICAIF '22</span>
+          <span class="d">Gaurav Oberoi, Pranav Poduval, Karamjit Singh, Sangam Verma, <span class="me">Pranay Gupta</span>. ACM International Conference on AI in Finance, pp. 420–427.</span>
+          <span class="go">paper ↗</span>
+        </a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" id="experience" aria-labelledby="h-experience">
+    <div class="sec-head"><h2 id="h-experience"><span>06</span> experience</h2></div>
+    <ol class="timeline">
+      <li><span class="when">2026 – now</span><div><div class="t">Co-founder &amp; CTO, Argon Robotics</div><p class="d">Fast autonomous manipulation for kitchens: real-robot policy learning, simulation and RL post-training.</p></div></li>
+      <li><span class="when">2025</span><div><div class="t">Founder, Dwine</div><p class="d">A multi-agent system that generates fully editable UI screens from a team's design system. 200+ active users.</p></div></li>
+      <li><span class="when">2024 – 2025</span><div><div class="t">Machine Learning Engineer, Zomato</div><p class="d">Vision and language models in production: face recognition fine-tuned with hard-sample mining (+15% accuracy), CLIP fine-tuned with a triplet loss to match dish names to photos, food segmentation and image quality scoring.</p></div></li>
+      <li><span class="when">2023 – 2024</span><div><div class="t">Quantitative Researcher, Da Vinci Derivatives</div><p class="d">Amsterdam. Automated medium-frequency strategies on Indian index derivatives, with execution tuned for latency and liquidity, and option pricing models.</p></div></li>
+      <li><span class="when">2022</span><div><div class="t">ML/AI Research Intern, Mastercard</div><p class="d">Graph embeddings that preserve high-cardinality categories for merchant similarity search. Published at ICAIF '22.</p></div></li>
+      <li><span class="when">2021 – 2022</span><div><div class="t">ML Research Intern, Kroop AI</div><p class="d">GANs that synthesize facial expressions from facial landmarks, deployed for real-time use.</p></div></li>
+    </ol>
   </section>
 
   <footer>
-    <span class="sig">Pranay Gupta</span>
-    <div class="contact">
-      <span class="email">pranay@argonrobotics.ai</span>
-      <a href="https://github.com/Codnay">GitHub</a>
-      <a href="https://www.linkedin.com/in/pranay1gupta">LinkedIn</a>
-      <a href="https://argonrobotics.ai">Argon Robotics</a>
-    </div>
+    <span>© 2026 Pranay Gupta</span>
+    <span>san francisco · <a href="blog/feed.xml">rss</a> · no trackers</span>
   </footer>
-
 </div>
 </body>
 </html>

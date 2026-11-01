@@ -19,5 +19,242 @@
       <pubDate>Wed, 14 Oct 2026 12:00:00 +0000</pubDate>
       <description>Ten frames from the same robot stations, some from the real robot and some from our simulation of it. A game: can you tell which is which?</description>
     </item>
+    <item>
+      <title>Scaling and speeding up robots in the real world</title>
+      <link>https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/</link>
+      <guid>https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/</guid>
+      <pubDate>Fri, 18 Sep 2026 12:00:00 +0000</pubDate>
+      <description>Three levers that make robot policies run nearly four times faster than the remote-teleoperation data they learned from, without losing accuracy.</description>
+      <content:encoded><![CDATA[<p>Speed is the final frontier that needs to be unlocked before we can see robots assisting humans in the real world.</p>
+<p>Speeding up robots is a chicken-and-egg problem: you need deployments in the real world to collect data and iterate on models, but you need fast models in the first place to provide enough economic value to earn those deployments.</p>
+<p>Several companies like Physical Intelligence<sup id="fnref:pi0"><a class="footnote-ref" href="#fn:pi0">1</a></sup><sup>,</sup><sup id="fnref:pi05"><a class="footnote-ref" href="#fn:pi05">2</a></sup>, Skild AI, Generalist AI, Reward AI have shown impressive demos of their models working at impressive speeds, but the fundamental lever behind that is very fast demonstration data, which does not hold once you start scaling a fleet into the real world. We have spent the past few months deploying across various industries, and here is what we, along with several other companies actually deploying robots on the ground, have seen.</p>
+<h2 id="why-is-deployment-data-slow">Why is deployment data slow?<a class="headerlink" href="#why-is-deployment-data-slow" title="Link to this section">#</a></h2>
+<p>Operators in live deployments run two to four times slower than operators in demo setups, for a few key reasons:</p>
+<ol>
+<li><strong>Assistance has to be remote to scale.</strong> Sending an operator to every site breaks before you reach even a hundred deployments. Remote operation lets one office of trained operators serve many sites without downtime, which makes it the only viable path to human-assisted deployment at scale. Remote teleoperation is slower because it is hard to perceive depth intuitively from camera views; building a 3D environment inside a Meta Quest is a good technical solution, but nobody can use one for more than an hour without feeling nauseated.</li>
+<li><strong>The control interface differs.</strong> Many demo datasets use leader follower arms<sup id="fnref:act"><a class="footnote-ref" href="#fn:act">3</a></sup><sup>,</sup><sup id="fnref:gello"><a class="footnote-ref" href="#fn:gello">4</a></sup>, which tie operator speed to physical arm speed. Deployments need dynamic speed adjustment like going slower near humans and fragile objects, for safety, etc. Most deployments we have seen use Meta Quest controllers, which track the operator&rsquo;s hand and move the arm accordingly.</li>
+<li><strong>There is no predictability.</strong> Demo scenes are structured and learnable, so operators can act before they think. In a real deployment, an operator has to react to live cues, which is inherently slower.</li>
+</ol>
+<h2 id="why-is-slow-data-a-problem">Why is slow data a problem?<a class="headerlink" href="#why-is-slow-data-a-problem" title="Link to this section">#</a></h2>
+<p>Slow teleoperation hurts deployment and scaling in two ways:</p>
+<ol>
+<li><strong>Weak learning signal.</strong> Current robotics policies work by predicting the next chunk of actions. Data in which most of the motion is idle, or does not contain significant movement, carries poor information for a policy to learn from. We have seen this directly in our training runs: policies trained on such data are not only slower but usually less accurate, because each next-chunk prediction offers little progress toward completing the task.</li>
+<li><strong>Economics.</strong> When a policy or a teleoperator runs significantly slower than a human, it becomes impossible to create economic value for the end customer especially in environments such as kitchens and warehouses, which have been optimised around humans doing tasks quickly and efficiently.</li>
+</ol>
+<p>Over the past six months we have run policies in live deployments and focused our engineering and research effort on making policies run faster than the teleoperation data they were trained on, so that we can deploy our robots at scale. We have found three levers that make policies faster while maintaining accuracy:</p>
+<h3 id="1-adaptive-speed-up-of-the-training-data">1. Adaptive speed-up of the training data<a class="headerlink" href="#1-adaptive-speed-up-of-the-training-data" title="Link to this section">#</a></h3>
+<p>The simplest approach you could think of is to speed up the training data and then train a model on it. Unfortunately, that works poorly in practice: you lose a lot of key information when you discard frames from the data you collect. Uniformly dropping every other frame (2x) took success from <strong>94%</strong> to <strong>53%</strong>, and at 4x uniform it collapsed to <strong>9%</strong> for plate picking, handover between arms and release. The failures concentrated at the grasp and the release, exactly where the discarded frames carried the most information.</p>
+<p>A better and more effective approach, also observed by many others in the field, is to treat the motion of the arms as two separate parts: free-space motion, where the arms are travelling toward their target region, and contact-rich motion, where the arms are interacting with the real world. Free-space motion contains far less information about manipulation than contact-rich motion, so it makes sense to speed up free-space motion while keeping contact-rich motion intact.</p>
+<p>Prior works such as AutoSpeed<sup id="fnref:autospeed"><a class="footnote-ref" href="#fn:autospeed">5</a></sup>, SAIL<sup id="fnref:sail"><a class="footnote-ref" href="#fn:sail">6</a></sup> and SRIL<sup id="fnref:sril"><a class="footnote-ref" href="#fn:sril">7</a></sup> have consistently used an RL head to predict contact-rich motion and perform speed-ups around it. We were able to achieve similar or better results without training an RL head at all, by simply treating any motion within x seconds of a gripper event (gripper opening or closing) as contact-rich motion; trying everything from 0.1 to 2 seconds.</p>
+<p>We ran hundreds of ablations at 2x, 3x, 4x, 5x and 10x, and across different contact-identification techniques, and saw the best results at 4x with actions within 0.5s of gripper events being classified as contact. Beyond 4x the arm still reaches the object, but it arrives with too much residual velocity to close the gripper cleanly, and success falls off sharply.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Free-space speed-up</th>
+<th style="text-align: right;">End-to-end task time vs. teleop data</th>
+<th style="text-align: right;">Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1x (raw teleop data)</td>
+<td style="text-align: right;">1.00x</td>
+<td style="text-align: right;">94.2%</td>
+</tr>
+<tr>
+<td style="text-align: left;">2x</td>
+<td style="text-align: right;">1.82x</td>
+<td style="text-align: right;">96%</td>
+</tr>
+<tr>
+<td style="text-align: left;">3x</td>
+<td style="text-align: right;">2.63x</td>
+<td style="text-align: right;">97.4%</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>4x</strong></td>
+<td style="text-align: right;"><strong>3.41x</strong></td>
+<td style="text-align: right;"><strong>95.6%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">5x</td>
+<td style="text-align: right;">4.02x</td>
+<td style="text-align: right;">82%</td>
+</tr>
+<tr>
+<td style="text-align: left;">10x</td>
+<td style="text-align: right;">6.2x</td>
+<td style="text-align: right;">11%</td>
+</tr>
+</tbody>
+</table>
+<p><em>Contact window fixed at x = 0.5 s; each row is 500 real-robot runs on the same task and scene.</em></p>
+<h3 id="2-selective-chunk-skipping-at-inference">2. Selective chunk skipping at inference<a class="headerlink" href="#2-selective-chunk-skipping-at-inference" title="Link to this section">#</a></h3>
+<p>A VLA policy predicts several chunks of future actions at once. Skipping chunks makes the policy run faster by letting the arm jump to future states, with no retraining. Doing this naively causes two problems, and both of them push the policy out of distribution quickly:</p>
+<ol>
+<li><strong>Far-out predictions are less accurate.</strong> The further out a chunk is, the less likely it is to be accurate, because the world will have changed by the time the first few actions have been executed. The general practice is to query the model often and execute only near-term chunks.</li>
+<li><strong>Skipping causes jitter.</strong> When you skip chunks, the arm moves through a different distribution than the training data, and the video feed from the real world no longer corresponds to the training data, which takes the model out of distribution very quickly.</li>
+</ol>
+<p>To solve these issues, our approach after running thousands of tests in the real world is to estimate the risk before skipping a step. We look at the motion predicted by the policy and skip only if both of the following conditions hold:</p>
+<ol>
+<li><strong>The predicted chunks sit close together in the real world.</strong> We measure the end-effector displacement between the last pose of the current chunk and the last pose of the chunk we would skip to, and require it to stay under <strong>x cm</strong> at 20 chunk executions per second. That threshold is not fixed: a VLM scores the current camera view for scene complexity i.e. clutter, number of movable objects, proximity of a human into 5 buckets, and we scale the allowed displacement from <strong>2 cm</strong> in a clean, static scene down to <strong>0.3 cm</strong> in a cluttered or human-occupied one. The intuition is that displacement is only safe if the world will still look the way the policy expects when the arm arrives.</li>
+<li><strong>There must be no gripper event inside the skipping window.</strong></li>
+</ol>
+<p>The second condition is essential. Every time we skipped chunks through a gripper event, the task fell apart. Restricting skips to slow, contact-free motion keeps the policy in distribution. With these techniques we achieve another 22 percent speed-up over our fastest policy.</p>
+<h3 id="3-dagger-style-intervention-data">3. DAgger-style intervention data<a class="headerlink" href="#3-dagger-style-intervention-data" title="Link to this section">#</a></h3>
+<p>Intervention data is the most useful and most unexpected lever for speeding up a model. We expected it to increase accuracy which it does, at roughly 30x the per-frame value of ordinary teleoperation data. But with no other changes, the policy also gained a 10–15 percent speed-up simply from adding intervention data, sped up using the same techniques described above.</p>
+<p>The setup follows DAgger (Ross et al., 2011)<sup id="fnref:dagger"><a class="footnote-ref" href="#fn:dagger">8</a></sup>. The policy runs on the robot, and an operator takes control the moment it starts to fail. We then speed up that intervention data with the same gripper-event rule from Lever 1 and retrain.</p>
+<p>For models trained at lower speeds, intervention data barely helps with speed, so there is effectively zero speed-up. For policies trained at a faster speed, sped-up intervention data helps them grow faster and faster.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Base policy (training-data speed)</th>
+<th style="text-align: left;">+ intervention data</th>
+<th style="text-align: right;">Success rate</th>
+<th style="text-align: right;">Speed vs. base policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1x</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">94.2%</td>
+<td style="text-align: right;">1.00x</td>
+</tr>
+<tr>
+<td style="text-align: left;">1x</td>
+<td style="text-align: left;">200 interventions</td>
+<td style="text-align: right;">96.6%</td>
+<td style="text-align: right;">1.01x</td>
+</tr>
+<tr>
+<td style="text-align: left;">2x</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">96%</td>
+<td style="text-align: right;">1.82x</td>
+</tr>
+<tr>
+<td style="text-align: left;">2x</td>
+<td style="text-align: left;">200 interventions</td>
+<td style="text-align: right;">96.2%</td>
+<td style="text-align: right;">1.93x</td>
+</tr>
+<tr>
+<td style="text-align: left;">4x</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">95.6%</td>
+<td style="text-align: right;">3.41x</td>
+</tr>
+<tr>
+<td style="text-align: left;">4x</td>
+<td style="text-align: left;">200 interventions</td>
+<td style="text-align: right;">97.2%</td>
+<td style="text-align: right;"><strong>3.92x</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="final-results">Final results<a class="headerlink" href="#final-results" title="Link to this section">#</a></h3>
+<p>Combined, the three levers let us run our policies nearly four times (3.97x) faster than the data we collected from remote teleoperation. In the table below we report speed alongside accuracy as we add each lever:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Configuration</th>
+<th style="text-align: right;">Median task time</th>
+<th style="text-align: right;">Speed vs. teleop data</th>
+<th style="text-align: right;">Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Teleoperation data (reference)</td>
+<td style="text-align: right;">37.3 s</td>
+<td style="text-align: right;">1.00x</td>
+<td style="text-align: right;">100%</td>
+</tr>
+<tr>
+<td style="text-align: left;">Policy trained on raw data</td>
+<td style="text-align: right;">41.2 s</td>
+<td style="text-align: right;">0.9x</td>
+<td style="text-align: right;">94.2%</td>
+</tr>
+<tr>
+<td style="text-align: left;">+ Lever 1 (adaptive 4x speed-up)</td>
+<td style="text-align: right;">12.1 s</td>
+<td style="text-align: right;">3.08x</td>
+<td style="text-align: right;"><strong>95.6%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">+ Lever 2 (risk-gated chunk skipping)</td>
+<td style="text-align: right;">9.9 s</td>
+<td style="text-align: right;">3.76x</td>
+<td style="text-align: right;">93.8%</td>
+</tr>
+<tr>
+<td style="text-align: left;">+ Lever 3 (sped-up intervention data)</td>
+<td style="text-align: right;"><strong>9.4 s</strong></td>
+<td style="text-align: right;"><strong>3.97x</strong></td>
+<td style="text-align: right;">95.2%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Setup.</strong> All results are on a bimanual cell of two AgileX PiPER six-DoF arms with parallel-jaw grippers, with three RealSense cameras (one overhead, one per wrist) recorded at 20 fps, driven over CAN from a Jetson Orin NX 16 GB. The policy is π<sub>0.5</sub><sup id="fnref2:pi05"><a class="footnote-ref" href="#fn:pi05">2</a></sup>, with an action chunk of 30. Training data is 10 hours of remote teleoperation collected in the same deployment across seven days plus around one hour of usable teleoperation intervention data. Each number in the tables is 500 real-robot runs, with object positions re-randomised between runs.</p>
+<h3 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Link to this section">#</a></h3>
+<p>These results come from a narrow set of tasks: picking up plates and dishes, and picking and placing objects. We have yet to test whether the gripper-event rule and the 4x optimum hold across a more diverse task set. We also have no explanation yet for why 4x outperforms both lower and higher factors.</p>
+<h2 id="what-comes-next">What comes next?<a class="headerlink" href="#what-comes-next" title="Link to this section">#</a></h2>
+<p>We expect our policies to soon run significantly faster than any human can control them, on specific tasks. To build superhuman policies, human data alone cannot get us there.</p>
+<p>Human intervention data plays a role in robotics similar to the one RLHF<sup id="fnref:instructgpt"><a class="footnote-ref" href="#fn:instructgpt">9</a></sup> played in the early days of LLM post-training. The field had to move past human feedback as models improved, because the models began to outperform expert annotators by too wide a margin. Robotics will hit the same wall in six to eight months.</p>
+<p>Our next line of research is RL post-training with no humans in the loop. We plan to apply techniques in the GRPO<sup id="fnref:grpo"><a class="footnote-ref" href="#fn:grpo">10</a></sup> and DAPO<sup id="fnref:dapo"><a class="footnote-ref" href="#fn:dapo">11</a></sup> family to robot policies, with the goal of pushing speed beyond human capability while holding accuracy at similar levels.</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Link to this section">#</a></h2>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:pi0">
+<p>Kevin Black, Noah Brown, Danny Driess, et al. &ldquo;π<sub>0</sub>: A Vision-Language-Action Flow Model for General Robot Control.&rdquo; <a href="https://arxiv.org/abs/2410.24164">arXiv:2410.24164</a>, 2024.&#160;<a class="footnote-backref" href="#fnref:pi0" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:pi05">
+<p>Physical Intelligence, Kevin Black, Noah Brown, et al. &ldquo;π<sub>0.5</sub>: a Vision-Language-Action Model with Open-World Generalization.&rdquo; <a href="https://arxiv.org/abs/2504.16054">arXiv:2504.16054</a>, 2025.&#160;<a class="footnote-backref" href="#fnref:pi05" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:pi05" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:act">
+<p>Tony Z. Zhao, Vikash Kumar, Sergey Levine, Chelsea Finn. &ldquo;Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware.&rdquo; RSS 2023. <a href="https://arxiv.org/abs/2304.13705">arXiv:2304.13705</a>.&#160;<a class="footnote-backref" href="#fnref:act" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:gello">
+<p>Philipp Wu, Yide Shentu, Zhongke Yi, Xingyu Lin, Pieter Abbeel. &ldquo;GELLO: A General, Low-Cost, and Intuitive Teleoperation Framework for Robot Manipulators.&rdquo; <a href="https://arxiv.org/abs/2309.13037">arXiv:2309.13037</a>, 2023.&#160;<a class="footnote-backref" href="#fnref:gello" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:autospeed">
+<p>Qingda Hu, Ziheng Qiu, Jieru Zhao, Zhongxue Gan, Wenchao Ding. &ldquo;AutoSpeed: Annotation-Free Stage-Adaptive Motion Speed Learning for Robot Manipulation.&rdquo; <a href="https://arxiv.org/abs/2607.01051">arXiv:2607.01051</a>, 2026.&#160;<a class="footnote-backref" href="#fnref:autospeed" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:sail">
+<p>Nadun Ranawaka Arachchige, Zhenyang Chen, Wonsuhk Jung, et al. &ldquo;SAIL: Faster-than-Demonstration Execution of Imitation Learning Policies.&rdquo; CoRL 2025. <a href="https://arxiv.org/abs/2506.11948">arXiv:2506.11948</a>.&#160;<a class="footnote-backref" href="#fnref:sail" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:sril">
+<p>Jun Xie, Zhicheng Wang, Jianwei Tan, Huanxu Lin, Xiaoguang Ma. &ldquo;Subconscious Robotic Imitation Learning.&rdquo; <a href="https://arxiv.org/abs/2412.20368">arXiv:2412.20368</a>, 2024.&#160;<a class="footnote-backref" href="#fnref:sril" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+<li id="fn:dagger">
+<p>Stéphane Ross, Geoffrey J. Gordon, J. Andrew Bagnell. &ldquo;A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning.&rdquo; AISTATS 2011, pp. 627–635. <a href="https://arxiv.org/abs/1011.0686">arXiv:1011.0686</a>.&#160;<a class="footnote-backref" href="#fnref:dagger" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+</li>
+<li id="fn:instructgpt">
+<p>Long Ouyang, Jeff Wu, Xu Jiang, et al. &ldquo;Training Language Models to Follow Instructions with Human Feedback.&rdquo; NeurIPS 2022. <a href="https://arxiv.org/abs/2203.02155">arXiv:2203.02155</a>.&#160;<a class="footnote-backref" href="#fnref:instructgpt" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+</li>
+<li id="fn:grpo">
+<p>Zhihong Shao, Peiyi Wang, Qihao Zhu, et al. &ldquo;DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models.&rdquo; <a href="https://arxiv.org/abs/2402.03300">arXiv:2402.03300</a>, 2024.&#160;<a class="footnote-backref" href="#fnref:grpo" title="Jump back to footnote 10 in the text">&#8617;</a></p>
+</li>
+<li id="fn:dapo">
+<p>Qiying Yu, Zheng Zhang, Ruofei Zhu, et al. &ldquo;DAPO: An Open-Source LLM Reinforcement Learning System at Scale.&rdquo; <a href="https://arxiv.org/abs/2503.14476">arXiv:2503.14476</a>, 2025.&#160;<a class="footnote-backref" href="#fnref:dapo" title="Jump back to footnote 11 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+<h2 id="citation">Citation<a class="headerlink" href="#citation" title="Link to this section">#</a></h2>
+<p>Please cite this post as:</p>
+<p>Pranay Gupta and Deepanshu Rohilla. &ldquo;Scaling and speeding up robots in the real world.&rdquo; September 2026. <a href="https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/">https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/</a></p>
+<pre><code class="language-bibtex">@misc{gupta2026speeding,
+  title  = {Scaling and Speeding Up Robots in the Real World},
+  author = {Gupta, Pranay and Rohilla, Deepanshu},
+  year   = {2026},
+  month  = sep,
+  note   = {Blog post},
+  url    = {https://codnay.github.io/blog/scaling-and-speeding-up-robots-in-the-real-world/}
+}
+</code></pre>]]></content:encoded>
+    </item>
   </channel>
 </rss>
