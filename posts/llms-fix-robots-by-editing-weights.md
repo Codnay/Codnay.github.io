@@ -61,27 +61,24 @@ Claude built a small algorithm to find where each task's failures live in the br
   <li><b>Flip</b><span>Reverse the pattern in those 128 neurons. Score the edited robot.</span></li>
 </ol>
 
-Make kong, where the neurons gave failure away most clearly, jumped from **23% to 36%**. On layouts the robot had never been scored on, it still led: 24% vs 17%. Over all 141 runs: 31% vs 21%.
+Make kong, where the neurons gave failure away most clearly, jumped from **23% to 36%**.
 
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_kong.mp4" poster="pair_kong_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
-*Make kong, unseen layout, same seed, 1.2× speed. Stock knocks a tile loose and runs out of time. The edited robot finishes in 15 s.*
+*Make kong, same layout and seed, 1.2× speed. Stock knocks a tile loose and runs out of time. The edited robot finishes in 15 s.*
 
 <div class="wx-chart">
   <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>after the edit</div>
   <div class="wx-bars">
-    <div class="wx-grp">make kong · held-out layouts · 87 runs</div>
+    <div class="wx-grp">make kong · 87 held-out runs</div>
     <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:23"></b></i><em>23%</em></div>
     <div class="wx-bar"><span>After the edit</span><i><b class="e" style="--v:36"></b></i><em>36%</em></div>
-    <div class="wx-grp">make kong · unseen layouts · 54 runs</div>
-    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:17"></b></i><em>17%</em></div>
-    <div class="wx-bar"><span>After the edit</span><i><b class="e" style="--v:24"></b></i><em>24%</em></div>
   </div>
 </div>
 
 ## 03 · Where the flip helped
 
-We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two strengths: remove the failure pattern (flip) or reverse it (flip 2×). It raised success on **5 of the 10 tasks**. On Make kong and Classify objects, the gain held up on layouts the robot had never been scored on.
+We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two strengths: remove the failure pattern (flip) or reverse it (flip 2×). It raised success on **5 of the 10 tasks**.
 
 <div class="wx-chart">
   <div class="wx-t">Success over 90 held-out runs per task (kong 87)</div>
@@ -104,14 +101,6 @@ We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two str
     <div class="wx-bar"><span>Flip</span><i><b class="e" style="--v:76"></b></i><em>76%</em></div>
   </div>
 </div>
-
-We retested every gain of 5 points or more on unseen layouts:
-
-| Stock → flip | Held-out runs | Unseen layouts | All runs |
-|---|---|---|---|
-| Make kong, flip 2× | 23% → **36%** | 17% → **24%** | 21% → **31%** |
-| Classify objects, flip | 16% → **21%** | 15% → **26%** | 15% → **22%** |
-| Store laptop, flip | 7% → **12%** | 19% → 11% | 9% → **12%** |
 
 **It works where the brain is readable.** The clearer the failure signal, the more the flip helped (r = 0.69 across 10 tasks). Kong's signal was the clearest of all, and so was its gain.
 
@@ -160,11 +149,11 @@ Training a robot on extra folding demos changes its weights. Training it the sam
   </div>
 </div>
 
-The pasted change does as well as the fine-tuned copy it came from (p ≈ 0.01 vs stock). On 75 runs in layouts neither model had seen, it still leads, 56% vs 48%.
+The pasted change does as well as the fine-tuned copy it came from (p ≈ 0.01 vs stock).
 
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_14.mp4" poster="pair_14_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
-*Unseen layout 44. The edited robot folds in 12 s.*
+*Layout 44. The edited robot folds in 12 s.*
 
 ## 05 · Two things that didn't work
 
