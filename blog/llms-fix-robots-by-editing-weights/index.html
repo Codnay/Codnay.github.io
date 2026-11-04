@@ -94,24 +94,21 @@
   <li><b>Flip</b><span>Reverse the pattern in those 128 neurons. Score the edited robot.</span></li>
 </ol>
 
-<p>Make kong, where the neurons gave failure away most clearly, jumped from <strong>23% to 36%</strong>. On layouts the robot had never been scored on, it still led: 24% vs 17%. Over all 141 runs: 31% vs 21%.</p>
+<p>Make kong, where the neurons gave failure away most clearly, jumped from <strong>23% to 36%</strong>.</p>
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_kong.mp4" poster="pair_kong_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
-<p><em>Make kong, unseen layout, same seed, 1.2× speed. Stock knocks a tile loose and runs out of time. The edited robot finishes in 15 s.</em></p>
+<p><em>Make kong, same layout and seed, 1.2× speed. Stock knocks a tile loose and runs out of time. The edited robot finishes in 15 s.</em></p>
 <div class="wx-chart">
   <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>after the edit</div>
   <div class="wx-bars">
-    <div class="wx-grp">make kong · held-out layouts · 87 runs</div>
+    <div class="wx-grp">make kong · 87 held-out runs</div>
     <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:23"></b></i><em>23%</em></div>
     <div class="wx-bar"><span>After the edit</span><i><b class="e" style="--v:36"></b></i><em>36%</em></div>
-    <div class="wx-grp">make kong · unseen layouts · 54 runs</div>
-    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:17"></b></i><em>17%</em></div>
-    <div class="wx-bar"><span>After the edit</span><i><b class="e" style="--v:24"></b></i><em>24%</em></div>
   </div>
 </div>
 
 <h2 id="03-where-the-flip-helped">03 · Where the flip helped<a class="headerlink" href="#03-where-the-flip-helped" title="Link to this section">#</a></h2>
-<p>We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two strengths: remove the failure pattern (flip) or reverse it (flip 2×). It raised success on <strong>5 of the 10 tasks</strong>. On Make kong and Classify objects, the gain held up on layouts the robot had never been scored on.</p>
+<p>We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two strengths: remove the failure pattern (flip) or reverse it (flip 2×). It raised success on <strong>5 of the 10 tasks</strong>.</p>
 <div class="wx-chart">
   <div class="wx-t">Success over 90 held-out runs per task (kong 87)</div>
   <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>best neuron flip</div>
@@ -134,37 +131,6 @@
   </div>
 </div>
 
-<p>We retested every gain of 5 points or more on unseen layouts:</p>
-<table>
-<thead>
-<tr>
-<th>Stock → flip</th>
-<th>Held-out runs</th>
-<th>Unseen layouts</th>
-<th>All runs</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Make kong, flip 2×</td>
-<td>23% → <strong>36%</strong></td>
-<td>17% → <strong>24%</strong></td>
-<td>21% → <strong>31%</strong></td>
-</tr>
-<tr>
-<td>Classify objects, flip</td>
-<td>16% → <strong>21%</strong></td>
-<td>15% → <strong>26%</strong></td>
-<td>15% → <strong>22%</strong></td>
-</tr>
-<tr>
-<td>Store laptop, flip</td>
-<td>7% → <strong>12%</strong></td>
-<td>19% → 11%</td>
-<td>9% → <strong>12%</strong></td>
-</tr>
-</tbody>
-</table>
 <p><strong>It works where the brain is readable.</strong> The clearer the failure signal, the more the flip helped (r = 0.69 across 10 tasks). Kong&rsquo;s signal was the clearest of all, and so was its gain.</p>
 <div class="wx-chart">
   <div class="wx-t">Failure signal vs gain from the flip</div>
@@ -209,10 +175,10 @@
   </div>
 </div>
 
-<p>The pasted change does as well as the fine-tuned copy it came from (p ≈ 0.01 vs stock). On 75 runs in layouts neither model had seen, it still leads, 56% vs 48%.</p>
+<p>The pasted change does as well as the fine-tuned copy it came from (p ≈ 0.01 vs stock).</p>
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_14.mp4" poster="pair_14_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
-<p><em>Unseen layout 44. The edited robot folds in 12 s.</em></p>
+<p><em>Layout 44. The edited robot folds in 12 s.</em></p>
 <h2 id="05-two-things-that-didnt-work">05 · Two things that didn&rsquo;t work<a class="headerlink" href="#05-two-things-that-didnt-work" title="Link to this section">#</a></h2>
 <ul>
 <li><strong>Merging every task into one brain.</strong> Adding five tasks&rsquo; changes at once scored 0% everywhere. One change at a time is the way.</li>
