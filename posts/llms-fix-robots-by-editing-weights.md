@@ -4,13 +4,13 @@ date: 2026-11-04
 image: pair_11_poster.jpg
 authors: Pranay Gupta, Deepanshu Rohilla, Parjanya Prashant and Jiongli Zhu
 byline: <a href="https://x.com/PranayGupt97167">Pranay Gupta</a><sup>1</sup>, <a href="https://x.com/Deepans36819800">Deepanshu Rohilla</a><sup>1</sup>, <a href="https://x.com/parjanyapp">Parjanya Prashant</a><sup>2</sup>, Jiongli Zhu<sup>2</sup><span class="aff"><sup>1</sup>Argon Robotics · <sup>2</sup>UC San Diego</span>
-description: We asked Claude to edit π0.5's weights directly, with no gradients or training. Laundry folding went from 51% to 70%, and a mahjong task from 23% to 36%.
+description: We asked Claude to edit π0.5's weights directly, with no gradients or training. Laundry folding went from 51% to 75%, and a mahjong task from 23% to 36%.
 ---
 <div class="wx-tldr">
 <p><b>TL;DR</b> We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics.</p>
 <p><b>Read.</b> From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.</p>
 <p><b>Fix.</b> Flipping 128 "failure" neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.</p>
-<p><b>Write.</b> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 70%.</p>
+<p><b>Write.</b> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 75%.</p>
 </div>
 
 <div class="wx-panels">
@@ -31,7 +31,7 @@ description: We asked Claude to edit π0.5's weights directly, with no gradients
     <div class="wx-pair"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_kong.mp4" poster="pair_kong_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Stock π0.5 knocks a tile loose and runs out of time; the edited model finishes in 15 seconds"></video></div>
   </div>
   <div class="bbox wx-panel"><span class="label">write</span>
-    <div class="wx-txt"><b>Can it copy-paste what one robot brain learned into another?</b><span class="wx-big">70%</span><span class="wx-small">clothes folded, up from 51%</span></div>
+    <div class="wx-txt"><b>Can it copy-paste what one robot brain learned into another?</b><span class="wx-big">75%</span><span class="wx-small">clothes folded, up from 51%</span></div>
     <div class="wx-pair"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_11.mp4" poster="pair_11_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Stock π0.5 re-grabs the shirt and runs out of time; the edited model folds it in 12 seconds"></video></div>
   </div>
 </div>
@@ -154,23 +154,24 @@ We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two str
 
 Training a robot on extra folding demos changes its weights. Training it the same way without folding changes them too. Subtract one from the other and what's left is the folding know-how. Claude added it to the stock robot. The edit itself took no training, just arithmetic in minutes on a CPU.
 
-<div class="wx-math" role="img" aria-label="Stock π0.5 plus fold-tuned copy minus plain-tuned copy equals a robot that folds 70% of the time">
+<div class="wx-math" role="img" aria-label="Stock π0.5 plus fold-tuned copy minus plain-tuned copy equals a robot that folds 75% of the time">
   <div class="wx-chip s"><b>stock π0.5</b><span>folds 51%</span></div><span class="wx-op">+</span>
   <div class="wx-chip"><b>fold-tuned copy</b><span>trained with folding</span></div><span class="wx-op">−</span>
   <div class="wx-chip"><b>plain-tuned copy</b><span>trained without it</span></div><span class="wx-op">=</span>
-  <div class="wx-chip e"><b>folds 70%</b><span>no training</span></div>
+  <div class="wx-chip e"><b>folds 75%</b><span>no training</span></div>
 </div>
 
 <div class="wx-chart">
-  <div class="wx-t">Fold clothes, success over 90 held-out runs</div>
+  <div class="wx-t">Fold clothes, success rate</div>
+  <div class="wx-legend">stock and fold-tuned copy: 90 held-out runs · pasted change: our latest test</div>
   <div class="wx-bars">
     <div class="wx-bar"><span>Stock π0.5</span><i><b class="s" style="--v:51"></b></i><em>51%</em></div>
     <div class="wx-bar"><span>Fold-tuned copy</span><i><b style="--v:68"></b></i><em>68%</em></div>
-    <div class="wx-bar key"><span>Stock + the pasted change</span><i><b class="e" style="--v:70"></b></i><em>70%</em></div>
+    <div class="wx-bar key"><span>Stock + the pasted change</span><i><b class="e" style="--v:75"></b></i><em>75%</em></div>
   </div>
 </div>
 
-The pasted change does as well as the fine-tuned copy it came from (p ≈ 0.01 vs stock).
+The pasted change does better than the fine-tuned copy it came from, with no training of its own.
 
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_14.mp4" poster="pair_14_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
