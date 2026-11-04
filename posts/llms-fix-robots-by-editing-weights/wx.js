@@ -1,6 +1,6 @@
 // Two small animations for the weight-editing post, both drawn from recorded π0.5 data.
 //  1. "Watch it think": a recorded fold plays; 8 grab neurons and 8 release neurons light up as they fire.
-//  2. "The flip": the 128 Make kong neurons (2 layers x 64) that the edit reverses, shown in their layer sheets.
+//  2. "The flip": the 128 mahjong-task neurons (2 layers x 64) that the edit reverses, shown in their layer sheets.
 (function () {
   "use strict";
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
