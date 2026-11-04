@@ -104,6 +104,18 @@
     });
   }
 
+  // ---------- 3. the full viewer, embedded at its native 1280x800 and scaled to the column ----------
+  function initEmbed(box) {
+    var frame = box.querySelector("iframe");
+    function fit() {
+      var s = box.clientWidth / 1280;
+      frame.style.transform = "scale(" + s + ")";
+      box.style.height = Math.round(800 * s) + "px";
+    }
+    fit(); window.addEventListener("resize", fit);
+  }
+
   document.querySelectorAll(".wx-think[data-src]").forEach(initThink);
   document.querySelectorAll(".wx-flip[data-src]").forEach(initFlip);
+  document.querySelectorAll(".wx-embed").forEach(initEmbed);
 })();
