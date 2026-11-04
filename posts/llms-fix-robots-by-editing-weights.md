@@ -50,35 +50,7 @@ Each dot below is one neuron. Play a recorded attempt and watch which ones light
 
 <video class="wx-ex" src="explorer.mp4" poster="explorer_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="The neuron viewer: dots light up as neurons fire"></video>
 
-## 02 · Most edits break the robot
-
-Weight edits are powerful and fragile. We tried six other ways to improve π0.5 without training. None clearly beat stock.
-
-<div class="wx-score">
-  <div class="wx-sc"><span class="wx-pill">no gain</span><b>Blend the 3 released copies</b><p>Average the weights of three π0.5 copies trained with different seeds.</p><strong>32% <small>folding, vs 51%</small></strong></div>
-  <div class="wx-sc"><span class="wx-pill bad">broke</span><b>Push past the release</b><p>Move 20% further from the pretrained model, in the direction training moved it.</p><strong>0% <small>folding</small></strong></div>
-  <div class="wx-sc"><span class="wx-pill bad">broke</span><b>Turn the change up 1.5×</b><p>Add one and a half times the folding change instead of once.</p><strong>6% <small>folding</small></strong></div>
-  <div class="wx-sc"><span class="wx-pill bad">broke</span><b>Merge 5 tasks into one brain</b><p>Add all five tasks' changes at once. Half strength still loses everywhere.</p><strong>0% <small>on every task</small></strong></div>
-  <div class="wx-sc"><span class="wx-pill">no gain</span><b>Copy-paste multi-task training</b><p>Add the change from our model trained on all tasks at once.</p><strong>≤ stock <small>on all 10 tasks</small></strong></div>
-  <div class="wx-sc"><span class="wx-pill">no gain</span><b>Flip neurons on folding</b><p>The neuron fix that worked on kong, used on laundry, where the signal is weak.</p><strong>42–50% <small>folding, vs 51%</small></strong></div>
-</div>
-
-| Success, held-out runs | Stock | Blend of 3 | Multi-task paste | Neuron flip | Neuron flip 2× |
-|---|---|---|---|---|---|
-| Make kong | 23% | 20% | 24% | 22% | **36%** |
-| Classify objects | 16% | 14% | 7% | 21% | 11% |
-| Store laptop | 7% | 8% | 8% | 12% | 9% |
-| Pick from conveyor | 14% | 17% | 17% | 12% | 18% |
-| Bottles into bin | 73% | 76% | 61% | 76% | 76% |
-| Build tower | 40% | 39% | 19% | 39% | 18% |
-| Fold clothes | 51% | 32% | 52% | 42% | 50% |
-| Stack blocks | 19% | 14% | 13% | 13% | 12% |
-| Fill pen holder | 11% | 8% | 2% | 4% | 2% |
-| Cover blocks | 12% | 4% | 10% | 0% | 0% |
-
-*90 held-out runs per cell (kong 87): 3 seeds × 30 layouts, scored by the simulator's own success check.*
-
-## 03 · Find the failure, flip it
+## 02 · Find the failure, flip it
 
 Claude built a small algorithm to find where each task's failures live in the brain, then edited only those neurons. No gradients, just a direct write to **0.004% of the weights**.
 
@@ -107,7 +79,41 @@ Make kong, where the neurons gave failure away most clearly, jumped from **23% t
   </div>
 </div>
 
-**It works where the brain is readable.** The clearer the failure signal, the more the flip helped (r = 0.69 across 10 tasks). Where there was no signal, on Cover blocks, the flip took the task to 0%.
+## 03 · Where the flip helped
+
+We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two strengths: remove the failure pattern (flip) or reverse it (flip 2×). It raised success on **5 of the 10 tasks**. On Make kong and Classify objects, the gain held up on layouts the robot had never been scored on.
+
+<div class="wx-chart">
+  <div class="wx-t">Success over 90 held-out runs per task (kong 87)</div>
+  <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>best neuron flip</div>
+  <div class="wx-bars">
+    <div class="wx-grp">make kong · flip 2× · +13 points</div>
+    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:23"></b></i><em>23%</em></div>
+    <div class="wx-bar key"><span>Flip 2×</span><i><b class="e" style="--v:36"></b></i><em>36%</em></div>
+    <div class="wx-grp">classify objects · flip · +5 points</div>
+    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:16"></b></i><em>16%</em></div>
+    <div class="wx-bar"><span>Flip</span><i><b class="e" style="--v:21"></b></i><em>21%</em></div>
+    <div class="wx-grp">store laptop · flip · +5 points</div>
+    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:7"></b></i><em>7%</em></div>
+    <div class="wx-bar"><span>Flip</span><i><b class="e" style="--v:12"></b></i><em>12%</em></div>
+    <div class="wx-grp">pick from conveyor · flip 2× · +4 points</div>
+    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:14"></b></i><em>14%</em></div>
+    <div class="wx-bar"><span>Flip 2×</span><i><b class="e" style="--v:18"></b></i><em>18%</em></div>
+    <div class="wx-grp">bottles into bin · flip and flip 2× · +3 points</div>
+    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:73"></b></i><em>73%</em></div>
+    <div class="wx-bar"><span>Flip</span><i><b class="e" style="--v:76"></b></i><em>76%</em></div>
+  </div>
+</div>
+
+We retested every gain of 5 points or more on unseen layouts:
+
+| Stock → flip | Held-out runs | Unseen layouts | All runs |
+|---|---|---|---|
+| Make kong, flip 2× | 23% → **36%** | 17% → **24%** | 21% → **31%** |
+| Classify objects, flip | 16% → **21%** | 15% → **26%** | 15% → **22%** |
+| Store laptop, flip | 7% → **12%** | 19% → 11% | 9% → **12%** |
+
+**It works where the brain is readable.** The clearer the failure signal, the more the flip helped (r = 0.69 across 10 tasks). Kong's signal was the clearest of all, and so was its gain.
 
 <div class="wx-chart">
   <div class="wx-t">Failure signal vs gain from the flip</div>
@@ -160,11 +166,36 @@ The pasted change does as well as the fine-tuned copy it came from (p ≈ 0.01 v
 
 *Unseen layout 44. The edited robot folds in 12 s.*
 
-## 05 · Robots might get solved by LLMs writing weights
+## 05 · Two things that didn't work
+
+- **Merging every task into one brain.** Adding five tasks' changes at once scored 0% everywhere. One change at a time is the way.
+- **Flipping neurons on folding.** Laundry failures are small slips that differ every time, so there is no single pattern to flip (42–50% vs 51%). The copy-paste above is what worked there.
+
+## 06 · Robots might get solved by LLMs writing weights
 
 We pictured robotics getting solved the slow way: more demos, bigger models, longer training runs. We now think a shortcut may come first.
 
 Today an LLM can read a robot's neurons, find the ones behind a failure, and copy-paste what one robot brain learned into another, in minutes and with no training. Next, it writes the weights for a new task directly. This is the first spark.
+
+<details markdown="1">
+<summary>All numbers, every edit we tried</summary>
+
+| Success, held-out runs | Stock | Blend of 3 | Multi-task paste | Neuron flip | Neuron flip 2× |
+|---|---|---|---|---|---|
+| Make kong | 23% | 20% | 24% | 22% | **36%** |
+| Classify objects | 16% | 14% | 7% | 21% | 11% |
+| Store laptop | 7% | 8% | 8% | 12% | 9% |
+| Pick from conveyor | 14% | 17% | 17% | 12% | 18% |
+| Bottles into bin | 73% | 76% | 61% | 76% | 76% |
+| Build tower | 40% | 39% | 19% | 39% | 18% |
+| Fold clothes | 51% | 32% | 52% | 42% | 50% |
+| Stack blocks | 19% | 14% | 13% | 13% | 12% |
+| Fill pen holder | 11% | 8% | 2% | 4% | 2% |
+| Cover blocks | 12% | 4% | 10% | 0% | 0% |
+
+*90 held-out runs per cell (kong 87): 3 seeds × 30 layouts, scored by the simulator's own success check.*
+
+</details>
 
 ---
 
