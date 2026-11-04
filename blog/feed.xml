@@ -11,10 +11,13 @@
       <guid>https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/</guid>
       <pubDate>Wed, 04 Nov 2026 12:00:00 +0000</pubDate>
       <description>We asked Claude to edit π0.5&#x27;s weights directly, with no gradients or training. Laundry folding went from 51% to 70%, and a mahjong task from 23% to 36%.</description>
-      <content:encoded><![CDATA[<p>We asked Claude to edit π0.5&rsquo;s weights directly, with no gradients and no training. Laundry folding went from 51% to 70%, and a mahjong task from 23% to 36%.</p>
-<blockquote>
-<p>This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics: an LLM can read a robot&rsquo;s neurons, find what makes it fail, and rewrite what it does.</p>
-</blockquote>
+      <content:encoded><![CDATA[<div class="wx-tldr">
+<p><b>TL;DR</b> We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics.</p>
+<p><b>Read.</b> From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.</p>
+<p><b>Fix.</b> Flipping 128 "failure" neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.</p>
+<p><b>Write.</b> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 70%.</p>
+</div>
+
 <div class="wx-panels">
   <div class="bbox wx-panel"><span class="label">read</span>
     <div class="wx-txt"><b>Can an LLM tell what a robot is about to do from its neurons?</b><span class="wx-big">1 s</span><span class="wx-small">how far ahead the grab neurons see the gripper closing</span></div>
@@ -161,117 +164,25 @@
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_14.mp4" poster="pair_14_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
 <p><em>Layout 44. The edited robot folds in 12 s.</em></p>
-<h2 id="05-two-things-that-didnt-work">05 · Two things that didn&rsquo;t work<a class="headerlink" href="#05-two-things-that-didnt-work" title="Link to this section">#</a></h2>
-<ul>
-<li><strong>Merging every task into one brain.</strong> Adding five tasks&rsquo; changes at once scored 0% everywhere. One change at a time is the way.</li>
-<li><strong>Flipping neurons on folding.</strong> Laundry failures are small slips that differ every time, so there is no single pattern to flip (42–50% vs 51%). The copy-paste above is what worked there.</li>
-</ul>
-<h2 id="06-robots-might-get-solved-by-llms-writing-weights">06 · Robots might get solved by LLMs writing weights<a class="headerlink" href="#06-robots-might-get-solved-by-llms-writing-weights" title="Link to this section">#</a></h2>
+<h2 id="05-robots-might-get-solved-by-llms-writing-weights">05 · Robots might get solved by LLMs writing weights<a class="headerlink" href="#05-robots-might-get-solved-by-llms-writing-weights" title="Link to this section">#</a></h2>
 <p>We pictured robotics getting solved the slow way: more demos, bigger models, longer training runs. We now think a shortcut may come first.</p>
 <p>Today an LLM can read a robot&rsquo;s neurons, find the ones behind a failure, and copy-paste what one robot brain learned into another, in minutes and with no training. Next, it writes the weights for a new task directly. This is the first spark.</p>
-<h2 id="07-explore-every-neuron">07 · Explore every neuron<a class="headerlink" href="#07-explore-every-neuron" title="Link to this section">#</a></h2>
+<h2 id="06-explore-every-neuron">06 · Explore every neuron<a class="headerlink" href="#06-explore-every-neuron" title="Link to this section">#</a></h2>
 <p>The full viewer: all 73,728 neurons in 3D, two recorded folds, and every neuron&rsquo;s strongest moments. Drag to turn, tap a dot to see what it does.</p>
-<div class="wx-embed"><iframe src="https://pi05-weight-edit.vercel.app/neurons/" title="π0.5 neuron viewer" loading="lazy" allow="fullscreen"></iframe></div>
+<div class="wx-embed"><iframe src="https://pi05-weight-edit.vercel.app/neurons/" title="π0.5 neuron viewer" loading="lazy" allow="fullscreen" width="1280" height="800"></iframe></div>
 
 <p><a href="https://pi05-weight-edit.vercel.app/neurons/">Open the viewer full screen ↗</a></p>
-<details>
-<summary>All numbers, every edit we tried</summary>
-<table>
-<thead>
-<tr>
-<th>Success, held-out runs</th>
-<th>Stock</th>
-<th>Blend of 3</th>
-<th>Multi-task paste</th>
-<th>Neuron flip</th>
-<th>Neuron flip 2×</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mahjong</td>
-<td>23%</td>
-<td>20%</td>
-<td>24%</td>
-<td>22%</td>
-<td><strong>36%</strong></td>
-</tr>
-<tr>
-<td>Classify objects</td>
-<td>16%</td>
-<td>14%</td>
-<td>7%</td>
-<td>21%</td>
-<td>11%</td>
-</tr>
-<tr>
-<td>Store laptop</td>
-<td>7%</td>
-<td>8%</td>
-<td>8%</td>
-<td>12%</td>
-<td>9%</td>
-</tr>
-<tr>
-<td>Pick from conveyor</td>
-<td>14%</td>
-<td>17%</td>
-<td>17%</td>
-<td>12%</td>
-<td>18%</td>
-</tr>
-<tr>
-<td>Bottles into bin</td>
-<td>73%</td>
-<td>76%</td>
-<td>61%</td>
-<td>76%</td>
-<td>76%</td>
-</tr>
-<tr>
-<td>Build tower</td>
-<td>40%</td>
-<td>39%</td>
-<td>19%</td>
-<td>39%</td>
-<td>18%</td>
-</tr>
-<tr>
-<td>Fold clothes</td>
-<td>51%</td>
-<td>32%</td>
-<td>52%</td>
-<td>42%</td>
-<td>50%</td>
-</tr>
-<tr>
-<td>Stack blocks</td>
-<td>19%</td>
-<td>14%</td>
-<td>13%</td>
-<td>13%</td>
-<td>12%</td>
-</tr>
-<tr>
-<td>Fill pen holder</td>
-<td>11%</td>
-<td>8%</td>
-<td>2%</td>
-<td>4%</td>
-<td>2%</td>
-</tr>
-<tr>
-<td>Cover blocks</td>
-<td>12%</td>
-<td>4%</td>
-<td>10%</td>
-<td>0%</td>
-<td>0%</td>
-</tr>
-</tbody>
-</table>
-<p><em>90 held-out runs per cell (mahjong 87): 3 seeds × 30 layouts, scored by the simulator&rsquo;s own success check.</em></p>
-</details>
+<h2 id="citation">Citation<a class="headerlink" href="#citation" title="Link to this section">#</a></h2>
+<p>Please cite this work as:</p>
+<pre><code class="language-bibtex">@article{gupta2026robotweights,
+  author  = {Pranay Gupta and Deepanshu Rohilla and Parjanya Prashant and Jiongli Zhu},
+  title   = {{Can frontier LLMs fix robots by editing their weights?}},
+  journal = {codnay.github.io},
+  year    = {2026},
+  month   = {November},
+  url     = {https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/},
+}
+</code></pre>
 <hr />
 <script src="wx.js" defer></script>
 

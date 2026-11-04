@@ -19,6 +19,7 @@ A post is Markdown with a small front matter block:
     where: Argon Robotics       (optional, with external: where it was published)
     authors: A and B            (optional byline; defaults to Pranay Gupta)
     image: cover.jpg            (optional: link-preview image, a file in posts/<slug>/)
+    byline: <a ..>A</a><sup>1</sup>, ...   (optional: byline as HTML, e.g. linked names and affiliations)
     ---
 
 Images go in a folder named after the post (posts/<slug>/fig.png) and are referenced as ![..](fig.png).
@@ -72,6 +73,7 @@ class Post:
     where: str | None = None
     authors: str = DEFAULT_AUTHOR
     image: str | None = None
+    byline_html: str | None = None
 
     @property
     def url(self) -> str:
@@ -121,6 +123,7 @@ def load_post(path: Path) -> Post:
         description=fields["description"], body_md=body, source_dir=path.with_suffix(""),
         external=fields.get("external") or None, where=fields.get("where") or None,
         authors=fields.get("authors") or DEFAULT_AUTHOR, image=fields.get("image") or None,
+        byline_html=fields.get("byline") or None,
     )
 
 
@@ -173,6 +176,11 @@ def page(content: str, *, title: str, description: str, canonical: str, root: st
     ).replace("<head>", f"<head>\n{GENERATED}", 1)
 
 
+def author_names(authors: str) -> list[str]:
+    """'A, B and C' -> ['A', 'B', 'C']."""
+    return [n.strip() for n in re.split(r",|\band\b", authors) if n.strip()]
+
+
 def json_ld(data: dict) -> str:
     """Structured data for search and AI answer engines; '</' is escaped so the JSON cannot close the script tag."""
     return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False).replace("</", "<\\/") + "</script>"
@@ -183,8 +191,8 @@ def post_json_ld(post: Post) -> str:
         "@context": "https://schema.org", "@type": "BlogPosting", "headline": post.title,
         "description": post.description, "datePublished": post.published.isoformat(), "url": post.url,
         "mainEntityOfPage": post.url, "image": post.image_url,
-        "author": [{"@type": "Person", "name": name.strip(), **({"url": f"{SITE_URL}/"} if name.strip() == DEFAULT_AUTHOR else {})}
-                   for name in post.authors.split(" and ")],
+        "author": [{"@type": "Person", "name": name, **({"url": f"{SITE_URL}/"} if name == DEFAULT_AUTHOR else {})}
+                   for name in author_names(post.authors)],
     })
 
 
@@ -193,7 +201,7 @@ def post_json_ld(post: Post) -> str:
 def render_post(post: Post) -> str:
     content = load_template("post.html").substitute(
         title=esc(post.title), date_iso=post.published.isoformat(), date_long=long_date(post),
-        read_time=read_minutes(post.body_md), byline=esc(post.authors), body=render_markdown(post.body_md),
+        read_time=read_minutes(post.body_md), byline=post.byline_html or esc(post.authors), body=render_markdown(post.body_md),
     )
     return page(content, title=f"{post.title} · Pranay Gupta", description=post.description,
                 canonical=post.url, root="../../", og_type="article", og_image=post.image_url,

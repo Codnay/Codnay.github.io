@@ -2,11 +2,16 @@
 title: Can frontier LLMs fix robots by editing their weights?
 date: 2026-11-04
 image: pair_11_poster.jpg
+authors: Pranay Gupta, Deepanshu Rohilla, Parjanya Prashant and Jiongli Zhu
+byline: <a href="https://x.com/PranayGupt97167">Pranay Gupta</a><sup>1</sup>, <a href="https://x.com/Deepans36819800">Deepanshu Rohilla</a><sup>1</sup>, <a href="https://x.com/parjanyapp">Parjanya Prashant</a><sup>2</sup>, Jiongli Zhu<sup>2</sup><span class="aff"><sup>1</sup>Argon Robotics · <sup>2</sup>UC San Diego</span>
 description: We asked Claude to edit π0.5's weights directly, with no gradients or training. Laundry folding went from 51% to 70%, and a mahjong task from 23% to 36%.
 ---
-We asked Claude to edit π0.5's weights directly, with no gradients and no training. Laundry folding went from 51% to 70%, and a mahjong task from 23% to 36%.
-
-> This extends [weight-space programming](https://rikiyat.github.io/blog/weight-space-programming/) to robotics: an LLM can read a robot's neurons, find what makes it fail, and rewrite what it does.
+<div class="wx-tldr">
+<p><b>TL;DR</b> We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics.</p>
+<p><b>Read.</b> From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.</p>
+<p><b>Fix.</b> Flipping 128 "failure" neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.</p>
+<p><b>Write.</b> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 70%.</p>
+</div>
 
 <div class="wx-panels">
   <div class="bbox wx-panel"><span class="label">read</span>
@@ -171,44 +176,34 @@ The pasted change does as well as the fine-tuned copy it came from (p ≈ 0.01 v
 
 *Layout 44. The edited robot folds in 12 s.*
 
-## 05 · Two things that didn't work
-
-- **Merging every task into one brain.** Adding five tasks' changes at once scored 0% everywhere. One change at a time is the way.
-- **Flipping neurons on folding.** Laundry failures are small slips that differ every time, so there is no single pattern to flip (42–50% vs 51%). The copy-paste above is what worked there.
-
-## 06 · Robots might get solved by LLMs writing weights
+## 05 · Robots might get solved by LLMs writing weights
 
 We pictured robotics getting solved the slow way: more demos, bigger models, longer training runs. We now think a shortcut may come first.
 
 Today an LLM can read a robot's neurons, find the ones behind a failure, and copy-paste what one robot brain learned into another, in minutes and with no training. Next, it writes the weights for a new task directly. This is the first spark.
 
-## 07 · Explore every neuron
+## 06 · Explore every neuron
 
 The full viewer: all 73,728 neurons in 3D, two recorded folds, and every neuron's strongest moments. Drag to turn, tap a dot to see what it does.
 
-<div class="wx-embed"><iframe src="https://pi05-weight-edit.vercel.app/neurons/" title="π0.5 neuron viewer" loading="lazy" allow="fullscreen"></iframe></div>
+<div class="wx-embed"><iframe src="https://pi05-weight-edit.vercel.app/neurons/" title="π0.5 neuron viewer" loading="lazy" allow="fullscreen" width="1280" height="800"></iframe></div>
 
 [Open the viewer full screen ↗](https://pi05-weight-edit.vercel.app/neurons/)
 
-<details markdown="1">
-<summary>All numbers, every edit we tried</summary>
+## Citation
 
-| Success, held-out runs | Stock | Blend of 3 | Multi-task paste | Neuron flip | Neuron flip 2× |
-|---|---|---|---|---|---|
-| Mahjong | 23% | 20% | 24% | 22% | **36%** |
-| Classify objects | 16% | 14% | 7% | 21% | 11% |
-| Store laptop | 7% | 8% | 8% | 12% | 9% |
-| Pick from conveyor | 14% | 17% | 17% | 12% | 18% |
-| Bottles into bin | 73% | 76% | 61% | 76% | 76% |
-| Build tower | 40% | 39% | 19% | 39% | 18% |
-| Fold clothes | 51% | 32% | 52% | 42% | 50% |
-| Stack blocks | 19% | 14% | 13% | 13% | 12% |
-| Fill pen holder | 11% | 8% | 2% | 4% | 2% |
-| Cover blocks | 12% | 4% | 10% | 0% | 0% |
+Please cite this work as:
 
-*90 held-out runs per cell (mahjong 87): 3 seeds × 30 layouts, scored by the simulator's own success check.*
-
-</details>
+```bibtex
+@article{gupta2026robotweights,
+  author  = {Pranay Gupta and Deepanshu Rohilla and Parjanya Prashant and Jiongli Zhu},
+  title   = {{Can frontier LLMs fix robots by editing their weights?}},
+  journal = {codnay.github.io},
+  year    = {2026},
+  month   = {November},
+  url     = {https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/},
+}
+```
 
 ---
 

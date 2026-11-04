@@ -137,6 +137,16 @@ svg.wx-scatter circle { fill: var(--box); stroke: var(--paper); stroke-width: 2;
 .wx-flip canvas { width: 100%; display: block; }
 .wx-flip-state { font-size: 12px; } .wx-flip-state.e { color: var(--hot); } .wx-flip-state.s { color: var(--box); }
 
-/* The full neuron viewer, embedded */
-.wx-embed { border: 1px solid var(--line); background: #000; }
-.wx-embed iframe { display: block; width: 100%; height: min(78vh, 640px); border: 0; }
+/* The full neuron viewer: breaks out of the text column, rendered at 1280x800 and scaled to fit (wx.js) */
+.wx-embed { position: relative; left: 50%; transform: translateX(-50%); width: min(1280px, calc(100vw - 32px)); overflow: hidden; border: 1px solid var(--line); background: #000; }
+.wx-embed iframe { display: block; width: 1280px; height: 800px; border: 0; transform-origin: 0 0; }
+
+/* TL;DR block and the linked byline with affiliations */
+.wx-tldr { display: flex; flex-direction: column; gap: 8px; border-left: 2px solid var(--box); padding: 2px 0 2px 16px; max-width: 66ch; }
+.wx-tldr p { margin: 0; font-size: 14px; line-height: 22px; }
+.wx-tldr p:first-child { font-family: var(--serif); font-size: 21px; line-height: 28px; }
+.wx-tldr b { font-weight: 600; } .wx-tldr p:first-child b { font-family: var(--mono); font-size: 12px; color: var(--box); letter-spacing: 0.04em; margin-right: 6px; vertical-align: 2px; }
+.wx-tldr a { border-bottom: 1px solid var(--line); }
+.byline a { border-bottom: 1px solid var(--line); } .byline a:hover { color: var(--box); border-color: var(--box); }
+.byline sup { font-size: 9px; color: var(--box); margin-left: 1px; }
+.byline .aff { display: block; margin-top: 2px; font-size: 11.5px; }
