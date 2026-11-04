@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/site.css?v=20261104d">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Pranay Gupta", "url": "https://codnay.github.io/", "image": "https://codnay.github.io/pranay.jpg", "jobTitle": "Co-founder and CTO", "worksFor": {"@type": "Organization", "name": "Argon Robotics", "url": "https://www.argonrobotics.ai/"}, "alumniOf": {"@type": "CollegeOrUniversity", "name": "Indian Institute of Technology Delhi"}, "knowsAbout": ["robot learning", "sim-to-real", "physics simulation", "vision-language-action models", "reinforcement learning"], "sameAs": ["https://github.com/Codnay", "https://www.linkedin.com/in/pranay1gupta", "https://x.com/PranayGupt97167"]}</script>
 </head>
@@ -57,7 +57,7 @@
     <div class="intro">
       <p class="lede">We are <em>digitizing</em> the physical world. Everything that has been digitized can be learned.</p>
       <p class="big-p">At <a class="link" href="https://www.argonrobotics.ai/">Argon Robotics</a> we build <mark>simulated worlds where robots learn, and fail, before they ever touch the real one</mark>.</p>
-      <p class="big-p">I've also worked inside the physics engines NVIDIA and DeepMind build on, <a class="link" href="https://github.com/newton-physics/newton">Newton</a> and <a class="link" href="https://github.com/google-deepmind/mujoco_warp">MuJoCo Warp</a>, fixing contacts and solvers, and I love contributing to <mark>open research like <a class="link" href="https://github.com/harbor-framework/terminal-bench">Terminal-Bench</a></mark>.</p>
+      <p class="big-p">We're contributors to <a class="link" href="https://github.com/newton-physics/newton">Newton</a> and <a class="link" href="https://github.com/google-deepmind/mujoco_warp">MuJoCo Warp</a>, the physics engines NVIDIA and DeepMind build on, and to <mark>open research like <a class="link" href="https://github.com/harbor-framework/terminal-bench">Terminal-Bench</a></mark>.</p>
     </div>
     <p class="hello"><b>We'll be at CoRL, and we're hiring.</b> Come say hi, or <a class="link" href="mailto:pranay@argonrobotics.ai">email me</a> if you're up for a good conversation about robots, world models or LLM research.</p>
     <div class="cols">
@@ -68,14 +68,22 @@
         </ul>
       </div>
       <div>
-        <h3 class="sub">recent patches</h3>
-        <ul class="patches">
-          <li><a class="link" href="https://github.com/newton-physics/newton/pull/4791">newton#4791</a></li>
-          <li><a class="link" href="https://github.com/newton-physics/newton/pull/4795">newton#4795</a></li>
-          <li><a class="link" href="https://github.com/google-deepmind/mujoco_warp/pull/1796">mujoco_warp#1796</a></li>
-          <li><a class="link" href="https://github.com/google-deepmind/mujoco_warp/pull/1801">mujoco_warp#1801</a></li>
-          <li><a class="link" href="https://github.com/harbor-framework/terminal-bench/pull/2492">terminal-bench#2492</a></li>
+        <h3 class="sub">Interested in knowing what I fix?</h3>
+        <ul class="patches" id="patches">
+          <li><a class="link" href="https://github.com/newton-physics/newton/pull/4791">newton#4791</a> <span>sphere and capsule radius after GJK/MPR</span></li>
+          <li><a class="link" href="https://github.com/newton-physics/newton/pull/4795">newton#4795</a> <span>direct solve for stiff, slender rods</span></li>
+          <li><a class="link" href="https://github.com/google-deepmind/mujoco_warp/pull/1796">mujoco_warp#1796</a> <span>EPA sliver faces</span></li>
+          <li><a class="link" href="https://github.com/google-deepmind/mujoco_warp/pull/1801">mujoco_warp#1801</a> <span>float64 Hessian for stiff contacts</span></li>
+          <li><a class="link" href="https://github.com/harbor-framework/terminal-bench/pull/2492">terminal-bench#2492</a> <span>distributed dedup run time</span></li>
+          <li class="extra" hidden><a class="link" href="https://github.com/newton-physics/newton/pull/5146">newton#5146</a> <span>deterministic VBD attachment forces</span></li>
+          <li class="extra" hidden><a class="link" href="https://github.com/newton-physics/newton/pull/5137">newton#5137</a> <span>MJCF noslip options in SolverMuJoCo</span></li>
+          <li class="extra" hidden><a class="link" href="https://github.com/newton-physics/newton/pull/5131">newton#5131</a> <span>scale-free VBD bending test</span></li>
+          <li class="extra" hidden><a class="link" href="https://github.com/newton-physics/newton/pull/5128">newton#5128</a> <span>one-value MJCF solref padding</span></li>
+          <li class="extra" hidden><a class="link" href="https://github.com/newton-physics/newton/pull/5121">newton#5121</a> <span>MuJoCo pair properties after reordering</span></li>
+          <li class="extra" hidden><a class="link" href="https://github.com/newton-physics/newton/pull/4977">newton#4977</a> <span>changelog for barrel-cylinder contacts</span></li>
+          <li class="extra" hidden><a class="link" href="https://github.com/google-deepmind/mujoco_warp/pull/1802">mujoco_warp#1802</a> <span>constraint-free worlds in sparse solve</span></li>
         </ul>
+        <button type="button" class="more" id="patches-more" aria-expanded="false">more (7) ↓</button>
       </div>
     </div>
   </section>
@@ -116,8 +124,31 @@
     </div>
   </section>
 
+  <section class="sec" id="x" aria-labelledby="h-x">
+    <div class="sec-head"><h2 id="h-x"><span>03</span> on x</h2><a class="aside" href="https://x.com/PranayGupt97167" rel="noopener">follow @PranayGupt97167 ↗</a></div>
+    <div class="tweets">
+      <a class="tweet" href="https://x.com/PranayGupt97167/status/2117708521689223234" rel="noopener">
+        <span class="who"><b>Pranay Gupta</b> <span>@PranayGupt97167 · Nov 3</span></span>
+        <span class="tx">Direct manipulation of π0.5 weights over fine tuning????<br><br>We ran a small experiment on the cloth-folding task on pi0.5. Results on robodojo:<br>1. Base: 50%<br>2. Fine tuned on Astra corrections: 68%<br>3. Direct weight manipulation: 75%<br><br>Will share the full breakdown soon</span>
+        <img src="assets/tweets/weights.jpg" alt="" width="680" height="390" loading="lazy">
+        <span class="meta">♥ 531 · 23 replies · view on x ↗</span>
+      </a>
+      <a class="tweet" href="https://x.com/PranayGupt97167/status/2103200118656876924" rel="noopener">
+        <span class="who"><b>Pranay Gupta</b> <span>@PranayGupt97167 · Sep 24</span></span>
+        <span class="tx">We trained a robot policy to run at ~4x faster than the teleop data they were trained on. It held &gt;95% success rate across 500 real-robot runs. Here’s a thread on our first blog 🧵</span>
+        <span class="meta">♥ 156 · 9 replies · view on x ↗</span>
+      </a>
+      <a class="tweet" href="https://x.com/Deepans36819800/status/2091969007587058048" rel="noopener">
+        <span class="who"><b>Deepanshu Rohilla</b> <span>@Deepans36819800 · Aug 24</span></span>
+        <span class="tx">Just make it exist first, you can make it good later<br><br>Crazy how customers were already loving the May version</span>
+        <img src="assets/tweets/exist.jpg" alt="" width="680" height="680" loading="lazy">
+        <span class="meta">♥ 523 · 16 replies · view on x ↗</span>
+      </a>
+    </div>
+  </section>
+
   <section class="sec" id="reading" aria-labelledby="h-reading">
-    <div class="sec-head"><h2 id="h-reading"><span>03</span> reading</h2></div>
+    <div class="sec-head"><h2 id="h-reading"><span>04</span> reading</h2></div>
     <div class="books">
       <a class="book" href="https://www.gutenberg.org/ebooks/2680"><img src="assets/books/meditations.jpg" alt="Meditations cover" width="120" height="180" loading="lazy"><span class="bt">Meditations</span><span class="ba">Marcus Aurelius</span></a>
       <a class="book" href="https://www.gutenberg.org/ebooks/28054"><img src="assets/books/karamazov.jpg" alt="The Brothers Karamazov cover" width="120" height="180" loading="lazy"><span class="bt">The Brothers Karamazov</span><span class="ba">Fyodor Dostoevsky</span></a>
@@ -129,7 +160,7 @@
   </section>
 
   <section class="sec" id="experience" aria-labelledby="h-experience">
-    <div class="sec-head"><h2 id="h-experience"><span>04</span> experience</h2></div>
+    <div class="sec-head"><h2 id="h-experience"><span>05</span> experience</h2></div>
     <ol class="timeline">
       <li><span class="when">2026 – now</span><div><div class="t">Co-founder &amp; CTO, Argon Robotics</div></div></li>
       <li><span class="when">2025</span><div><div class="t">Founder, Dwine</div></div></li>
@@ -146,6 +177,17 @@
   </footer>
 </div>
 <script>
+  // "more" opens the rest of the pull-request list.
+  (function () {
+    var btn = document.getElementById("patches-more");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var open = btn.getAttribute("aria-expanded") !== "true";
+      document.querySelectorAll("#patches .extra").forEach(function (li) { li.hidden = !open; });
+      btn.setAttribute("aria-expanded", String(open));
+      btn.textContent = open ? "less ↑" : "more (7) ↓";
+    });
+  })();
   // Featured strip: the arrow buttons scroll one card at a time.
   (function () {
     var strip = document.getElementById("featured-strip");
