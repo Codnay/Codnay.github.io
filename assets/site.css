@@ -78,7 +78,7 @@ nav .sep { color: var(--line); }
 .profile h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 40px; line-height: 44px; letter-spacing: -0.01em; }
 .profile .meta { margin-top: 8px; display: flex; flex-direction: column; }
 .socials { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 12px; font-size: 13px; }
-.email { user-select: all; color: var(--ink-2); }
+.email { color: var(--ink-2); }
 
 /* Sections */
 .sec { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 24px; }
@@ -152,14 +152,8 @@ footer a:hover { color: var(--box); }
 }
 @media (prefers-reduced-motion: reduce) { .bbox::before { transition: none; } }
 
-/* Open-source patches, set like `git log --oneline` */
-.patches { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-left: 1.5px solid var(--box); font-size: 12.5px; line-height: 19px; }
-.patches a { display: grid; grid-template-columns: 4.2rem 9.2rem minmax(0, 1fr); gap: 10px; padding: 5px 0 5px 12px; }
-.patches a:hover .msg { color: var(--box); }
-.patches .st { font-size: 10.5px; line-height: 19px; color: var(--ink-2); }
-.patches .st.merged { color: var(--box); font-weight: 600; }
-.patches .repo { color: var(--ink-2); white-space: nowrap; } .patches .repo b { font-weight: 600; color: var(--ink); }
-.patches .msg { color: var(--ink); }
+/* Recent open-source patches: a quiet list in the corner of the about section */
+.patches { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 12px; line-height: 20px; color: var(--ink-2); }
 
 /* Reading: book covers on a shelf, title + author under each */
 .books { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px 14px; }
@@ -170,6 +164,5 @@ footer a:hover { color: var(--box); }
 .book .ba { font-size: 11px; line-height: 14px; color: var(--ink-2); margin-top: -4px; }
 @media (max-width: 600px) {
   .books { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .patches a { grid-template-columns: 3.6rem minmax(0, 1fr); row-gap: 0; } .patches .msg { grid-column: 2; }
 }
 @media (prefers-reduced-motion: reduce) { .book img { transition: none; } }
