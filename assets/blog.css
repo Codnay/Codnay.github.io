@@ -46,3 +46,69 @@
   .post-head h1 { font-size: 34px; line-height: 38px; }
   .prose h2 { font-size: 24px; line-height: 29px; }
 }
+
+/* Post components (wx-*): headline panels, bar charts, scorecards, steps, brain math, scatter.
+   Blue (--box) = stock robot, orange (--hot) = an edit; the pair passes the palette checks on --paper. */
+.prose { --hot: #c8551c; --hot-soft: #f6e3d6; --other: #b9bab2; --track: rgba(40, 50, 70, 0.08); }
+.prose video { width: 100%; background: #000; aspect-ratio: 8 / 3; }
+.prose video.wx-ex { aspect-ratio: 1280 / 800; }
+.wx-panels { display: flex; flex-direction: column; gap: 26px; padding-top: 10px; }
+.wx-panel { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr); gap: 16px; align-items: center;
+  padding-top: 20px; background: color-mix(in srgb, var(--paper) 80%, transparent); }
+.wx-txt { display: flex; flex-direction: column; gap: 6px; }
+.wx-txt b { font-weight: 600; line-height: 20px; }
+.wx-big { font-family: var(--serif); font-size: 52px; line-height: 52px; color: var(--hot); }
+.wx-small { font-size: 12px; line-height: 17px; color: var(--ink-2); }
+.wx-pair { display: flex; flex-direction: column; gap: 4px; }
+.wx-lab { display: grid; grid-template-columns: 1fr 1fr; font-size: 11.5px; }
+.wx-lab span:first-child { color: var(--box); } .wx-lab span:last-child { color: var(--hot); }
+.prose .wx-pair + p > em:only-child, .prose p:has(> video:only-child) + p > em:only-child { display: block; font-style: normal; font-size: 12px; color: var(--ink-2); margin-top: -8px; }
+
+.wx-chart { border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 85%, transparent); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.wx-t { font-weight: 600; font-size: 13px; }
+.wx-legend { font-size: 11.5px; color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.wx-legend i { display: inline-block; width: 9px; height: 9px; } .wx-legend i.s { background: var(--box); } .wx-legend i.e { background: var(--hot); }
+.wx-bars { display: flex; flex-direction: column; gap: 7px; }
+.wx-grp { font-size: 11px; color: var(--ink-2); padding-top: 4px; }
+.wx-bar { display: grid; grid-template-columns: minmax(7rem, 13rem) minmax(0, 1fr) 3rem; align-items: center; gap: 10px; font-size: 12.5px; }
+.wx-bar.key span { font-weight: 600; }
+.wx-bar i { position: relative; height: 12px; background: var(--track); }
+.wx-bar b { position: absolute; inset: 0 auto 0 0; width: calc(var(--v) * 1%); background: var(--other); }
+.wx-bar b.s { background: var(--box); } .wx-bar b.e { background: var(--hot); }
+.wx-chance .wx-bar i::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; border-left: 1.5px dashed var(--ink-2); }
+.wx-bar em { font-style: normal; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+
+.wx-score { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.wx-sc { border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 85%, transparent); padding: 12px; display: flex; flex-direction: column; gap: 5px; }
+.wx-sc b { font-weight: 600; font-size: 13px; line-height: 18px; }
+.wx-sc p { font-size: 12px; line-height: 17px; color: var(--ink-2); }
+.wx-sc strong { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 30px; margin-top: auto; }
+.wx-sc strong small { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+.wx-pill { align-self: flex-start; font-size: 10.5px; line-height: 17px; padding: 0 6px; border: 1px solid var(--ink-2); color: var(--ink-2); }
+.wx-pill.bad { border-color: var(--hot); color: var(--hot); }
+
+.prose ol.wx-steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; counter-reset: st; }
+.wx-steps li { border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 85%, transparent); padding: 12px; display: flex; flex-direction: column; gap: 4px; counter-increment: st; }
+.wx-steps li::before { content: counter(st, decimal-leading-zero); font-size: 11px; color: var(--hot); }
+.wx-steps b { font-weight: 600; } .wx-steps span { font-size: 12px; line-height: 17px; color: var(--ink-2); }
+
+.wx-math { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); padding: 16px; background: color-mix(in srgb, var(--paper) 85%, transparent); }
+.wx-chip { border: 1px solid var(--line); padding: 8px 10px; display: flex; flex-direction: column; text-align: center; min-width: 8rem; background: var(--paper); }
+.wx-chip b { font-weight: 600; font-size: 13px; } .wx-chip span { font-size: 11px; color: var(--ink-2); }
+.wx-chip.s { border-color: var(--box); } .wx-chip.e { border-color: var(--hot); background: var(--hot-soft); }
+.wx-op { font-family: var(--serif); font-size: 28px; color: var(--ink-2); }
+
+svg.wx-scatter { width: 100%; height: auto; display: block; overflow: visible; }
+svg.wx-scatter text { font-family: var(--mono); font-size: 13px; fill: var(--ink); }
+svg.wx-scatter .m { fill: var(--ink-2); }
+svg.wx-scatter .g { stroke: var(--line); } svg.wx-scatter .z { stroke: var(--ink-2); stroke-dasharray: 4 4; }
+svg.wx-scatter circle { fill: var(--box); stroke: var(--paper); stroke-width: 2; } svg.wx-scatter circle.k { fill: var(--hot); }
+
+@media (max-width: 600px) {
+  .wx-panel { grid-template-columns: minmax(0, 1fr); }
+  .wx-score, .prose ol.wx-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wx-bar { grid-template-columns: minmax(0, 1fr) 3rem; row-gap: 3px; } .wx-bar span { grid-column: 1 / -1; }
+  .wx-math { flex-direction: column; } .wx-chip { width: 100%; }
+  svg.wx-scatter text { font-size: 17px; }
+}
+@media (max-width: 420px) { .wx-score { grid-template-columns: minmax(0, 1fr); } }
