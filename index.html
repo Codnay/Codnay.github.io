@@ -56,10 +56,10 @@
     <div class="sec-head"><h2 id="h-about"><span>01</span> about</h2></div>
     <div class="intro">
       <p class="lede">We are <em>digitizing</em> the physical world. Everything that has been digitized can be learned.</p>
-      <p>At <a class="link" href="https://www.argonrobotics.ai/">Argon Robotics</a>, we are building simulated worlds where models can learn and fail before they ever run in the real world.</p>
-      <p>I've also improved the simulation engines NVIDIA and DeepMind build on, <a class="link" href="https://github.com/newton-physics/newton">Newton</a> and <a class="link" href="https://github.com/google-deepmind/mujoco_warp">MuJoCo Warp</a>, and I love contributing to open-source research like <a class="link" href="https://github.com/harbor-framework/terminal-bench">Terminal-Bench</a>.</p>
+      <p class="big-p">At <a class="link" href="https://www.argonrobotics.ai/">Argon Robotics</a> we build <mark>simulated worlds where robots learn, and fail, before they ever touch the real one</mark>.</p>
+      <p class="big-p">I've also worked inside the physics engines NVIDIA and DeepMind build on, <a class="link" href="https://github.com/newton-physics/newton">Newton</a> and <a class="link" href="https://github.com/google-deepmind/mujoco_warp">MuJoCo Warp</a>, fixing contacts and solvers, and I love contributing to <mark>open research like <a class="link" href="https://github.com/harbor-framework/terminal-bench">Terminal-Bench</a></mark>.</p>
     </div>
-    <p class="muted">We'll be at CoRL. Want to work with us? We're actively hiring. Up for a good conversation about robots, world models or LLM research? <a class="link" href="mailto:pranay@argonrobotics.ai">Email me</a>, happy to chat.</p>
+    <p class="hello"><b>We'll be at CoRL, and we're hiring.</b> Come say hi, or <a class="link" href="mailto:pranay@argonrobotics.ai">email me</a> if you're up for a good conversation about robots, world models or LLM research.</p>
     <div class="cols">
       <div>
         <h3 class="sub">education</h3>
@@ -81,21 +81,33 @@
   </section>
 
   <section class="sec" aria-labelledby="h-featured">
-    <div class="sec-head"><h2 id="h-featured"><span>02</span> featured</h2></div>
-    <div class="featured">
+    <div class="sec-head"><h2 id="h-featured"><span>02</span> featured</h2><span class="aside strip-nav"><button type="button" data-dir="-1" aria-label="Scroll back">←</button><button type="button" data-dir="1" aria-label="Scroll on">→</button></span></div>
+    <div class="strip" id="featured-strip" tabindex="0" aria-label="Featured work, scroll sideways">
       <a class="bbox fcard" href="blog/llms-fix-robots-by-editing-weights/">
         <span class="label">new 0.99</span>
         <span class="t">Can frontier LLMs fix robots by editing their weights?</span>
         <span class="d">Claude edited π0.5's weights with no training: laundry folding 51% → 70%, Make kong 23% → 36%.</span>
         <span class="when">Nov 4, 2026 · blog post</span>
       </a>
-      <a class="bbox fcard" href="https://www.argonrobotics.ai/discovery">
+      <a class="bbox fcard" href="https://pi05-weight-edit.vercel.app/neurons/" rel="noopener">
+        <span class="label">demo 0.99</span>
+        <span class="t">Inside a robot's brain</span>
+        <span class="d">All 73,728 of π0.5's motor neurons, firing live as the robot folds a shirt. Tap any one to see what it does.</span>
+        <span class="when">Nov 2026 · interactive ↗</span>
+      </a>
+      <a class="bbox fcard" href="https://www.argonrobotics.ai/discovery" rel="noopener">
         <span class="label">result 0.99</span>
         <span class="t">Discovery-0: zero-shot sim-to-real</span>
         <span class="d">A model trained only in our simulated kitchens closed a commercial dishwasher in a live customer kitchen, with no real-world data for the task.</span>
         <span class="when">Oct 21, 2026 · Argon Robotics ↗</span>
       </a>
-      <a class="bbox fcard" href="https://www.argonrobotics.ai/speed">
+      <a class="bbox fcard" href="https://www.argonrobotics.ai/simreal" rel="noopener">
+        <span class="label">game 0.99</span>
+        <span class="t">The Turing test for virtual worlds</span>
+        <span class="d">Ten frames from the same robot stations, some real and some from our simulation. Can you tell which is which?</span>
+        <span class="when">Oct 14, 2026 · Argon Robotics ↗</span>
+      </a>
+      <a class="bbox fcard" href="https://www.argonrobotics.ai/speed" rel="noopener">
         <span class="label">result 0.99</span>
         <span class="t">Policies faster than their demonstrations</span>
         <span class="d">π0.5 on two PiPER arms does a bimanual dish task in 9.4 s, against 37.3 s for teleoperation, at 95.2% success over 500 real runs.</span>
@@ -104,22 +116,8 @@
     </div>
   </section>
 
-  <section class="sec" id="interests" aria-labelledby="h-interests">
-    <div class="sec-head"><h2 id="h-interests"><span>03</span> interests</h2><a class="aside" href="https://x.com/PranayGupt97167">@PranayGupt97167 on x ↗</a></div>
-    <ul class="tags">
-        <li>robot learning</li>
-        <li>sim-to-real</li>
-        <li>physics engines</li>
-        <li>world models</li>
-        <li>VLAs</li>
-        <li>open source</li>
-        <li>hiking</li>
-        <li>classic novels</li>
-        <li>stoicism</li>
-        <li>startups</li>
-        <li>3D printing</li>
-    </ul>
-    <h3 class="sub">reading</h3>
+  <section class="sec" id="reading" aria-labelledby="h-reading">
+    <div class="sec-head"><h2 id="h-reading"><span>03</span> reading</h2></div>
     <div class="books">
       <a class="book" href="https://www.gutenberg.org/ebooks/2680"><img src="assets/books/meditations.jpg" alt="Meditations cover" width="120" height="180" loading="lazy"><span class="bt">Meditations</span><span class="ba">Marcus Aurelius</span></a>
       <a class="book" href="https://www.gutenberg.org/ebooks/28054"><img src="assets/books/karamazov.jpg" alt="The Brothers Karamazov cover" width="120" height="180" loading="lazy"><span class="bt">The Brothers Karamazov</span><span class="ba">Fyodor Dostoevsky</span></a>
@@ -147,5 +145,17 @@
     <span>san francisco · <a href="blog/feed.xml">rss</a> · no trackers</span>
   </footer>
 </div>
+<script>
+  // Featured strip: the arrow buttons scroll one card at a time.
+  (function () {
+    var strip = document.getElementById("featured-strip");
+    document.querySelectorAll(".strip-nav button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var card = strip.querySelector(".fcard");
+        strip.scrollBy({ left: Number(b.dataset.dir) * (card ? card.offsetWidth + 20 : 260), behavior: "smooth" });
+      });
+    });
+  })();
+</script>
 </body>
 </html>
