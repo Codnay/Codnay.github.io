@@ -184,10 +184,10 @@ mark { color: inherit; padding: 0 2px; -webkit-box-decoration-break: clone; box-
 .hello { font-size: 13.5px; line-height: 22px; max-width: 62ch; border-left: 2px solid var(--box); padding-left: 12px; color: var(--ink-2); }
 .hello b { color: var(--ink); font-weight: 600; }
 
-/* On X: one quiet line per post */
+/* On X: each post's own words, small, three lines at most */
 .tweets { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
-.tweets a { display: flex; justify-content: space-between; gap: 16px; padding: 7px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+.tweets a { display: flex; flex-direction: column; gap: 3px; padding: 9px 0; border-bottom: 1px dashed var(--line); }
 .tweets li:last-child a { border-bottom: 0; }
+.tweets .tm { font-size: 11.5px; color: var(--ink-2); } .tweets .tm b { font-weight: 600; color: var(--ink); }
+.tweets .tt { font-size: 13px; line-height: 20px; max-width: 64ch; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .tweets a:hover .tt { color: var(--box); }
-.tweets .tm { color: var(--ink-2); font-size: 12px; white-space: nowrap; }
-@media (max-width: 600px) { .tweets a { flex-direction: column; gap: 2px; } }
