@@ -140,7 +140,9 @@ def short_date(post: Post) -> str:
 
 
 def read_minutes(body_md: str) -> int:
-    return max(1, math.ceil(len(re.findall(r"\w+", body_md)) / WORDS_PER_MINUTE))
+    """Reading time from the words a reader sees: raw HTML tags and their attributes are not counted."""
+    text = re.sub(r"<[^>]+>", " ", body_md)
+    return max(1, math.ceil(len(re.findall(r"\w+", text)) / WORDS_PER_MINUTE))
 
 
 def render_markdown(body_md: str) -> str:
