@@ -10,8 +10,16 @@ We asked Claude to edit π0.5's weights directly, with no gradients and no train
 
 <div class="wx-panels">
   <div class="bbox wx-panel"><span class="label">read</span>
-    <div class="wx-txt"><b>Can an LLM tell what a robot is about to do from its neurons?</b><span class="wx-big">0.81</span><span class="wx-small">how well Make kong's neurons flag grabs in attempts that go on to fail (0.5 = chance)</span></div>
-    <video class="wx-ex" src="explorer.mp4" poster="explorer_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="The neuron viewer playing a recorded attempt"></video>
+    <div class="wx-txt"><b>Can an LLM tell what a robot is about to do from its neurons?</b><span class="wx-big">1 s</span><span class="wx-small">how far ahead the grab neurons see the gripper closing</span></div>
+    <div class="wx-think" data-src="think.json">
+      <video src="think.mp4" poster="think_poster.jpg" muted loop playsinline preload="auto" aria-label="A recorded fold, with grab and release neurons lighting up as they fire"></video>
+      <div class="wx-rows">
+        <div class="wx-row"><span>grab neurons</span><div class="wx-lamps g" data-k="grab"></div></div>
+        <div class="wx-row"><span>release neurons</span><div class="wx-lamps r" data-k="release"></div></div>
+        <div class="wx-tl"></div>
+        <div class="wx-now">moving</div>
+      </div>
+    </div>
   </div>
   <div class="bbox wx-panel"><span class="label">fix</span>
     <div class="wx-txt"><b>Can it find the neurons behind a failure and flip them?</b><span class="wx-big">36%</span><span class="wx-small">Make kong, up from 23%, by changing 0.004% of the weights</span></div>
@@ -27,7 +35,9 @@ We asked Claude to edit π0.5's weights directly, with no gradients and no train
 
 π0.5 turns camera images and an instruction into arm motion. The part that writes the motion has **73,728 neurons** (18 layers × 4,096). Claude recorded every one of them through 48 attempts per task. On folding it labelled what each one does: this one fires right before the gripper closes, this one at release, this one only in grabs that go on to fail, and which joints each pushes when it fires harder.
 
-The neurons give failures away before they happen. On Make kong, they flag a failing grab with an AUROC of **0.81**.
+In the animation at the top, a recorded fold plays next to 16 of those neurons. The **grab neurons** light up up to a second before the gripper closes, and the **release neurons** fire the moment it lets go. The robot's next move is written in its neurons before it happens.
+
+Failures leave a trace too. On Make kong, the neurons flag a grab that is about to fail with an AUROC of **0.81**.
 
 <div class="wx-chart">
   <div class="wx-t">How clearly the neurons flag a failing grab, per task</div>
@@ -46,9 +56,6 @@ The neurons give failures away before they happen. On Make kong, they flag a fai
   </div>
 </div>
 
-Each dot below is one neuron. Play a recorded attempt and watch which ones light up before a grab, at a release, or only in failed tries. In the [neuron viewer](https://pi05-weight-edit.vercel.app/neurons/), tap any neuron to see its strongest moments and the joints it moves.
-
-<video class="wx-ex" src="explorer.mp4" poster="explorer_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="The neuron viewer: dots light up as neurons fire"></video>
 
 ## 02 · Find the failure, flip it
 
@@ -60,6 +67,11 @@ Claude built a small algorithm to find where each task's failures live in the br
   <li><b>Target</b><span>Pick the 2 layers where it is clearest and the 64 neurons in each that write it most.</span></li>
   <li><b>Flip</b><span>Reverse the pattern in those 128 neurons. Score the edited robot.</span></li>
 </ol>
+
+<div class="wx-flip" data-src="flip.json">
+  <canvas aria-label="Two layer sheets of 4,096 neurons each; the 64 edited neurons in each light up, then flip"></canvas>
+  <div class="wx-flip-state e">failure pattern: the 128 neurons that write it</div>
+</div>
 
 Make kong, where the neurons gave failure away most clearly, jumped from **23% to 36%**.
 
@@ -101,6 +113,10 @@ We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two str
     <div class="wx-bar"><span>Flip</span><i><b class="e" style="--v:76"></b></i><em>76%</em></div>
   </div>
 </div>
+
+<div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the flip</span></div><video src="pair_cls.mp4" poster="pair_cls_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+
+*Classify objects, same layout and seed, 2.2× speed. Stock drops the blocks into the wrong bins. The edited robot sorts them.*
 
 **It works where the brain is readable.** The clearer the failure signal, the more the flip helped (r = 0.69 across 10 tasks). Kong's signal was the clearest of all, and so was its gain.
 
@@ -166,6 +182,14 @@ We pictured robotics getting solved the slow way: more demos, bigger models, lon
 
 Today an LLM can read a robot's neurons, find the ones behind a failure, and copy-paste what one robot brain learned into another, in minutes and with no training. Next, it writes the weights for a new task directly. This is the first spark.
 
+## 07 · Explore every neuron
+
+The full viewer: all 73,728 neurons in 3D, two recorded folds, and every neuron's strongest moments. Drag to turn, tap a dot to see what it does.
+
+<div class="wx-embed"><iframe src="https://pi05-weight-edit.vercel.app/neurons/" title="π0.5 neuron viewer" loading="lazy" allow="fullscreen"></iframe></div>
+
+[Open the viewer full screen ↗](https://pi05-weight-edit.vercel.app/neurons/)
+
 <details markdown="1">
 <summary>All numbers, every edit we tried</summary>
 
@@ -187,5 +211,7 @@ Today an LLM can read a robot's neurons, find the ones behind a failure, and cop
 </details>
 
 ---
+
+<script src="wx.js" defer></script>
 
 All runs are RoboDojo simulation (Isaac Sim), seeds 0–2, scored by the simulator's own success check. Live results and the full neuron viewer: [pi05-weight-edit.vercel.app](https://pi05-weight-edit.vercel.app/). Related: task arithmetic (Ilharco et al., 2023), model soups (Wortsman et al., 2022), ExPO (Zheng et al., 2024), and [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/).

@@ -87,7 +87,7 @@
 .wx-pill { align-self: flex-start; font-size: 10.5px; line-height: 17px; padding: 0 6px; border: 1px solid var(--ink-2); color: var(--ink-2); }
 .wx-pill.bad { border-color: var(--hot); color: var(--hot); }
 
-.prose ol.wx-steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; counter-reset: st; }
+.prose ol.wx-steps { max-width: none; list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; counter-reset: st; }
 .wx-steps li { border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 85%, transparent); padding: 12px; display: flex; flex-direction: column; gap: 4px; counter-increment: st; }
 .wx-steps li::before { content: counter(st, decimal-leading-zero); font-size: 11px; color: var(--hot); }
 .wx-steps b { font-weight: 600; } .wx-steps span { font-size: 12px; line-height: 17px; color: var(--ink-2); }
@@ -116,3 +116,27 @@ svg.wx-scatter circle { fill: var(--box); stroke: var(--paper); stroke-width: 2;
 .prose details summary { cursor: pointer; font-size: 12.5px; color: var(--ink-2); }
 .prose details[open] summary { margin-bottom: 10px; }
 .prose details > p > em:only-child { display: block; font-style: normal; font-size: 12px; color: var(--ink-2); margin-top: 8px; }
+
+/* "Watch it think": a recorded fold beside two rows of neuron lamps, a timeline and a one-line status */
+.wx-think { display: flex; flex-direction: column; gap: 8px; }
+.prose .wx-think video { aspect-ratio: 4 / 3; }
+.wx-rows { display: flex; flex-direction: column; gap: 6px; }
+.wx-row { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); align-items: center; gap: 8px; font-size: 11.5px; color: var(--ink-2); }
+.wx-lamps { display: flex; gap: 5px; }
+.wx-lamps i { width: 14px; height: 14px; border-radius: 50%; opacity: .12; transition: opacity .08s linear; }
+.wx-lamps.g i { background: var(--hot); box-shadow: 0 0 6px var(--hot); } .wx-lamps.r i { background: var(--box); box-shadow: 0 0 6px var(--box); }
+.wx-tl { position: relative; height: 14px; margin-top: 2px; border-top: 1px solid var(--line); }
+.wx-tl b { position: absolute; top: 2px; width: 0; height: 0; margin-left: -4px; border: 4px solid transparent; }
+.wx-tl b.grab { border-bottom-color: var(--hot); top: -6px; } .wx-tl b.release { border-top-color: var(--box); top: 1px; }
+.wx-tl u { position: absolute; top: -5px; bottom: -2px; width: 1.5px; background: var(--ink); }
+.wx-now { font-size: 12px; min-height: 18px; color: var(--ink-2); }
+.wx-now.grab { color: var(--hot); } .wx-now.release { color: var(--box); }
+
+/* "The flip": two layer sheets; the edited neurons light up, then flip */
+.wx-flip { border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 85%, transparent); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.wx-flip canvas { width: 100%; display: block; }
+.wx-flip-state { font-size: 12px; } .wx-flip-state.e { color: var(--hot); } .wx-flip-state.s { color: var(--box); }
+
+/* The full neuron viewer, embedded */
+.wx-embed { border: 1px solid var(--line); background: #000; }
+.wx-embed iframe { display: block; width: 100%; height: min(78vh, 640px); border: 0; }
