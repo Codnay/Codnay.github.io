@@ -1,6 +1,7 @@
 ---
 title: Can frontier LLMs fix robots by editing their weights?
 date: 2026-11-04
+image: pair_11_poster.jpg
 description: We asked Claude to edit π0.5's weights directly, with no gradients or training. Laundry folding went from 51% to 70%, and Make kong from 23% to 36%.
 ---
 We asked Claude to edit π0.5's weights directly, with no gradients and no training. Laundry folding went from 51% to 70%, and Make kong from 23% to 36%.
