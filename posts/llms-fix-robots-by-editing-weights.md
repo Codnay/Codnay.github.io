@@ -2,9 +2,9 @@
 title: Can frontier LLMs fix robots by editing their weights?
 date: 2026-11-04
 image: pair_11_poster.jpg
-description: We asked Claude to edit π0.5's weights directly, with no gradients or training. Laundry folding went from 51% to 70%, and Make kong from 23% to 36%.
+description: We asked Claude to edit π0.5's weights directly, with no gradients or training. Laundry folding went from 51% to 70%, and a mahjong task from 23% to 36%.
 ---
-We asked Claude to edit π0.5's weights directly, with no gradients and no training. Laundry folding went from 51% to 70%, and Make kong from 23% to 36%.
+We asked Claude to edit π0.5's weights directly, with no gradients and no training. Laundry folding went from 51% to 70%, and a mahjong task from 23% to 36%.
 
 > This extends [weight-space programming](https://rikiyat.github.io/blog/weight-space-programming/) to robotics: an LLM can read a robot's neurons, find what makes it fail, and rewrite what it does.
 
@@ -22,7 +22,7 @@ We asked Claude to edit π0.5's weights directly, with no gradients and no train
     </div>
   </div>
   <div class="bbox wx-panel"><span class="label">fix</span>
-    <div class="wx-txt"><b>Can it find the neurons behind a failure and flip them?</b><span class="wx-big">36%</span><span class="wx-small">Make kong, up from 23%, by changing 0.004% of the weights</span></div>
+    <div class="wx-txt"><b>Can it find the neurons behind a failure and flip them?</b><span class="wx-big">36%</span><span class="wx-small">mahjong task, up from 23%, by changing 0.004% of the weights</span></div>
     <div class="wx-pair"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_kong.mp4" poster="pair_kong_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Stock π0.5 knocks a tile loose and runs out of time; the edited model finishes in 15 seconds"></video></div>
   </div>
   <div class="bbox wx-panel"><span class="label">write</span>
@@ -37,13 +37,13 @@ We asked Claude to edit π0.5's weights directly, with no gradients and no train
 
 In the animation at the top, a recorded fold plays next to 16 of those neurons. The **grab neurons** light up up to a second before the gripper closes, and the **release neurons** fire the moment it lets go. The robot's next move is written in its neurons before it happens.
 
-Failures leave a trace too. On Make kong, the neurons flag a grab that is about to fail with an AUROC of **0.81**.
+Failures leave a trace too. On the mahjong task, the neurons flag a grab that is about to fail with an AUROC of **0.81**.
 
 <div class="wx-chart">
   <div class="wx-t">How clearly the neurons flag a failing grab, per task</div>
   <div class="wx-legend">bar: held-out AUROC of the best layer · dashed line: chance (0.5)</div>
   <div class="wx-bars wx-chance">
-    <div class="wx-bar key"><span>Make kong</span><i><b class="e" style="--v:81"></b></i><em>0.81</em></div>
+    <div class="wx-bar key"><span>Mahjong</span><i><b class="e" style="--v:81"></b></i><em>0.81</em></div>
     <div class="wx-bar"><span>Store laptop</span><i><b class="s" style="--v:72"></b></i><em>0.72</em></div>
     <div class="wx-bar"><span>Pick from conveyor</span><i><b class="s" style="--v:71"></b></i><em>0.71</em></div>
     <div class="wx-bar"><span>Build tower</span><i><b class="s" style="--v:69"></b></i><em>0.69</em></div>
@@ -73,16 +73,16 @@ Claude built a small algorithm to find where each task's failures live in the br
   <div class="wx-flip-state e">failure pattern: the 128 neurons that write it</div>
 </div>
 
-Make kong, where the neurons gave failure away most clearly, jumped from **23% to 36%**.
+The biggest win came on a mahjong task: the robot waits for its opponent to discard a tile, then sets out its three matching tiles to claim four of a kind. Here the neurons gave failure away most clearly, and success jumped from **23% to 36%**.
 
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_kong.mp4" poster="pair_kong_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
-*Make kong, same layout and seed, 1.2× speed. Stock knocks a tile loose and runs out of time. The edited robot finishes in 15 s.*
+*Mahjong task, same layout and seed, 1.2× speed. Stock knocks a tile loose and runs out of time. The edited robot finishes in 15 s.*
 
 <div class="wx-chart">
   <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>after the edit</div>
   <div class="wx-bars">
-    <div class="wx-grp">make kong · 87 held-out runs</div>
+    <div class="wx-grp">mahjong · 87 held-out runs</div>
     <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:23"></b></i><em>23%</em></div>
     <div class="wx-bar"><span>After the edit</span><i><b class="e" style="--v:36"></b></i><em>36%</em></div>
   </div>
@@ -93,10 +93,10 @@ Make kong, where the neurons gave failure away most clearly, jumped from **23% t
 We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two strengths: remove the failure pattern (flip) or reverse it (flip 2×). It raised success on **5 of the 10 tasks**.
 
 <div class="wx-chart">
-  <div class="wx-t">Success over 90 held-out runs per task (kong 87)</div>
+  <div class="wx-t">Success over 90 held-out runs per task (mahjong 87)</div>
   <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>best neuron flip</div>
   <div class="wx-bars">
-    <div class="wx-grp">make kong · flip 2× · +13 points</div>
+    <div class="wx-grp">mahjong · flip 2× · +13 points</div>
     <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:23"></b></i><em>23%</em></div>
     <div class="wx-bar key"><span>Flip 2×</span><i><b class="e" style="--v:36"></b></i><em>36%</em></div>
     <div class="wx-grp">classify objects · flip · +5 points</div>
@@ -118,11 +118,11 @@ We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two str
 
 *Classify objects, same layout and seed, 2.2× speed. Stock drops the blocks into the wrong bins. The edited robot sorts them.*
 
-**It works where the brain is readable.** The clearer the failure signal, the more the flip helped (r = 0.69 across 10 tasks). Kong's signal was the clearest of all, and so was its gain.
+**It works where the brain is readable.** The clearer the failure signal, the more the flip helped (r = 0.69 across 10 tasks). The mahjong task's signal was the clearest of all, and so was its gain.
 
 <div class="wx-chart">
   <div class="wx-t">Failure signal vs gain from the flip</div>
-  <svg class="wx-scatter" viewBox="0 0 520 300" role="img" aria-label="Scatter of failure-signal AUROC against gain in points for 10 tasks. Make kong is highest at 0.81 and +13; Cover blocks lowest at 0.49 and −12.">
+  <svg class="wx-scatter" viewBox="0 0 520 300" role="img" aria-label="Scatter of failure-signal AUROC against gain in points for 10 tasks. Mahjong is highest at 0.81 and +13; Cover blocks lowest at 0.49 and −12.">
     <line class="g" x1="108" y1="20" x2="108" y2="250"/><line class="g" x1="220" y1="20" x2="220" y2="250"/>
     <line class="g" x1="332" y1="20" x2="332" y2="250"/><line class="g" x1="444" y1="20" x2="444" y2="250"/>
     <line class="z" x1="52" y1="135" x2="500" y2="135"/>
@@ -132,7 +132,7 @@ We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two str
     <text class="m" x="276" y="293" text-anchor="middle">failure signal (AUROC, 0.5 = chance)</text>
     <text class="m" x="500" y="152" text-anchor="end">no change</text>
     <text class="m" x="52" y="12">gain, points</text>
-    <circle class="k" cx="455.2" cy="38.4" r="7"/><text x="445" y="43" text-anchor="end" font-weight="600">Make kong</text>
+    <circle class="k" cx="455.2" cy="38.4" r="7"/><text x="445" y="43" text-anchor="end" font-weight="600">Mahjong</text>
     <circle cx="354.4" cy="92.8" r="6"/><text x="363" y="89">Laptop</text>
     <circle cx="344.3" cy="108.9" r="6"/><text x="353" y="118">Conveyor</text>
     <circle cx="320.8" cy="143.4" r="6"/><text x="330" y="156">Tower</text>
@@ -195,7 +195,7 @@ The full viewer: all 73,728 neurons in 3D, two recorded folds, and every neuron'
 
 | Success, held-out runs | Stock | Blend of 3 | Multi-task paste | Neuron flip | Neuron flip 2× |
 |---|---|---|---|---|---|
-| Make kong | 23% | 20% | 24% | 22% | **36%** |
+| Mahjong | 23% | 20% | 24% | 22% | **36%** |
 | Classify objects | 16% | 14% | 7% | 21% | 11% |
 | Store laptop | 7% | 8% | 8% | 12% | 9% |
 | Pick from conveyor | 14% | 17% | 17% | 12% | 18% |
@@ -206,7 +206,7 @@ The full viewer: all 73,728 neurons in 3D, two recorded folds, and every neuron'
 | Fill pen holder | 11% | 8% | 2% | 4% | 2% |
 | Cover blocks | 12% | 4% | 10% | 0% | 0% |
 
-*90 held-out runs per cell (kong 87): 3 seeds × 30 layouts, scored by the simulator's own success check.*
+*90 held-out runs per cell (mahjong 87): 3 seeds × 30 layouts, scored by the simulator's own success check.*
 
 </details>
 
