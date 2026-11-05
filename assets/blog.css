@@ -142,7 +142,7 @@ svg.wx-scatter circle { fill: var(--box); stroke: var(--paper); stroke-width: 2;
 .wx-embed iframe { display: block; width: 1280px; height: 800px; border: 0; transform-origin: 0 0; }
 
 /* TL;DR block and the linked byline with affiliations */
-.wx-tldr { display: flex; flex-direction: column; gap: 10px; max-width: 66ch; padding: 16px 20px; background: #fdfcf8; border: 1px solid var(--line); border-left: 3px solid var(--box); border-radius: 0 6px 6px 0; }
+.wx-tldr { display: flex; flex-direction: column; gap: 10px; max-width: none; padding: 16px 20px; background: #fdfcf8; border: 1px solid var(--line); border-left: 3px solid var(--box); border-radius: 0 6px 6px 0; }
 .wx-tldr p { margin: 0; font-size: 14px; line-height: 24px; color: #54595a; }
 .wx-tldr b, .wx-tldr strong { font-weight: 700; color: var(--ink); }
 .wx-tldr p:first-child > b:first-child, .wx-tldr p:first-child > strong:first-child { font-weight: 600; font-size: 12px; color: var(--box); letter-spacing: 0.04em; margin-right: 6px; }
