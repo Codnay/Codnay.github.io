@@ -12,12 +12,11 @@
       <pubDate>Wed, 04 Nov 2026 12:00:00 +0000</pubDate>
       <description>We asked Claude to edit π0.5&#x27;s weights directly, with no gradients or training. Laundry folding went from 51% to 75%, and a mahjong task from 23% to 36%.</description>
       <content:encoded><![CDATA[<div class="wx-tldr">
-<p><b>TL;DR</b> We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics.</p>
-<p><b>Read.</b> From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.</p>
-<p><b>Fix.</b> Flipping 128 "failure" neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.</p>
-<p><b>Write.</b> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 75%.</p>
+<p><strong>TL;DR</strong> We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics.</p>
+<p><strong>Read.</strong> From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.</p>
+<p><strong>Fix.</strong> Flipping 128 &ldquo;failure&rdquo; neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.</p>
+<p><strong>Write.</strong> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 75%.</p>
 </div>
-
 <div class="wx-panels">
   <div class="bbox wx-panel"><span class="label">read</span>
     <div class="wx-txt"><b>Can an LLM tell what a robot is about to do from its neurons?</b><span class="wx-big">1 s</span><span class="wx-small">how far ahead the grab neurons see the gripper closing</span></div>

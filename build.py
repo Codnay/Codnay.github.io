@@ -23,6 +23,11 @@ A post is Markdown with a small front matter block:
     ---
 
 Images go in a folder named after the post (posts/<slug>/fig.png) and are referenced as ![..](fig.png).
+Charts, clips and other HTML can live in posts/<slug>/_parts/<name>.html and be placed with a line {{ name }},
+so the Markdown stays plain text. _parts/ is not published on its own.
+
+The homepage intro comes from about.md (paragraphs; the first is the big lede, a last paragraph starting with
+**bold** becomes the hello line), placed between <!-- about:start --> and <!-- about:end --> in index.html.
 Drafts live in drafts/, which git ignores; they are only built with --preview.
 """
 
@@ -156,6 +161,19 @@ def read_minutes(body_md: str) -> int:
     return max(1, math.ceil(len(re.findall(r"\w+", text)) / WORDS_PER_MINUTE))
 
 
+INCLUDE_LINE = re.compile(r"^\{\{\s*([\w-]+)\s*\}\}[ \t]*$", re.M)
+
+
+def expand_parts(post: Post) -> str:
+    """Replace each {{ name }} line with posts/<slug>/_parts/<name>.html."""
+    def part(m: re.Match) -> str:
+        f = post.source_dir / "_parts" / f"{m.group(1)}.html"
+        if not f.is_file():
+            raise SiteError(f"{post.slug}.md: {{{{ {m.group(1)} }}}} has no file _parts/{m.group(1)}.html")
+        return f.read_text(encoding="utf-8").strip("\n")
+    return INCLUDE_LINE.sub(part, post.body_md)
+
+
 def render_markdown(body_md: str) -> str:
     md = markdown.Markdown(
         extensions=["extra", "smarty", "sane_lists", "toc"],
@@ -201,7 +219,7 @@ def post_json_ld(post: Post) -> str:
 def render_post(post: Post) -> str:
     content = load_template("post.html").substitute(
         title=esc(post.title), date_iso=post.published.isoformat(), date_long=long_date(post),
-        read_time=read_minutes(post.body_md), byline=post.byline_html or esc(post.authors), body=render_markdown(post.body_md),
+        read_time=read_minutes(post.body_md), byline=post.byline_html or esc(post.authors), body=render_markdown(expand_parts(post)),
     )
     return page(content, title=f"{post.title} · Pranay Gupta", description=post.description,
                 canonical=post.url, root="../../", og_type="article", og_image=post.image_url,
@@ -244,7 +262,7 @@ def render_feed(posts: list[Post]) -> str:
     items = []
     for post in posts:
         stamp = format_datetime(datetime.combine(post.published, time(12), tzinfo=timezone.utc))
-        body = "" if post.external else f"\n      <content:encoded><![CDATA[{render_markdown(post.body_md)}]]></content:encoded>"
+        body = "" if post.external else f"\n      <content:encoded><![CDATA[{render_markdown(expand_parts(post))}]]></content:encoded>"
         items.append(
             f"    <item>\n      <title>{esc(post.title)}</title>\n      <link>{esc(post.url)}</link>\n"
             f"      <guid>{esc(post.url)}</guid>\n      <pubDate>{stamp}</pubDate>\n"
@@ -266,6 +284,27 @@ def replace_between(text: str, name: str, new: str) -> str:
     if not pattern.search(text):
         raise SiteError(f"index.html: markers <!-- {name}:start/end --> not found")
     return pattern.sub(lambda m: f"{m.group(1)}\n{new}\n{m.group(2)}", text, count=1)
+
+
+def render_about(about_md: str) -> str:
+    """about.md -> the homepage intro: first paragraph = lede, a closing **bold** paragraph = the hello line."""
+    html_ = render_markdown(about_md).replace("<a href=", '<a class="link" href=')
+    paras = re.findall(r"<p>(.*?)</p>", html_, re.S)
+    if not paras:
+        raise SiteError("about.md: no paragraphs")
+    hello = paras.pop() if len(paras) > 1 and paras[-1].startswith("<strong>") else None
+    intro = [f'      <p class="lede">{paras[0]}</p>'] + [f'      <p class="big-p">{p}</p>' for p in paras[1:]]
+    out = '    <div class="intro">\n' + "\n".join(intro) + "\n    </div>"
+    if hello:
+        out += "\n" + f'    <p class="hello">{hello.replace("<strong>", "<b>", 1).replace("</strong>", "</b>", 1)}</p>'
+    return out
+
+
+def update_about(homepage: Path, about: Path) -> None:
+    if not about.is_file():
+        return
+    text = homepage.read_text(encoding="utf-8")
+    homepage.write_text(replace_between(text, "about", render_about(about.read_text(encoding="utf-8"))), encoding="utf-8")
 
 
 def update_homepage(homepage: Path, posts: list[Post]) -> None:
@@ -321,7 +360,7 @@ def write_post(post: Post, blog_dir: Path) -> None:
     out.mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(render_post(post), encoding="utf-8")
     if post.source_dir.is_dir():
-        shutil.copytree(post.source_dir, out, dirs_exist_ok=True)
+        shutil.copytree(post.source_dir, out, dirs_exist_ok=True, ignore=shutil.ignore_patterns("_parts"))
 
 
 def build(site_dir: Path, include_drafts: bool) -> list[Post]:
@@ -336,6 +375,7 @@ def build(site_dir: Path, include_drafts: bool) -> list[Post]:
     (blog_dir / "index.html").write_text(render_index(posts), encoding="utf-8")
     (blog_dir / "feed.xml").write_text(render_feed(posts), encoding="utf-8")
     update_homepage(site_dir / "index.html", posts)
+    update_about(site_dir / "index.html", ROOT / "about.md")
     (site_dir / "sitemap.xml").write_text(render_sitemap(posts), encoding="utf-8")
     (site_dir / "llms.txt").write_text(render_llms_txt(posts), encoding="utf-8")
     return posts

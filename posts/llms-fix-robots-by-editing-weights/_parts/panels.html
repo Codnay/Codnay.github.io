@@ -1,0 +1,22 @@
+<div class="wx-panels">
+  <div class="bbox wx-panel"><span class="label">read</span>
+    <div class="wx-txt"><b>Can an LLM tell what a robot is about to do from its neurons?</b><span class="wx-big">1 s</span><span class="wx-small">how far ahead the grab neurons see the gripper closing</span></div>
+    <div class="wx-think" data-src="think.json">
+      <video src="think.mp4" poster="think_poster.jpg" muted loop playsinline preload="auto" aria-label="A recorded fold, with grab and release neurons lighting up as they fire"></video>
+      <div class="wx-rows">
+        <div class="wx-row"><span>grab neurons</span><div class="wx-lamps g" data-k="grab"></div></div>
+        <div class="wx-row"><span>release neurons</span><div class="wx-lamps r" data-k="release"></div></div>
+        <div class="wx-tl"></div>
+        <div class="wx-now">moving</div>
+      </div>
+    </div>
+  </div>
+  <div class="bbox wx-panel"><span class="label">fix</span>
+    <div class="wx-txt"><b>Can it find the neurons behind a failure and flip them?</b><span class="wx-big">36%</span><span class="wx-small">mahjong task, up from 23%, by changing 0.004% of the weights</span></div>
+    <div class="wx-pair"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_kong.mp4" poster="pair_kong_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Stock π0.5 knocks a tile loose and runs out of time; the edited model finishes in 15 seconds"></video></div>
+  </div>
+  <div class="bbox wx-panel"><span class="label">write</span>
+    <div class="wx-txt"><b>Can it copy-paste what one robot brain learned into another?</b><span class="wx-big">75%</span><span class="wx-small">clothes folded, up from 51%</span></div>
+    <div class="wx-pair"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_11.mp4" poster="pair_11_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Stock π0.5 re-grabs the shirt and runs out of time; the edited model folds it in 12 seconds"></video></div>
+  </div>
+</div>

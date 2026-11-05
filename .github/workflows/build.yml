@@ -1,0 +1,29 @@
+# Rebuild the site whenever the Markdown changes, so a post or about.md can be edited straight on github.com.
+name: build site
+on:
+  push:
+    branches: [main]
+    paths: ["posts/**", "about.md", "templates/**", "build.py"]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Build pages from Markdown
+        run: uv run build.py
+      - name: Commit the generated pages and ask GitHub Pages to publish them
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "site-builder"
+          git config user.email "site-builder@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "nothing to rebuild"; exit 0; fi
+          git commit -m "Rebuild site from Markdown"
+          git push
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" || echo "Pages build request failed; the push will still publish"
