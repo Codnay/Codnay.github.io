@@ -19,9 +19,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f2ed'/%3E%3Crect x='10' y='10' width='12' height='12' fill='none' stroke='%232a4f8f' stroke-width='2.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../../assets/site.css?v=20261104j">
-<link rel="stylesheet" href="../../assets/blog.css?v=20261104j">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../assets/site.css?v=20261104k">
+<link rel="stylesheet" href="../../assets/blog.css?v=20261104k">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Can frontier LLMs fix robots by editing their weights?", "description": "We asked Opus to improve π0.5 by editing its weights directly, with no gradient training. Laundry folding went from 51% to 75%, and a mahjong task from 23% to 36%.", "datePublished": "2026-11-04", "url": "https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/", "mainEntityOfPage": "https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/", "image": "https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/pair_11_poster.jpg", "author": [{"@type": "Person", "name": "Pranay Gupta", "url": "https://codnay.github.io/"}, {"@type": "Person", "name": "Deepanshu Rohilla"}, {"@type": "Person", "name": "Parjanya Prashant"}, {"@type": "Person", "name": "Jiongli Zhu"}]}</script>
 </head>
 <body>
@@ -44,8 +44,7 @@
     <div class="prose">
 <div class="wx-tldr">
 <p><strong>TL;DR</strong> Robot models like π0.5 show what they are about to do <strong>up to a second before they do it</strong>, and <strong>frontier LLMs can understand these signals</strong>. They can also <strong>edit, graft and combine the model&rsquo;s weights directly</strong> to make it better, with <strong>no gradient training</strong>.</p>
-<p>We gave Opus 10 manipulation tasks in RoboDojo and asked it to improve π0.5 by editing its weights. Opus started by building an algorithm that compares successful and failed attempts to find where each failure lives in the weights. It then edited <strong>just 0.004% of the weights</strong> for each task. <strong>Success rose on half the tasks</strong>, including mahjong (23% to 36%), classifying objects (16% to 21%) and storing a laptop (7% to 12%).</p>
-<p>As a test, we also let Opus train new models alongside editing weights. It first generated trajectories in simulation and trained small ablation models. It then used them to find the weight directions that help and hurt folding. Adding the helpful direction to the original model <strong>lifted folding from 51% to 75%</strong>.</p>
+<p>We gave Opus 10 manipulation tasks in RoboDojo. It built an algorithm that compares successes with failures to find where each failure lives, then edited <strong>just 0.004% of the weights</strong>. <strong>Success rose on half the tasks</strong>, including mahjong (23% to 36%), classifying objects (16% to 21%) and storing a laptop (7% to 12%). When we also let it train small models on simulated trajectories, it found the weight direction that helps folding and <strong>lifted folding from 51% to 75%</strong>.</p>
 <p>Robotics has been built on expensive data collection, complex algorithms and finicky RL. We believe <strong>LLMs offer a new way to understand robot brains, optimize them, and eventually solve robotics</strong>.</p>
 </div>
 <div class="wx-panels">
