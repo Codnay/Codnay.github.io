@@ -145,7 +145,7 @@ svg.wx-scatter circle { fill: var(--box); stroke: var(--paper); stroke-width: 2;
 .wx-tldr { display: flex; flex-direction: column; gap: 8px; border-left: 2px solid var(--box); padding: 2px 0 2px 16px; max-width: 66ch; }
 .wx-tldr p { margin: 0; font-size: 14px; line-height: 22px; }
 .wx-tldr p:first-child { font-family: var(--serif); font-size: 21px; line-height: 28px; }
-.wx-tldr b, .wx-tldr strong { font-weight: 600; } .wx-tldr p:first-child b, .wx-tldr p:first-child strong { font-family: var(--mono); font-size: 12px; color: var(--box); letter-spacing: 0.04em; margin-right: 6px; vertical-align: 2px; }
+.wx-tldr b, .wx-tldr strong { font-weight: 600; } .wx-tldr p:first-child > b:first-child, .wx-tldr p:first-child > strong:first-child { font-family: var(--mono); font-size: 12px; color: var(--box); letter-spacing: 0.04em; margin-right: 6px; vertical-align: 2px; }
 .wx-tldr a { border-bottom: 1px solid var(--line); }
 .byline a { border-bottom: 1px solid var(--line); } .byline a:hover { color: var(--box); border-color: var(--box); }
 .byline sup { font-size: 9px; color: var(--box); margin-left: 1px; }

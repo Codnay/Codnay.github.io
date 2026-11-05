@@ -10,12 +10,12 @@
       <link>https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/</link>
       <guid>https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/</guid>
       <pubDate>Wed, 04 Nov 2026 12:00:00 +0000</pubDate>
-      <description>We asked Claude to edit π0.5&#x27;s weights directly, with no gradients or training. Laundry folding went from 51% to 75%, and a mahjong task from 23% to 36%.</description>
+      <description>We asked Opus to improve π0.5 by editing its weights directly, with no gradient training. Laundry folding went from 51% to 75%, and a mahjong task from 23% to 36%.</description>
       <content:encoded><![CDATA[<div class="wx-tldr">
-<p><strong>TL;DR</strong> We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics.</p>
-<p><strong>Read.</strong> From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.</p>
-<p><strong>Fix.</strong> Flipping 128 &ldquo;failure&rdquo; neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.</p>
-<p><strong>Write.</strong> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 75%.</p>
+<p><strong>TL;DR</strong> Robot models like π0.5 show what they are about to do <strong>up to a second before they do it</strong>, and <strong>frontier LLMs can understand these signals</strong>. They can also <strong>edit, graft and combine the model&rsquo;s weights directly</strong> to make it better, with <strong>no gradient training</strong>.</p>
+<p>We gave Opus 10 manipulation tasks in RoboDojo and asked it to improve π0.5 by editing its weights. Opus started by building an algorithm that compares successful and failed attempts to find where each failure lives in the weights. It then edited <strong>just 0.004% of the weights</strong> for each task. <strong>Success rose on half the tasks</strong>, including mahjong (23% to 36%), classifying objects (16% to 21%) and storing a laptop (7% to 12%).</p>
+<p>As a test, we also let Opus train new models alongside editing weights. It first generated trajectories in simulation and trained small ablation models. It then used them to find the weight directions that help and hurt folding. Adding the helpful direction to the original model <strong>lifted folding from 51% to 75%</strong>.</p>
+<p>Robotics has been built on expensive data collection, complex algorithms and finicky RL. We believe <strong>LLMs offer a new way to understand robot brains, optimize them, and eventually solve robotics</strong>.</p>
 </div>
 <div class="wx-panels">
   <div class="bbox wx-panel"><span class="label">read</span>
@@ -41,9 +41,7 @@
 </div>
 
 <h2 id="01-an-llm-can-read-a-robots-brain">01 · An LLM can read a robot&rsquo;s brain<a class="headerlink" href="#01-an-llm-can-read-a-robots-brain" title="Link to this section">#</a></h2>
-<p>π0.5 turns camera images and an instruction into arm motion. The part that writes the motion has <strong>73,728 neurons</strong> (18 layers × 4,096). Claude recorded every one of them through 48 attempts per task. On folding it labelled what each one does: this one fires right before the gripper closes, this one at release, this one only in grabs that go on to fail, and which joints each pushes when it fires harder.</p>
-<p>In the animation at the top, a recorded fold plays next to 16 of those neurons. The <strong>grab neurons</strong> light up up to a second before the gripper closes, and the <strong>release neurons</strong> fire the moment it lets go. The robot&rsquo;s next move is written in its neurons before it happens.</p>
-<p>Failures leave a trace too. On the mahjong task, the neurons flag a grab that is about to fail with an AUROC of <strong>0.81</strong>.</p>
+<p>Opus labelled all <strong>73,728 neurons</strong> that write π0.5&rsquo;s motion. In the animation at the top, <strong>grab neurons</strong> light up to a second before the gripper closes, and <strong>release neurons</strong> fire as it lets go. Failures show too: on mahjong, the neurons flag a failing grab with an AUROC of <strong>0.81</strong>.</p>
 <div class="wx-chart">
   <div class="wx-t">How clearly the neurons flag a failing grab, per task</div>
   <div class="wx-legend">bar: held-out AUROC of the best layer · dashed line: chance (0.5)</div>
@@ -62,7 +60,7 @@
 </div>
 
 <h2 id="02-find-the-failure-flip-it">02 · Find the failure, flip it<a class="headerlink" href="#02-find-the-failure-flip-it" title="Link to this section">#</a></h2>
-<p>Claude built a small algorithm to find where each task&rsquo;s failures live in the brain, then edited only those neurons. No gradients, just a direct write to <strong>0.004% of the weights</strong>.</p>
+<p>Opus compares successes with failures, finds the 128 neurons behind the failure, and flips them: <strong>0.004% of the weights</strong>, no gradients.</p>
 <ol class="wx-steps">
   <li><b>Record</b><span>48 stock attempts per task, good and failed.</span></li>
   <li><b>Compare</b><span>In each layer, find the pattern that separates failed grabs from good ones. Check it on held-out attempts.</span></li>
@@ -75,10 +73,10 @@
   <div class="wx-flip-state e">failure pattern: the 128 neurons that write it</div>
 </div>
 
-<p>The biggest win came on a mahjong task: the robot waits for its opponent to discard a tile, then sets out its three matching tiles to claim four of a kind. Here the neurons gave failure away most clearly, and success jumped from <strong>23% to 36%</strong>.</p>
+<p>The biggest win: a mahjong task where the robot lays out three matching tiles to claim four of a kind. Success went from <strong>23% to 36%</strong>.</p>
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_kong.mp4" poster="pair_kong_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
-<p><em>Mahjong task, same layout and seed, 1.2× speed. Stock knocks a tile loose and runs out of time. The edited robot finishes in 15 s.</em></p>
+<p><em>Same layout and seed, 1.2× speed. Stock knocks a tile loose; the edited robot finishes in 15 s.</em></p>
 <div class="wx-chart">
   <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>after the edit</div>
   <div class="wx-bars">
@@ -89,7 +87,7 @@
 </div>
 
 <h2 id="03-where-the-flip-helped">03 · Where the flip helped<a class="headerlink" href="#03-where-the-flip-helped" title="Link to this section">#</a></h2>
-<p>We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two strengths: remove the failure pattern (flip) or reverse it (flip 2×). It raised success on <strong>5 of the 10 tasks</strong>.</p>
+<p>Same recipe on all 10 tasks. Success rose on <strong>half of them</strong>.</p>
 <div class="wx-chart">
   <div class="wx-t">Success over 90 held-out runs per task (mahjong 87)</div>
   <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>best neuron flip</div>
@@ -114,8 +112,8 @@
 
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the flip</span></div><video src="pair_cls.mp4" poster="pair_cls_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
-<p><em>Classify objects, same layout and seed, 2.2× speed. Stock drops the blocks into the wrong bins. The edited robot sorts them.</em></p>
-<p><strong>It works where the brain is readable.</strong> The clearer the failure signal, the more the flip helped (r = 0.69 across 10 tasks). The mahjong task&rsquo;s signal was the clearest of all, and so was its gain.</p>
+<p><em>Classify objects, 2.2× speed. Stock picks the wrong bins; the edited robot sorts them.</em></p>
+<p><strong>The clearer the failure signal, the bigger the gain</strong> (r = 0.69).</p>
 <div class="wx-chart">
   <div class="wx-t">Failure signal vs gain from the flip</div>
   <svg class="wx-scatter" viewBox="0 0 520 300" role="img" aria-label="Scatter of failure-signal AUROC against gain in points for 10 tasks. Mahjong is highest at 0.81 and +13; Cover blocks lowest at 0.49 and −12.">
@@ -142,7 +140,7 @@
 </div>
 
 <h2 id="04-brain-math-copy-paste-what-a-robot-learned">04 · Brain math: copy-paste what a robot learned<a class="headerlink" href="#04-brain-math-copy-paste-what-a-robot-learned" title="Link to this section">#</a></h2>
-<p>Training a robot on extra folding demos changes its weights. Training it the same way without folding changes them too. Subtract one from the other and what&rsquo;s left is the folding know-how. Claude added it to the stock robot. The edit itself took no training, just arithmetic in minutes on a CPU.</p>
+<p>Opus trained two small models on simulated trajectories, one with folding and one without. Their difference is the folding direction. Adding it to the original model lifted folding <strong>from 51% to 75%</strong>, beating the fine-tuned model it came from.</p>
 <div class="wx-math" role="img" aria-label="Stock π0.5 plus fold-tuned copy minus plain-tuned copy equals a robot that folds 75% of the time">
   <div class="wx-chip s"><b>stock π0.5</b><span>folds 51%</span></div><span class="wx-op">+</span>
   <div class="wx-chip"><b>fold-tuned copy</b><span>trained with folding</span></div><span class="wx-op">−</span>
@@ -160,15 +158,13 @@
   </div>
 </div>
 
-<p>The pasted change does better than the fine-tuned copy it came from, with no training of its own.</p>
 <div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_14.mp4" poster="pair_14_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
 
 <p><em>Layout 44. The edited robot folds in 12 s.</em></p>
 <h2 id="05-robots-might-get-solved-by-llms-writing-weights">05 · Robots might get solved by LLMs writing weights<a class="headerlink" href="#05-robots-might-get-solved-by-llms-writing-weights" title="Link to this section">#</a></h2>
-<p>We pictured robotics getting solved the slow way: more demos, bigger models, longer training runs. We now think a shortcut may come first.</p>
-<p>Today an LLM can read a robot&rsquo;s neurons, find the ones behind a failure, and copy-paste what one robot brain learned into another, in minutes and with no training. Next, it writes the weights for a new task directly. This is the first spark.</p>
+<p>Today an LLM can read a robot&rsquo;s neurons, fix its failures and copy skills between brains, with no gradient training. Next, it writes the weights for a new task directly.</p>
 <h2 id="06-explore-every-neuron">06 · Explore every neuron<a class="headerlink" href="#06-explore-every-neuron" title="Link to this section">#</a></h2>
-<p>The full viewer: all 73,728 neurons in 3D, two recorded folds, and every neuron&rsquo;s strongest moments. Drag to turn, tap a dot to see what it does.</p>
+<p>All 73,728 neurons in 3D across two recorded folds. Drag to turn, tap a dot to see what it does.</p>
 <div class="wx-embed"><iframe src="https://pi05-weight-edit.vercel.app/neurons/" title="π0.5 neuron viewer" loading="lazy" allow="fullscreen" width="1280" height="800"></iframe></div>
 
 <p><a href="https://pi05-weight-edit.vercel.app/neurons/">Open the viewer full screen ↗</a></p>
@@ -186,7 +182,7 @@
 <hr />
 <script src="wx.js" defer></script>
 
-<p>All runs are RoboDojo simulation (Isaac Sim), seeds 0–2, scored by the simulator&rsquo;s own success check. Live results and the full neuron viewer: <a href="https://pi05-weight-edit.vercel.app/">pi05-weight-edit.vercel.app</a>. Related: task arithmetic (Ilharco et al., 2023), model soups (Wortsman et al., 2022), ExPO (Zheng et al., 2024), and <a href="https://rikiyat.github.io/blog/weight-space-programming/">Sparks of Weight-Space Programming</a>.</p>]]></content:encoded>
+<p>All runs are RoboDojo simulation (Isaac Sim), seeds 0–2, scored by the simulator&rsquo;s own success check. Related: task arithmetic (Ilharco et al., 2023), model soups (Wortsman et al., 2022), ExPO (Zheng et al., 2024), and <a href="https://rikiyat.github.io/blog/weight-space-programming/">Sparks of Weight-Space Programming</a>.</p>]]></content:encoded>
     </item>
     <item>
       <title>Discovery-0: zero-shot sim-to-real</title>
