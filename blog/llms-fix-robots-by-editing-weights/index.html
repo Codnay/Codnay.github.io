@@ -37,18 +37,17 @@
   <article class="post-view" aria-labelledby="post-title">
     <a class="back" href="../">← writing</a>
     <header class="post-head">
-      <span class="kicker"><time datetime="2026-11-04">November 4, 2026</time> · 6 min read</span>
+      <span class="kicker"><time datetime="2026-11-04">November 4, 2026</time> · 4 min read</span>
       <h1 id="post-title">Can frontier LLMs fix robots by editing their weights?</h1>
       <span class="byline"><a href="https://x.com/PranayGupt97167">Pranay Gupta</a><sup>1</sup>, <a href="https://x.com/Deepans36819800">Deepanshu Rohilla</a><sup>1</sup>, <a href="https://x.com/parjanyapp">Parjanya Prashant</a><sup>2</sup>, Jiongli Zhu<sup>2</sup><span class="aff"><sup>1</sup>Argon Robotics · <sup>2</sup>UC San Diego</span></span>
     </header>
     <div class="prose">
 <div class="wx-tldr">
-<p><b>TL;DR</b> We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics.</p>
-<p><b>Read.</b> From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.</p>
-<p><b>Fix.</b> Flipping 128 "failure" neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.</p>
-<p><b>Write.</b> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 75%.</p>
+<p><strong>TL;DR</strong> We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics.</p>
+<p><strong>Read.</strong> From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.</p>
+<p><strong>Fix.</strong> Flipping 128 &ldquo;failure&rdquo; neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.</p>
+<p><strong>Write.</strong> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 75%.</p>
 </div>
-
 <div class="wx-panels">
   <div class="bbox wx-panel"><span class="label">read</span>
     <div class="wx-txt"><b>Can an LLM tell what a robot is about to do from its neurons?</b><span class="wx-big">1 s</span><span class="wx-small">how far ahead the grab neurons see the gripper closing</span></div>

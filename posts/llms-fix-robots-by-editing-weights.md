@@ -6,35 +6,19 @@ authors: Pranay Gupta, Deepanshu Rohilla, Parjanya Prashant and Jiongli Zhu
 byline: <a href="https://x.com/PranayGupt97167">Pranay Gupta</a><sup>1</sup>, <a href="https://x.com/Deepans36819800">Deepanshu Rohilla</a><sup>1</sup>, <a href="https://x.com/parjanyapp">Parjanya Prashant</a><sup>2</sup>, Jiongli Zhu<sup>2</sup><span class="aff"><sup>1</sup>Argon Robotics · <sup>2</sup>UC San Diego</span>
 description: We asked Claude to edit π0.5's weights directly, with no gradients or training. Laundry folding went from 51% to 75%, and a mahjong task from 23% to 36%.
 ---
-<div class="wx-tldr">
-<p><b>TL;DR</b> We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends <a href="https://rikiyat.github.io/blog/weight-space-programming/">weight-space programming</a> to robotics.</p>
-<p><b>Read.</b> From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.</p>
-<p><b>Fix.</b> Flipping 128 "failure" neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.</p>
-<p><b>Write.</b> Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 75%.</p>
+<div class="wx-tldr" markdown="1">
+
+**TL;DR** We asked Claude to edit π0.5, an open robot model, directly in its weights: no gradients, no training. This extends [weight-space programming](https://rikiyat.github.io/blog/weight-space-programming/) to robotics.
+
+**Read.** From neuron activity alone, Claude can see what the robot will do next: grab neurons fire up to a second before the gripper closes.
+
+**Fix.** Flipping 128 "failure" neurons, 0.004% of the weights, lifted a mahjong task from 23% to 36% and raised success on 5 of 10 tasks.
+
+**Write.** Copy-pasting what one fine-tuned robot learned into the stock model lifted laundry folding from 51% to 75%.
+
 </div>
 
-<div class="wx-panels">
-  <div class="bbox wx-panel"><span class="label">read</span>
-    <div class="wx-txt"><b>Can an LLM tell what a robot is about to do from its neurons?</b><span class="wx-big">1 s</span><span class="wx-small">how far ahead the grab neurons see the gripper closing</span></div>
-    <div class="wx-think" data-src="think.json">
-      <video src="think.mp4" poster="think_poster.jpg" muted loop playsinline preload="auto" aria-label="A recorded fold, with grab and release neurons lighting up as they fire"></video>
-      <div class="wx-rows">
-        <div class="wx-row"><span>grab neurons</span><div class="wx-lamps g" data-k="grab"></div></div>
-        <div class="wx-row"><span>release neurons</span><div class="wx-lamps r" data-k="release"></div></div>
-        <div class="wx-tl"></div>
-        <div class="wx-now">moving</div>
-      </div>
-    </div>
-  </div>
-  <div class="bbox wx-panel"><span class="label">fix</span>
-    <div class="wx-txt"><b>Can it find the neurons behind a failure and flip them?</b><span class="wx-big">36%</span><span class="wx-small">mahjong task, up from 23%, by changing 0.004% of the weights</span></div>
-    <div class="wx-pair"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_kong.mp4" poster="pair_kong_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Stock π0.5 knocks a tile loose and runs out of time; the edited model finishes in 15 seconds"></video></div>
-  </div>
-  <div class="bbox wx-panel"><span class="label">write</span>
-    <div class="wx-txt"><b>Can it copy-paste what one robot brain learned into another?</b><span class="wx-big">75%</span><span class="wx-small">clothes folded, up from 51%</span></div>
-    <div class="wx-pair"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_11.mp4" poster="pair_11_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Stock π0.5 re-grabs the shirt and runs out of time; the edited model folds it in 12 seconds"></video></div>
-  </div>
-</div>
+{{ panels }}
 
 ## 01 · An LLM can read a robot's brain
 
@@ -44,136 +28,50 @@ In the animation at the top, a recorded fold plays next to 16 of those neurons. 
 
 Failures leave a trace too. On the mahjong task, the neurons flag a grab that is about to fail with an AUROC of **0.81**.
 
-<div class="wx-chart">
-  <div class="wx-t">How clearly the neurons flag a failing grab, per task</div>
-  <div class="wx-legend">bar: held-out AUROC of the best layer · dashed line: chance (0.5)</div>
-  <div class="wx-bars wx-chance">
-    <div class="wx-bar key"><span>Mahjong</span><i><b class="e" style="--v:81"></b></i><em>0.81</em></div>
-    <div class="wx-bar"><span>Store laptop</span><i><b class="s" style="--v:72"></b></i><em>0.72</em></div>
-    <div class="wx-bar"><span>Pick from conveyor</span><i><b class="s" style="--v:71"></b></i><em>0.71</em></div>
-    <div class="wx-bar"><span>Build tower</span><i><b class="s" style="--v:69"></b></i><em>0.69</em></div>
-    <div class="wx-bar"><span>Fill pen holder</span><i><b class="s" style="--v:67"></b></i><em>0.67</em></div>
-    <div class="wx-bar"><span>Stack blocks</span><i><b class="s" style="--v:67"></b></i><em>0.67</em></div>
-    <div class="wx-bar"><span>Fold clothes</span><i><b class="s" style="--v:61"></b></i><em>0.61</em></div>
-    <div class="wx-bar"><span>Bottles into bin</span><i><b class="s" style="--v:60"></b></i><em>0.60</em></div>
-    <div class="wx-bar"><span>Classify objects</span><i><b class="s" style="--v:60"></b></i><em>0.60</em></div>
-    <div class="wx-bar"><span>Cover blocks</span><i><b class="s" style="--v:49"></b></i><em>0.49</em></div>
-  </div>
-</div>
+{{ neuron-signal-chart }}
 
 
 ## 02 · Find the failure, flip it
 
 Claude built a small algorithm to find where each task's failures live in the brain, then edited only those neurons. No gradients, just a direct write to **0.004% of the weights**.
 
-<ol class="wx-steps">
-  <li><b>Record</b><span>48 stock attempts per task, good and failed.</span></li>
-  <li><b>Compare</b><span>In each layer, find the pattern that separates failed grabs from good ones. Check it on held-out attempts.</span></li>
-  <li><b>Target</b><span>Pick the 2 layers where it is clearest and the 64 neurons in each that write it most.</span></li>
-  <li><b>Flip</b><span>Reverse the pattern in those 128 neurons. Score the edited robot.</span></li>
-</ol>
+{{ flip-steps }}
 
-<div class="wx-flip" data-src="flip.json">
-  <canvas aria-label="Two layer sheets of 4,096 neurons each; the 64 edited neurons in each light up, then flip"></canvas>
-  <div class="wx-flip-state e">failure pattern: the 128 neurons that write it</div>
-</div>
+{{ flip-animation }}
 
 The biggest win came on a mahjong task: the robot waits for its opponent to discard a tile, then sets out its three matching tiles to claim four of a kind. Here the neurons gave failure away most clearly, and success jumped from **23% to 36%**.
 
-<div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_kong.mp4" poster="pair_kong_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+{{ mahjong-clip }}
 
 *Mahjong task, same layout and seed, 1.2× speed. Stock knocks a tile loose and runs out of time. The edited robot finishes in 15 s.*
 
-<div class="wx-chart">
-  <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>after the edit</div>
-  <div class="wx-bars">
-    <div class="wx-grp">mahjong · 87 held-out runs</div>
-    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:23"></b></i><em>23%</em></div>
-    <div class="wx-bar"><span>After the edit</span><i><b class="e" style="--v:36"></b></i><em>36%</em></div>
-  </div>
-</div>
+{{ mahjong-chart }}
 
 ## 03 · Where the flip helped
 
 We ran the same recipe on all 10 tasks, from 48 new attempts on each, at two strengths: remove the failure pattern (flip) or reverse it (flip 2×). It raised success on **5 of the 10 tasks**.
 
-<div class="wx-chart">
-  <div class="wx-t">Success over 90 held-out runs per task (mahjong 87)</div>
-  <div class="wx-legend"><i class="s"></i>stock π0.5 <i class="e"></i>best neuron flip</div>
-  <div class="wx-bars">
-    <div class="wx-grp">mahjong · flip 2× · +13 points</div>
-    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:23"></b></i><em>23%</em></div>
-    <div class="wx-bar key"><span>Flip 2×</span><i><b class="e" style="--v:36"></b></i><em>36%</em></div>
-    <div class="wx-grp">classify objects · flip · +5 points</div>
-    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:16"></b></i><em>16%</em></div>
-    <div class="wx-bar"><span>Flip</span><i><b class="e" style="--v:21"></b></i><em>21%</em></div>
-    <div class="wx-grp">store laptop · flip · +5 points</div>
-    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:7"></b></i><em>7%</em></div>
-    <div class="wx-bar"><span>Flip</span><i><b class="e" style="--v:12"></b></i><em>12%</em></div>
-    <div class="wx-grp">pick from conveyor · flip 2× · +4 points</div>
-    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:14"></b></i><em>14%</em></div>
-    <div class="wx-bar"><span>Flip 2×</span><i><b class="e" style="--v:18"></b></i><em>18%</em></div>
-    <div class="wx-grp">bottles into bin · flip and flip 2× · +3 points</div>
-    <div class="wx-bar"><span>Stock</span><i><b class="s" style="--v:73"></b></i><em>73%</em></div>
-    <div class="wx-bar"><span>Flip</span><i><b class="e" style="--v:76"></b></i><em>76%</em></div>
-  </div>
-</div>
+{{ helped-chart }}
 
-<div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the flip</span></div><video src="pair_cls.mp4" poster="pair_cls_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+{{ classify-clip }}
 
 *Classify objects, same layout and seed, 2.2× speed. Stock drops the blocks into the wrong bins. The edited robot sorts them.*
 
 **It works where the brain is readable.** The clearer the failure signal, the more the flip helped (r = 0.69 across 10 tasks). The mahjong task's signal was the clearest of all, and so was its gain.
 
-<div class="wx-chart">
-  <div class="wx-t">Failure signal vs gain from the flip</div>
-  <svg class="wx-scatter" viewBox="0 0 520 300" role="img" aria-label="Scatter of failure-signal AUROC against gain in points for 10 tasks. Mahjong is highest at 0.81 and +13; Cover blocks lowest at 0.49 and −12.">
-    <line class="g" x1="108" y1="20" x2="108" y2="250"/><line class="g" x1="220" y1="20" x2="220" y2="250"/>
-    <line class="g" x1="332" y1="20" x2="332" y2="250"/><line class="g" x1="444" y1="20" x2="444" y2="250"/>
-    <line class="z" x1="52" y1="135" x2="500" y2="135"/>
-    <text class="m" x="44" y="62" text-anchor="end">+10</text><text class="m" x="44" y="139" text-anchor="end">0</text><text class="m" x="44" y="216" text-anchor="end">−10</text>
-    <text class="m" x="108" y="270" text-anchor="middle">0.5</text><text class="m" x="220" y="270" text-anchor="middle">0.6</text>
-    <text class="m" x="332" y="270" text-anchor="middle">0.7</text><text class="m" x="444" y="270" text-anchor="middle">0.8</text>
-    <text class="m" x="276" y="293" text-anchor="middle">failure signal (AUROC, 0.5 = chance)</text>
-    <text class="m" x="500" y="152" text-anchor="end">no change</text>
-    <text class="m" x="52" y="12">gain, points</text>
-    <circle class="k" cx="455.2" cy="38.4" r="7"/><text x="445" y="43" text-anchor="end" font-weight="600">Mahjong</text>
-    <circle cx="354.4" cy="92.8" r="6"/><text x="363" y="89">Laptop</text>
-    <circle cx="344.3" cy="108.9" r="6"/><text x="353" y="118">Conveyor</text>
-    <circle cx="320.8" cy="143.4" r="6"/><text x="330" y="156">Tower</text>
-    <circle cx="298.4" cy="177.9" r="6"/><text x="307" y="175">Stack</text>
-    <circle cx="298.4" cy="186.4" r="6"/><text x="307" y="199">Pen</text>
-    <circle cx="231.2" cy="143.4" r="6"/><text x="240" y="160">Fold</text>
-    <circle cx="220" cy="117.4" r="6"/><text x="211" y="126" text-anchor="end">Bottles</text>
-    <circle cx="214.4" cy="92.8" r="6"/><text x="205" y="90" text-anchor="end">Classify</text>
-    <circle cx="95.7" cy="228.5" r="6"/><text x="105" y="233">Cover</text>
-  </svg>
-</div>
+{{ signal-vs-gain-chart }}
 
 ## 04 · Brain math: copy-paste what a robot learned
 
 Training a robot on extra folding demos changes its weights. Training it the same way without folding changes them too. Subtract one from the other and what's left is the folding know-how. Claude added it to the stock robot. The edit itself took no training, just arithmetic in minutes on a CPU.
 
-<div class="wx-math" role="img" aria-label="Stock π0.5 plus fold-tuned copy minus plain-tuned copy equals a robot that folds 75% of the time">
-  <div class="wx-chip s"><b>stock π0.5</b><span>folds 51%</span></div><span class="wx-op">+</span>
-  <div class="wx-chip"><b>fold-tuned copy</b><span>trained with folding</span></div><span class="wx-op">−</span>
-  <div class="wx-chip"><b>plain-tuned copy</b><span>trained without it</span></div><span class="wx-op">=</span>
-  <div class="wx-chip e"><b>folds 75%</b><span>no training</span></div>
-</div>
+{{ brain-math }}
 
-<div class="wx-chart">
-  <div class="wx-t">Fold clothes, success rate</div>
-  <div class="wx-legend">stock and fold-tuned copy: 90 held-out runs · pasted change: our latest test</div>
-  <div class="wx-bars">
-    <div class="wx-bar"><span>Stock π0.5</span><i><b class="s" style="--v:51"></b></i><em>51%</em></div>
-    <div class="wx-bar"><span>Fold-tuned copy</span><i><b style="--v:68"></b></i><em>68%</em></div>
-    <div class="wx-bar key"><span>Stock + the pasted change</span><i><b class="e" style="--v:75"></b></i><em>75%</em></div>
-  </div>
-</div>
+{{ folding-chart }}
 
 The pasted change does better than the fine-tuned copy it came from, with no training of its own.
 
-<div class="wx-pair wx-wide"><div class="wx-lab"><span>stock π0.5</span><span>after the edit</span></div><video src="pair_14.mp4" poster="pair_14_poster.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+{{ folding-clip }}
 
 *Layout 44. The edited robot folds in 12 s.*
 
@@ -187,7 +85,7 @@ Today an LLM can read a robot's neurons, find the ones behind a failure, and cop
 
 The full viewer: all 73,728 neurons in 3D, two recorded folds, and every neuron's strongest moments. Drag to turn, tap a dot to see what it does.
 
-<div class="wx-embed"><iframe src="https://pi05-weight-edit.vercel.app/neurons/" title="π0.5 neuron viewer" loading="lazy" allow="fullscreen" width="1280" height="800"></iframe></div>
+{{ neuron-viewer }}
 
 [Open the viewer full screen ↗](https://pi05-weight-edit.vercel.app/neurons/)
 
@@ -208,6 +106,6 @@ Please cite this work as:
 
 ---
 
-<script src="wx.js" defer></script>
+{{ script }}
 
 All runs are RoboDojo simulation (Isaac Sim), seeds 0–2, scored by the simulator's own success check. Live results and the full neuron viewer: [pi05-weight-edit.vercel.app](https://pi05-weight-edit.vercel.app/). Related: task arithmetic (Ilharco et al., 2023), model soups (Wortsman et al., 2022), ExPO (Zheng et al., 2024), and [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/).

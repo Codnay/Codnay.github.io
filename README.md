@@ -2,6 +2,16 @@
 
 Personal site and blog of Pranay Gupta. Plain static HTML served by GitHub Pages.
 
+## Edit the text (no tools needed)
+
+On github.com, open the file, click the pencil, type, then **Commit changes**. The site rebuilds and goes live in
+about two minutes.
+
+- Homepage intro: `about.md`. The first paragraph is the big line; a last paragraph starting with **bold** is the
+  hello line. `<mark>…</mark>` highlights words.
+- A post: `posts/<slug>.md`. Lines like `{{ mahjong-chart }}` place a chart or clip from `posts/<slug>/_parts/`;
+  leave them as they are, or move or delete a line to move or drop that piece.
+
 ## Write a post
 
 1. Add `posts/<slug>.md` (images in `posts/<slug>/`):
