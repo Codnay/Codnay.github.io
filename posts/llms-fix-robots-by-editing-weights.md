@@ -10,9 +10,7 @@ description: We asked Opus to improve π0.5 by editing its weights directly, wit
 
 **TL;DR** Robot models like π0.5 show what they are about to do **up to a second before they do it**, and **frontier LLMs can understand these signals**. They can also **edit, graft and combine the model's weights directly** to make it better, with **no gradient training**.
 
-We gave Opus 10 manipulation tasks in RoboDojo and asked it to improve π0.5 by editing its weights. Opus started by building an algorithm that compares successful and failed attempts to find where each failure lives in the weights. It then edited **just 0.004% of the weights** for each task. **Success rose on half the tasks**, including mahjong (23% to 36%), classifying objects (16% to 21%) and storing a laptop (7% to 12%).
-
-As a test, we also let Opus train new models alongside editing weights. It first generated trajectories in simulation and trained small ablation models. It then used them to find the weight directions that help and hurt folding. Adding the helpful direction to the original model **lifted folding from 51% to 75%**.
+We gave Opus 10 manipulation tasks in RoboDojo. It built an algorithm that compares successes with failures to find where each failure lives, then edited **just 0.004% of the weights**. **Success rose on half the tasks**, including mahjong (23% to 36%), classifying objects (16% to 21%) and storing a laptop (7% to 12%). When we also let it train small models on simulated trajectories, it found the weight direction that helps folding and **lifted folding from 51% to 75%**.
 
 Robotics has been built on expensive data collection, complex algorithms and finicky RL. We believe **LLMs offer a new way to understand robot brains, optimize them, and eventually solve robotics**.
 
