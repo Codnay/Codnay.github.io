@@ -25,7 +25,7 @@ Worlds also leak into each other. In MuJoCo Warp, every world wrote its bounding
 
 ![Two worlds write their bounding boxes into one slot; world 0 is checked against world 1's narrower box and its ball falls through](aabb.svg)
 
-In Newton's MPM solver, changing the other worlds moved world 0 by up to 0.1 mm ([#5207](https://github.com/newton-physics/newton/issues/5207)). And at 4,096 worlds, Newton's mesh contact buffer filled up without a warning, and pegs sank 28.9 mm into a 20 mm hole.
+In Newton's MPM solver, changing the other worlds moved world 0 by up to 0.1 mm ([#5207](https://github.com/newton-physics/newton/issues/5207)). 
 
 **What it does to training:** the more worlds you run, the further your physics drifts from the one world you debugged.
 
@@ -37,17 +37,17 @@ In our own runs on a tower-stacking task, training was smooth when the towers st
 
 ## 2. Rare poses stop being rare
 
-In a two-arm task, a 15 mm block resting on a 12.7 mm board was fired straight down through it at several metres per second.
+A small block sits still on a board. Nothing touches it. Then, in a single step, the engine shoots it straight down through the board at several metres per second.
 
-![The same pose through two routines: 0.009 mm and up, or 27.7 mm and down](boxflip.svg)
+![The same resting block, two answers: barely touching and pushed up, or 27.7 mm inside and pushed down through the board](boxflip.svg)
 
-MuJoCo Warp's general collision routine returned the contact upside down and 27.7 mm deep: both thicknesses added. Its own box-box routine and MuJoCo both say 0.009 mm, pointing up. Only a sliver of heights triggers it:
+Every step, the engine asks two questions about each pair of objects: are they touching, and which way should they push apart? For this block, MuJoCo Warp's general routine gets it upside down. It says the block is 27.7 mm inside the board, not 0.009 mm, and should be pushed down, not up. So it pushes it down, hard. MuJoCo, and MuJoCo Warp's own box routine, get it right.
 
-![A height scan of the block: only a 0.35 µm band flips](band.svg)
+![Only a sliver of heights gets the wrong answer: 0.35 µm, 200 times thinner than a hair](band.svg)
 
-*130 of 2,001 heights, 2 nm apart, all inside 0.35 µm.*
+*It only happens when the block sits at one of a few exact heights, a sliver 200 times thinner than a hair.*
 
-**What it does to training:** a unit test never lands in that band. Billions of steps across thousands of worlds land in it all the time, and the policy learns that blocks sometimes explode. Reported as [#1883](https://github.com/google-deepmind/mujoco_warp/issues/1883). Two open PRs from other contributors, [#1845](https://github.com/google-deepmind/mujoco_warp/pull/1845) and [#1866](https://github.com/google-deepmind/mujoco_warp/pull/1866), together remove every flip on our scan and on 8,000 random poses.
+**What it does to training:** a test that checks a handful of poses never hits that sliver. A training run that tries billions of poses hits it again and again, and the policy learns that blocks sometimes explode. We reported it as [#1883](https://github.com/google-deepmind/mujoco_warp/issues/1883); two open fixes from other contributors, [#1845](https://github.com/google-deepmind/mujoco_warp/pull/1845) and [#1866](https://github.com/google-deepmind/mujoco_warp/pull/1866), solve it together.
 
 ## 3. The tasks that need scale most get the worst physics
 

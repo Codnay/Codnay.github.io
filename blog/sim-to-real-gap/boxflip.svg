@@ -31,33 +31,33 @@
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
   </style>
   <rect width="420" height="260" fill="#f3f2ed"/>
-  <text x="16" y="34" class="t">Same pose, two answers</text>
+  <text x="16" y="34" class="t">Same block, two answers</text>
 
   <!-- left: box-box routine -->
-  <text x="16" y="66" class="h">Box-box routine</text>
-  <text x="16" y="84" class="s">and MuJoCo C</text>
+  <text x="16" y="66" class="h">Right answer</text>
+  <text x="16" y="84" class="s">MuJoCo, box routine</text>
   <rect x="16" y="160" width="180" height="26" fill="#e6e5de" stroke="#16191a" stroke-width="1.5"/>
   <rect x="98" y="129" width="17" height="31" fill="#f3f2ed" stroke="#16191a" stroke-width="1.5"/>
   <g class="m nu">
     <line x1="60" y1="160" x2="60" y2="112" stroke="#16191a" stroke-width="2" marker-end="url(#a)"/>
-    <text x="68" y="122" class="s">normal</text>
+    <text x="68" y="122" class="s">push</text>
   </g>
-  <text x="16" y="210" class="l">depth 0.009 mm</text>
-  <text x="16" y="228" class="s">2 contacts, pointing up</text>
+  <text x="16" y="210" class="l">barely touching</text>
+  <text x="16" y="228" class="s">push up: block stays</text>
 
   <!-- right: convex path (block drawn first so the board hides it as it passes through) -->
-  <text x="224" y="66" class="h">Convex path</text>
-  <text x="224" y="84" class="s">GJK, then EPA</text>
+  <text x="224" y="66" class="h">Wrong answer</text>
+  <text x="224" y="84" class="s">MuJoCo Warp (general)</text>
   <rect class="m fire" x="306" y="129" width="17" height="31" fill="#f3f2ed" stroke="#16191a" stroke-width="1.5"/>
   <rect x="224" y="160" width="180" height="26" fill="#e6e5de" stroke="#16191a" stroke-width="1.5"/>
   <g class="m nd">
     <line x1="268" y1="122" x2="268" y2="196" stroke="#2a4f8f" stroke-width="2" marker-end="url(#ab)"/>
-    <text x="276" y="118" class="b">normal</text>
+    <text x="276" y="118" class="b">push</text>
   </g>
   <line x1="342" y1="129" x2="342" y2="186" stroke="#2a4f8f" stroke-width="1.5" marker-start="url(#tb)" marker-end="url(#tb)"/>
   <text x="350" y="162" class="b">27.7</text>
   <text x="350" y="177" class="b">mm</text>
-  <text x="224" y="210" class="b">depth 27.7 mm</text>
-  <text x="224" y="228" class="s">4 contacts, reversed:</text>
-  <text x="224" y="244" class="s">block + board thickness</text>
+  <text x="224" y="210" class="b">27.7 mm inside</text>
+  <text x="224" y="228" class="s">push down:</text>
+  <text x="224" y="244" class="s">block shot through</text>
 </svg>
