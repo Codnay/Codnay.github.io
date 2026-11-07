@@ -7,7 +7,6 @@
 
 ## Posts
 
-- [Robots need their own wind tunnel](https://codnay.github.io/blog/robots-need-their-own-wind-tunnel/) (2026-11-07): Physics engines were built for games, controllers and walking. Robot hands need something else, so we are building it.
 - [Can frontier LLMs fix robots by editing their weights?](https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/) (2026-11-04): We asked Opus to improve π0.5 by editing its weights directly, with no gradient training. Laundry folding went from 51% to 75%, and a mahjong task from 23% to 36%.
 - [Discovery-0: zero-shot sim-to-real](https://www.argonrobotics.ai/discovery) (2026-10-21): A model trained only on trajectories from our simulated kitchens closed a commercial dishwasher in a live customer kitchen, with no real-world data for the task.
 - [The Turing test for virtual worlds](https://www.argonrobotics.ai/simreal) (2026-10-14): Ten frames from the same robot stations, some from the real robot and some from our simulation of it. A game: can you tell which is which?
