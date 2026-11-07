@@ -12,9 +12,12 @@
       <pubDate>Sat, 07 Nov 2026 12:00:00 +0000</pubDate>
       <description>Large-scale distributed training runs thousands of worlds per GPU for billions of steps. That is exactly where open-source physics engines quietly break.</description>
       <content:encoded><![CDATA[<div class="wx-tldr">
-<p><strong>TL;DR</strong> With models like GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator works only if whatever happens inside it would happen outside, thousands of times over. Every major open-source engine we tested breaks this promise. Over the past month we found <strong>about 30 bugs in open-source physics engines</strong>. Most bugs <strong>never raise an error</strong>, they just quietly corrupt your models and surface later as the infamous <strong>sim-to-real gap</strong>.</p>
-<p>The worst ones appear <strong>at scale</strong>, when you run billions of steps. <strong>More worlds change the physics</strong>, <strong>objects get launched</strong>, and <strong>cables and cloth don&rsquo;t behave like real materials</strong>. We found them in Newton, MuJoCo Warp and MuJoCo, and <strong>reported 20 upstream</strong>.</p>
+<p><strong>TL;DR</strong> With GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator only works if what happens inside it would happen outside, thousands of times over, and <strong>every major open-source engine we tested breaks that promise at scale</strong>. Over the past month we found <strong>about 30 bugs</strong> in Newton, MuJoCo Warp and MuJoCo. Run a ten-cube tower in 4,096 worlds and <strong>98 % of the copies fall</strong>. A block resting on a board gets <strong>fired through it</strong>. Cables <strong>sag 40 % too far</strong> and cloth <strong>sinks through the floor</strong>. Most of these <strong>never raise an error</strong>: they quietly corrupt your models and surface later as the infamous <strong>sim-to-real gap</strong>. We <strong>reported 20 upstream</strong>.</p>
 </div>
+<h2 id="simulation-is-becoming-the-data">Simulation is becoming the data<a class="headerlink" href="#simulation-is-becoming-the-data" title="Link to this section">#</a></h2>
+<p>Legged robots already learn to walk in simulation. Robot hands still learn mostly from human demonstrations, which are slow and expensive to collect. <strong>That is changing.</strong> GPU engines run thousands of copies of a world on every GPU, and models like GPT-6 Astra can build the world itself from a prompt. One GPU can now produce billions of steps of robot experience in a day.</p>
+<p><strong>That is why the physics matters now.</strong> In a game, a bad contact is a glitch in one frame. In a training run it is data, repeated across thousands of worlds and billions of steps, and the policy learns it. Nothing flags it, because the engine never raises an error. You find out on the real robot.</p>
+<p>So we pushed Newton, MuJoCo Warp and MuJoCo to that scale, on what robot hands care about: stacks, blocks on boards, cables and cloth. Three failures stand out.</p>
 <h2 id="1-more-worlds-different-physics">1. More worlds, different physics<a class="headerlink" href="#1-more-worlds-different-physics" title="Link to this section">#</a></h2>
 <p>A ten-cube tower stands on its own. Run it in thousands of worlds at once, and most of the copies fall.</p>
 <p><img alt="The same tower copied more and more times: the more copies, the more fall" src="towers.svg" /></p>
@@ -26,7 +29,7 @@
 <p><strong>What it does to training:</strong> the more worlds you run, the further your physics drifts from the one world you debugged.</p>
 <p>In our own runs on a tower-stacking task, training was smooth when the towers stood and erratic when they fell at scale:</p>
 <p><img alt="Illustration: on the same tower-stacking task, loss falls smoothly when towers stand and keeps spiking when they fall" src="training.svg" /></p>
-<p><em>Training loss on the same task, sketched: smooth when towers stand, spiking when they fall.</em></p>
+<p><em>Training loss on block stacking.</em></p>
 <h2 id="2-rare-poses-stop-being-rare">2. Rare poses stop being rare<a class="headerlink" href="#2-rare-poses-stop-being-rare" title="Link to this section">#</a></h2>
 <p>In a two-arm task, a 15 mm block resting on a 12.7 mm board was fired straight down through it at several metres per second.</p>
 <p><img alt="The same pose through two routines: 0.009 mm and up, or 27.7 mm and down" src="boxflip.svg" /></p>
