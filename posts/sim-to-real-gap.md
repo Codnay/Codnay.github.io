@@ -56,7 +56,7 @@ Cables and cloth are why you need millions of rollouts: they have more ways to m
 3. **Check momentum:** push a free object with a known impulse. Its momentum must change by exactly that.
 4. **Size contact buffers yourself** and check them for overflow every step.
 5. **Test soft things at your real mesh size.**
-6. **In MuJoCo Warp, route box pairs to the box-box routine** (turn `NATIVECCD` off) until #1845 and #1866 land.
+6. **In MuJoCo Warp, route box pairs to the box-box routine** (turn `NATIVECCD` off) until [#1845](https://github.com/google-deepmind/mujoco_warp/pull/1845) and [#1866](https://github.com/google-deepmind/mujoco_warp/pull/1866) land.
 
 ## What's next
 
@@ -64,7 +64,7 @@ These bugs share one cause. The engines are tuned for scenes where a millimetre 
 
 ## Footnotes
 
-![Eight looping sketches: early touch, one contact on a line, a tiny overlap read as huge, fine cloth that won't bend, bending that weakens with mesh size, held cloth that drops, fluid that flows slow, and cloth that moves 3.2 times too fast](others.svg)
+{{ others }}
 
 1. **Round shapes touch 0.1 mm early** (Newton). A 0.1 mm collision margin was counted twice for spheres and capsules. [#4790](https://github.com/newton-physics/newton/issues/4790), fix [#4791](https://github.com/newton-physics/newton/pull/4791), merged.
 2. **One contact on a line** (MuJoCo). A box lying across another box's edge gets one contact at one end instead of a row along the edge. [#3755](https://github.com/google-deepmind/mujoco/issues/3755).
