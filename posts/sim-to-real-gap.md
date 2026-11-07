@@ -49,7 +49,11 @@ Every step, the engine asks two questions about each pair of objects: are they t
 
 Cables and cloth are why you need millions of rollouts: they have more ways to move than any rigid object. They are also where the engines are furthest from reality.
 
-**A cloth pile sinks through the floor** (Newton, VBD solver[^vbd] with self-contact). Nothing pushes it. It just sinks, until 271 of its 1,681 particles are below the ground, the lowest 74 mm down ([#5143](https://github.com/newton-physics/newton/issues/5143)).
+**Stiff cables sag 40 % too far** (Newton, VBD solver[^vbd]). VBD corrects one body at a time, so a correction crawls one segment per sweep. Our [#4795](https://github.com/newton-physics/newton/pull/4795) solves each rod at once and lands within 1–2 % of the exact shape.
+
+![One body at a time, a fix travels about a segment per sweep; solving the whole rod at once lands the beam on its exact shape](rods.svg)
+
+**A cloth pile sinks through the floor** (Newton, VBD with self-contact). Nothing pushes it. It just sinks, until 271 of its 1,681 particles are below the ground, the lowest 74 mm down ([#5143](https://github.com/newton-physics/newton/issues/5143)).
 
 ![A resting cloth pile slowly sinks into the floor until 271 of 1,681 particles are below it, the lowest 74 mm down](cloth-pile.svg)
 
@@ -66,7 +70,7 @@ Cables and cloth are why you need millions of rollouts: they have more ways to m
 
 ## What's next
 
-These bugs share one cause. The engines are tuned for scenes where a millimetre doesn't matter, nobody reruns a world, and speed is measured on falling boxes. That is the right tuning for most of their users, and the wrong one for training robot hands at scale. So we are building Alloy, a physics engine for robot hands at scale, around the checks above. It launches soon. Why we are building it, in plain words: [Robots need their own wind tunnel](../robots-need-their-own-wind-tunnel/).
+These bugs share one cause. The engines are tuned for scenes where a millimetre doesn't matter, nobody reruns a world, and speed is measured on falling boxes. That is the right tuning for most of their users, and the wrong one for training robot hands at scale. So we are building Alloy, a physics engine for robot hands at scale, around the checks above. It launches soon.
 
 ## Footnotes
 
