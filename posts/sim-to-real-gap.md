@@ -43,11 +43,7 @@ A small block sits still on a board. Nothing touches it. Then, in a single step,
 
 Every step, the engine asks two questions about each pair of objects: are they touching, and which way should they push apart? For this block, MuJoCo Warp's general routine gets it upside down. It says the block is 27.7 mm inside the board, not 0.009 mm, and should be pushed down, not up. So it pushes it down, hard. MuJoCo, and MuJoCo Warp's own box routine, get it right.
 
-![Only a sliver of heights gets the wrong answer: 0.35 µm, 200 times thinner than a hair](band.svg)
-
-*It only happens when the block sits at one of a few exact heights, a sliver 200 times thinner than a hair.*
-
-**What it does to training:** a test that checks a handful of poses never hits that sliver. A training run that tries billions of poses hits it again and again, and the policy learns that blocks sometimes explode. We reported it as [#1883](https://github.com/google-deepmind/mujoco_warp/issues/1883); two open fixes from other contributors, [#1845](https://github.com/google-deepmind/mujoco_warp/pull/1845) and [#1866](https://github.com/google-deepmind/mujoco_warp/pull/1866), solve it together.
+**What it does to training:** it only goes wrong at a few exact heights, so a test that checks a handful of poses never hits them. A training run that tries billions of poses hits them again and again, and the policy learns that blocks sometimes explode. We reported it as [#1883](https://github.com/google-deepmind/mujoco_warp/issues/1883); two open fixes from other contributors, [#1845](https://github.com/google-deepmind/mujoco_warp/pull/1845) and [#1866](https://github.com/google-deepmind/mujoco_warp/pull/1866), solve it together.
 
 ## 3. The tasks that need scale most get the worst physics
 
