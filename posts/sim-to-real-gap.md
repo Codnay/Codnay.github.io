@@ -1,5 +1,5 @@
 ---
-title: Your physics engine breaks at scale
+title: What really is the sim-to-real gap?
 date: 2026-11-07
 description: Large-scale distributed training runs thousands of worlds per GPU for billions of steps. That is exactly where open-source physics engines quietly break.
 ---
@@ -69,15 +69,6 @@ These bugs share one cause. The engines are tuned for scenes where a millimetre 
 ## Footnotes
 
 {{ others }}
-
-1. **Round shapes touch 0.1 mm early** (Newton). A 0.1 mm collision margin was counted twice for spheres and capsules. [#4790](https://github.com/newton-physics/newton/issues/4790), fix [#4791](https://github.com/newton-physics/newton/pull/4791), merged.
-2. **One contact on a line** (MuJoCo). A box lying across another box's edge gets one contact at one end instead of a row along the edge. [#3755](https://github.com/google-deepmind/mujoco/issues/3755).
-3. **16.5 µm overlap read as 190 mm** (MuJoCo Warp). A face built on two near-identical corners points anywhere, so a tiny overlap becomes a huge sideways push. Fix [#1796](https://github.com/google-deepmind/mujoco_warp/pull/1796).
-4. **Fine cloth won't bend** (Newton VBD). Folds with edges under about 1 mm fail a fixed-size check, so bending switches off. [#5130](https://github.com/newton-physics/newton/issues/5130), fix [#5131](https://github.com/newton-physics/newton/pull/5131).
-5. **Bending weakens with mesh size** (Newton XPBD and semi-implicit). Bending is scaled by triangle area, so 1 cm cells bend 10⁴ times weaker than 1 m cells. [#5140](https://github.com/newton-physics/newton/issues/5140).
-6. **Held cloth drops** (Newton VBD). In deterministic mode, the forces pinning cloth to a body were overwritten. [#5145](https://github.com/newton-physics/newton/issues/5145), fix [#5146](https://github.com/newton-physics/newton/pull/5146), merged.
-7. **Fluid flows 15 % slow** (Newton MPM). On the default sparse grid, the floor cuts a grid cell in half and drags on the film. [#5206](https://github.com/newton-physics/newton/issues/5206).
-8. **Pushed cloth gains 3.2× the momentum** (Newton VBD). Solving one vertex at a time doesn't conserve momentum. [#5129](https://github.com/newton-physics/newton/issues/5129).
 
 Every report links a script that reproduces it.
 

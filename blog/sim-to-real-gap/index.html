@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light only">
-<title>Your physics engine breaks at scale · Pranay Gupta</title>
+<title>What really is the sim-to-real gap? · Pranay Gupta</title>
 <meta name="description" content="Large-scale distributed training runs thousands of worlds per GPU for billions of steps. That is exactly where open-source physics engines quietly break.">
 <meta name="author" content="Pranay Gupta">
 <link rel="canonical" href="https://codnay.github.io/blog/sim-to-real-gap/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Your physics engine breaks at scale · Pranay Gupta">
+<meta property="og:title" content="What really is the sim-to-real gap? · Pranay Gupta">
 <meta property="og:description" content="Large-scale distributed training runs thousands of worlds per GPU for billions of steps. That is exactly where open-source physics engines quietly break.">
 <meta property="og:image" content="https://codnay.github.io/pranay.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../assets/site.css?v=20261104m">
 <link rel="stylesheet" href="../../assets/blog.css?v=20261104m">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Your physics engine breaks at scale", "description": "Large-scale distributed training runs thousands of worlds per GPU for billions of steps. That is exactly where open-source physics engines quietly break.", "datePublished": "2026-11-07", "url": "https://codnay.github.io/blog/sim-to-real-gap/", "mainEntityOfPage": "https://codnay.github.io/blog/sim-to-real-gap/", "image": "https://codnay.github.io/pranay.jpg", "author": [{"@type": "Person", "name": "Pranay Gupta", "url": "https://codnay.github.io/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "What really is the sim-to-real gap?", "description": "Large-scale distributed training runs thousands of worlds per GPU for billions of steps. That is exactly where open-source physics engines quietly break.", "datePublished": "2026-11-07", "url": "https://codnay.github.io/blog/sim-to-real-gap/", "mainEntityOfPage": "https://codnay.github.io/blog/sim-to-real-gap/", "image": "https://codnay.github.io/pranay.jpg", "author": [{"@type": "Person", "name": "Pranay Gupta", "url": "https://codnay.github.io/"}]}</script>
 </head>
 <body>
 <div class="wrap">
@@ -37,8 +37,8 @@
   <article class="post-view" aria-labelledby="post-title">
     <a class="back" href="../">← writing</a>
     <header class="post-head">
-      <span class="kicker"><time datetime="2026-11-07">November 7, 2026</time> · 6 min read</span>
-      <h1 id="post-title">Your physics engine breaks at scale</h1>
+      <span class="kicker"><time datetime="2026-11-07">November 7, 2026</time> · 5 min read</span>
+      <h1 id="post-title">What really is the sim-to-real gap?</h1>
       <span class="byline">Pranay Gupta</span>
     </header>
     <div class="prose">
@@ -253,16 +253,6 @@
 </svg>
 </div>
 
-<ol>
-<li><strong>Round shapes touch 0.1 mm early</strong> (Newton). A 0.1 mm collision margin was counted twice for spheres and capsules. <a href="https://github.com/newton-physics/newton/issues/4790">#4790</a>, fix <a href="https://github.com/newton-physics/newton/pull/4791">#4791</a>, merged.</li>
-<li><strong>One contact on a line</strong> (MuJoCo). A box lying across another box&rsquo;s edge gets one contact at one end instead of a row along the edge. <a href="https://github.com/google-deepmind/mujoco/issues/3755">#3755</a>.</li>
-<li><strong>16.5 µm overlap read as 190 mm</strong> (MuJoCo Warp). A face built on two near-identical corners points anywhere, so a tiny overlap becomes a huge sideways push. Fix <a href="https://github.com/google-deepmind/mujoco_warp/pull/1796">#1796</a>.</li>
-<li><strong>Fine cloth won&rsquo;t bend</strong> (Newton VBD). Folds with edges under about 1 mm fail a fixed-size check, so bending switches off. <a href="https://github.com/newton-physics/newton/issues/5130">#5130</a>, fix <a href="https://github.com/newton-physics/newton/pull/5131">#5131</a>.</li>
-<li><strong>Bending weakens with mesh size</strong> (Newton XPBD and semi-implicit). Bending is scaled by triangle area, so 1 cm cells bend 10⁴ times weaker than 1 m cells. <a href="https://github.com/newton-physics/newton/issues/5140">#5140</a>.</li>
-<li><strong>Held cloth drops</strong> (Newton VBD). In deterministic mode, the forces pinning cloth to a body were overwritten. <a href="https://github.com/newton-physics/newton/issues/5145">#5145</a>, fix <a href="https://github.com/newton-physics/newton/pull/5146">#5146</a>, merged.</li>
-<li><strong>Fluid flows 15 % slow</strong> (Newton MPM). On the default sparse grid, the floor cuts a grid cell in half and drags on the film. <a href="https://github.com/newton-physics/newton/issues/5206">#5206</a>.</li>
-<li><strong>Pushed cloth gains 3.2× the momentum</strong> (Newton VBD). Solving one vertex at a time doesn&rsquo;t conserve momentum. <a href="https://github.com/newton-physics/newton/issues/5129">#5129</a>.</li>
-</ol>
 <p>Every report links a script that reproduces it.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Link to this section">#</a></h2>
 <div class="footnote">
