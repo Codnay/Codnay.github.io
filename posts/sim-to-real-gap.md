@@ -5,7 +5,7 @@ description: Large-scale distributed training runs thousands of worlds per GPU f
 ---
 <div class="wx-tldr" markdown="1">
 
-**TL;DR** GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator works only if whatever happens inside it would happen outside, thousands of times over. Every major open-source engine we tested breaks this promise. Over the past month we found **about 30 bugs in open-source physics engines**. Most bugs **never raise an error**, they just quietly corrupt your models and surface later as the infamous **sim-to-real gap**.
+**TL;DR** With GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator works only if whatever happens inside it would happen outside, thousands of times over. Every major open-source engine we tested breaks this promise. Over the past month we found **about 30 bugs in open-source physics engines**. Most bugs **never raise an error**, they just quietly corrupt your models and surface later as the infamous **sim-to-real gap**.
 
 The worst ones appear **at scale**, when you run billions of steps. **More worlds change the physics**, **objects get launched**, and **cables and cloth don't behave like real materials**. We found them in Newton, MuJoCo Warp and MuJoCo, and **reported 20 upstream**.
 
@@ -19,7 +19,7 @@ A ten-cube tower stands on its own. Run it in thousands of worlds at once, and m
 
 *MuJoCo Warp, CG solver: 0 of 16 copies fall, then 92 of 256, 882 of 1,024 and 4,031 of 4,096.*
 
-**Why?** Each copy is meant to be solved on its own; the solver even checks convergence world by world. Yet the more copies run, the more towers fall, so something in the batched solve leaks between worlds. We haven't pinned down what yet.
+**Why?** Each cube rests on four corner contacts. On a CPU, the forces at those corners are added up in the same order every step, so they stay perfectly even and the tower never starts to rock. On a GPU, thousands of threads add them in whatever order they finish, so the corners come out a hair uneven, the tower starts to rock, and the rocking grows. The more worlds share the GPU, the more that order gets shuffled, and the more towers fall.
 
 Worlds also leak into each other. In MuJoCo Warp, every world wrote its bounding box to one shared slot, and a ball fell through its own table ([#1795](https://github.com/google-deepmind/mujoco_warp/issues/1795); fix [#1800](https://github.com/google-deepmind/mujoco_warp/pull/1800) by another contributor).
 
