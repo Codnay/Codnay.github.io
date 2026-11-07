@@ -58,7 +58,7 @@
 <p>In our own runs on a tower-stacking task, training was smooth when the towers stood and erratic when they fell at scale:</p>
 <p><img alt="Illustration: on the same tower-stacking task, loss falls smoothly when towers stand and keeps spiking when they fall" src="training.svg" /></p>
 <p><em>Training loss on block stacking.</em></p>
-<h2 id="2-rare-poses-stop-being-rare">2. Rare poses stop being rare<a class="headerlink" href="#2-rare-poses-stop-being-rare" title="Link to this section">#</a></h2>
+<h2 id="2-resting-blocks-get-launched">2. Resting blocks get launched<a class="headerlink" href="#2-resting-blocks-get-launched" title="Link to this section">#</a></h2>
 <p>A small block sits still on a board. Nothing touches it. Then, in a single step, the engine shoots it straight down through the board at several metres per second.</p>
 <p><img alt="The same resting block, two answers: barely touching and pushed up, or 27.7 mm inside and pushed down through the board" src="boxflip.svg" /></p>
 <p>Every step, the engine asks two questions about each pair of objects: are they touching, and which way should they push apart? For this block, MuJoCo Warp&rsquo;s general routine gets it upside down. It says the block is 27.7 mm inside the board, not 0.009 mm, and should be pushed down, not up. So it pushes it down, hard. MuJoCo, and MuJoCo Warp&rsquo;s own box routine, get it right.</p>

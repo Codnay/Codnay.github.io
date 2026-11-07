@@ -35,7 +35,7 @@ In our own runs on a tower-stacking task, training was smooth when the towers st
 
 *Training loss on block stacking.*
 
-## 2. Rare poses stop being rare
+## 2. Resting blocks get launched
 
 A small block sits still on a board. Nothing touches it. Then, in a single step, the engine shoots it straight down through the board at several metres per second.
 
