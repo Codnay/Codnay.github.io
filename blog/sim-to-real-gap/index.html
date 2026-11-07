@@ -37,7 +37,7 @@
   <article class="post-view" aria-labelledby="post-title">
     <a class="back" href="../">← writing</a>
     <header class="post-head">
-      <span class="kicker"><time datetime="2026-11-07">November 7, 2026</time> · 6 min read</span>
+      <span class="kicker"><time datetime="2026-11-07">November 7, 2026</time> · 5 min read</span>
       <h1 id="post-title">What really is the sim-to-real gap?</h1>
       <span class="byline">Pranay Gupta</span>
     </header>
@@ -62,9 +62,7 @@
 <p>A small block sits still on a board. Nothing touches it. Then, in a single step, the engine shoots it straight down through the board at several metres per second.</p>
 <p><img alt="The same resting block, two answers: barely touching and pushed up, or 27.7 mm inside and pushed down through the board" src="boxflip.svg" /></p>
 <p>Every step, the engine asks two questions about each pair of objects: are they touching, and which way should they push apart? For this block, MuJoCo Warp&rsquo;s general routine gets it upside down. It says the block is 27.7 mm inside the board, not 0.009 mm, and should be pushed down, not up. So it pushes it down, hard. MuJoCo, and MuJoCo Warp&rsquo;s own box routine, get it right.</p>
-<p><img alt="Only a sliver of heights gets the wrong answer: 0.35 µm, 200 times thinner than a hair" src="band.svg" /></p>
-<p><em>It only happens when the block sits at one of a few exact heights, a sliver 200 times thinner than a hair.</em></p>
-<p><strong>What it does to training:</strong> a test that checks a handful of poses never hits that sliver. A training run that tries billions of poses hits it again and again, and the policy learns that blocks sometimes explode. We reported it as <a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a>; two open fixes from other contributors, <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> and <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>, solve it together.</p>
+<p><strong>What it does to training:</strong> it only goes wrong at a few exact heights, so a test that checks a handful of poses never hits them. A training run that tries billions of poses hits them again and again, and the policy learns that blocks sometimes explode. We reported it as <a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a>; two open fixes from other contributors, <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> and <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>, solve it together.</p>
 <h2 id="3-the-tasks-that-need-scale-most-get-the-worst-physics">3. The tasks that need scale most get the worst physics<a class="headerlink" href="#3-the-tasks-that-need-scale-most-get-the-worst-physics" title="Link to this section">#</a></h2>
 <p>Cables and cloth are why you need millions of rollouts: they have more ways to move than any rigid object. They are also where the engines are furthest from reality.</p>
 <p><strong>Stiff cables sag 40 % too far</strong> (Newton, VBD solver<sup id="fnref:vbd"><a class="footnote-ref" href="#fn:vbd">1</a></sup>). VBD corrects one body at a time, so a correction crawls one segment per sweep. Our <a href="https://github.com/newton-physics/newton/pull/4795">#4795</a> solves each rod at once and lands within 1–2 % of the exact shape.</p>
