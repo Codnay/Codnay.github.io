@@ -37,7 +37,7 @@
   <article class="post-view" aria-labelledby="post-title">
     <a class="back" href="../">← writing</a>
     <header class="post-head">
-      <span class="kicker"><time datetime="2026-11-07">November 7, 2026</time> · 5 min read</span>
+      <span class="kicker"><time datetime="2026-11-07">November 7, 2026</time> · 6 min read</span>
       <h1 id="post-title">What really is the sim-to-real gap?</h1>
       <span class="byline">Pranay Gupta</span>
     </header>
@@ -53,18 +53,18 @@
 <p><strong>Why?</strong> Each cube rests on four corner contacts. On a CPU, the forces at those corners are added up in the same order every step, so they stay perfectly even and the tower never starts to rock. On a GPU, thousands of threads add them in whatever order they finish, so the corners come out a hair uneven, the tower starts to rock, and the rocking grows. The more worlds share the GPU, the more that order gets shuffled, and the more towers fall.</p>
 <p>Worlds also leak into each other. In MuJoCo Warp, every world wrote its bounding box to one shared slot, and a ball fell through its own table (<a href="https://github.com/google-deepmind/mujoco_warp/issues/1795">#1795</a>; fix <a href="https://github.com/google-deepmind/mujoco_warp/pull/1800">#1800</a> by another contributor).</p>
 <p><img alt="Two worlds write their bounding boxes into one slot; world 0 is checked against world 1's narrower box and its ball falls through" src="aabb.svg" /></p>
-<p>In Newton&rsquo;s MPM solver, changing the other worlds moved world 0 by up to 0.1 mm (<a href="https://github.com/newton-physics/newton/issues/5207">#5207</a>). And at 4,096 worlds, Newton&rsquo;s mesh contact buffer filled up without a warning, and pegs sank 28.9 mm into a 20 mm hole.</p>
+<p>In Newton&rsquo;s MPM solver, changing the other worlds moved world 0 by up to 0.1 mm (<a href="https://github.com/newton-physics/newton/issues/5207">#5207</a>). </p>
 <p><strong>What it does to training:</strong> the more worlds you run, the further your physics drifts from the one world you debugged.</p>
 <p>In our own runs on a tower-stacking task, training was smooth when the towers stood and erratic when they fell at scale:</p>
 <p><img alt="Illustration: on the same tower-stacking task, loss falls smoothly when towers stand and keeps spiking when they fall" src="training.svg" /></p>
 <p><em>Training loss on block stacking.</em></p>
 <h2 id="2-rare-poses-stop-being-rare">2. Rare poses stop being rare<a class="headerlink" href="#2-rare-poses-stop-being-rare" title="Link to this section">#</a></h2>
-<p>In a two-arm task, a 15 mm block resting on a 12.7 mm board was fired straight down through it at several metres per second.</p>
-<p><img alt="The same pose through two routines: 0.009 mm and up, or 27.7 mm and down" src="boxflip.svg" /></p>
-<p>MuJoCo Warp&rsquo;s general collision routine returned the contact upside down and 27.7 mm deep: both thicknesses added. Its own box-box routine and MuJoCo both say 0.009 mm, pointing up. Only a sliver of heights triggers it:</p>
-<p><img alt="A height scan of the block: only a 0.35 µm band flips" src="band.svg" /></p>
-<p><em>130 of 2,001 heights, 2 nm apart, all inside 0.35 µm.</em></p>
-<p><strong>What it does to training:</strong> a unit test never lands in that band. Billions of steps across thousands of worlds land in it all the time, and the policy learns that blocks sometimes explode. Reported as <a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a>. Two open PRs from other contributors, <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> and <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>, together remove every flip on our scan and on 8,000 random poses.</p>
+<p>A small block sits still on a board. Nothing touches it. Then, in a single step, the engine shoots it straight down through the board at several metres per second.</p>
+<p><img alt="The same resting block, two answers: barely touching and pushed up, or 27.7 mm inside and pushed down through the board" src="boxflip.svg" /></p>
+<p>Every step, the engine asks two questions about each pair of objects: are they touching, and which way should they push apart? For this block, MuJoCo Warp&rsquo;s general routine gets it upside down. It says the block is 27.7 mm inside the board, not 0.009 mm, and should be pushed down, not up. So it pushes it down, hard. MuJoCo, and MuJoCo Warp&rsquo;s own box routine, get it right.</p>
+<p><img alt="Only a sliver of heights gets the wrong answer: 0.35 µm, 200 times thinner than a hair" src="band.svg" /></p>
+<p><em>It only happens when the block sits at one of a few exact heights, a sliver 200 times thinner than a hair.</em></p>
+<p><strong>What it does to training:</strong> a test that checks a handful of poses never hits that sliver. A training run that tries billions of poses hits it again and again, and the policy learns that blocks sometimes explode. We reported it as <a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a>; two open fixes from other contributors, <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> and <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>, solve it together.</p>
 <h2 id="3-the-tasks-that-need-scale-most-get-the-worst-physics">3. The tasks that need scale most get the worst physics<a class="headerlink" href="#3-the-tasks-that-need-scale-most-get-the-worst-physics" title="Link to this section">#</a></h2>
 <p>Cables and cloth are why you need millions of rollouts: they have more ways to move than any rigid object. They are also where the engines are furthest from reality.</p>
 <p><strong>Stiff cables sag 40 % too far</strong> (Newton, VBD solver<sup id="fnref:vbd"><a class="footnote-ref" href="#fn:vbd">1</a></sup>). VBD corrects one body at a time, so a correction crawls one segment per sweep. Our <a href="https://github.com/newton-physics/newton/pull/4795">#4795</a> solves each rod at once and lands within 1–2 % of the exact shape.</p>

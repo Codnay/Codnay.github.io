@@ -31,15 +31,15 @@
   </style>
   <rect width="420" height="210" fill="#f3f2ed"/>
   <text x="16" y="34" class="t">Only a sliver flips</text>
-  <text x="16" y="56" class="s">2,001 heights of the block, 2 nm apart</text>
+  <text x="16" y="56" class="s">we tried 2,001 heights of the block</text>
 
   <!-- 7 µm -> x 40, 11 µm -> x 380 : 85 px per µm -->
   <rect x="40" y="110" width="340" height="34" fill="#e6e5de" stroke="#16191a" stroke-width="1.5"/>
   <rect x="182" y="110" width="30" height="34" fill="#2a4f8f"/>
   <g class="lab">
     <line x1="197" y1="104" x2="197" y2="80" stroke="#2a4f8f" stroke-width="1.5" marker-start="url(#ab)" transform="rotate(180 197 92)"/>
-    <text x="206" y="82" class="b">130 flip, all in 0.35 µm</text>
-    <text x="206" y="99" class="s">normal down, 27.7 mm</text>
+    <text x="206" y="82" class="b">wrong only here: 0.35 µm</text>
+    <text x="206" y="99" class="s">200× thinner than a hair</text>
   </g>
   <text x="48" y="132" class="s">correct</text>
   <text x="314" y="132" class="s">correct</text>
@@ -59,5 +59,5 @@
     <line x1="295" y1="144" x2="295" y2="150" stroke="#16191a"/><text x="295" y="166">10</text>
     <line x1="380" y1="144" x2="380" y2="150" stroke="#16191a"/><text x="380" y="166">11</text>
   </g>
-  <text x="210" y="190" text-anchor="middle" class="s">µm into the board</text>
+  <text x="210" y="190" text-anchor="middle" class="s">how deep the block sits (µm)</text>
 </svg>
