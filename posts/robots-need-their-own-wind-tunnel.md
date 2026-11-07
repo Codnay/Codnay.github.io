@@ -67,7 +67,7 @@ In three weeks we reported 20 bugs to Newton, MuJoCo Warp and MuJoCo, with 11 fi
 | A held cloth dropped to the floor | Newton | Fixed |
 | Every world shared one bounding box, and a ball fell through its table | MuJoCo Warp | Fix open |
 
-*The physics bugs, animated: [Your physics engine breaks at scale](../sim-to-real-gap/)*
+*The physics bugs, animated: [Your physics engine breaks at scale](https://www.argonrobotics.ai/physics)*
 
 ## Why upstream fixes aren't enough
 
