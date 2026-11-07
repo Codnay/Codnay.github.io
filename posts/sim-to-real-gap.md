@@ -3,9 +3,13 @@ title: Your physics engine breaks at scale
 date: 2026-11-07
 description: Large-scale distributed training runs thousands of worlds per GPU for billions of steps. That is exactly where open-source physics engines quietly break.
 ---
-Over the past month we found 20 bugs in open-source physics engines. Most never raise an error. They quietly corrupt what your robot learns in simulation, and show up later as the sim-to-real gap: a robot that works in sim and fails on the real thing.
+<div class="wx-tldr" markdown="1">
 
-The worst of them only appear at scale. Large-scale distributed training packs thousands of copies of a world onto every GPU, spreads them across many GPUs, and runs them for billions of steps. That is the whole point of simulation, and it is exactly where the physics breaks: when many worlds run at once, in poses too rare for any unit test, and in the cables and cloth that need the most data. We found these bugs in Newton, MuJoCo Warp and MuJoCo, and reported every one upstream.
+**TL;DR** Over the past month we found **20 bugs in open-source physics engines**. Most **never raise an error**. They quietly corrupt what your robot learns in simulation, and show up later as the **sim-to-real gap**: a robot that works in sim and fails on the real thing.
+
+The worst only appear **at scale**, the way large-scale distributed training runs: thousands of worlds per GPU, many GPUs, billions of steps. **More worlds change the physics**, **rare poses launch objects**, and **cables and cloth behave like no real material**. We found them in Newton, MuJoCo Warp and MuJoCo, and **reported every one upstream**.
+
+</div>
 
 ## 1. More worlds, different physics
 
