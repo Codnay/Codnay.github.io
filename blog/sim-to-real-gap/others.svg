@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 592" width="420" height="592" role="img" aria-label="Eight more physics bugs, each as a small looping sketch. Newton: round shapes stop 0.1 mm above what they touch (fixed); fine cloth meshes lose their bending; bending weakens with mesh size, 10 to the minus 4 at 1 cm cells; cloth held by attachments drops (fixed); a fluid film on the default grid flows 15 % slower; pushed cloth moves 3.2 times as fast as the push allows. MuJoCo: a box lying across an edge gets one contact instead of a line. MuJoCo Warp: a 16.5 micrometre overlap is read as 190 mm and kicks the shape sideways.">
+  <defs>
+    <marker id="ai" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#16191a"/></marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2a4f8f"/></marker>
+  </defs>
+  <style>
+    .t { font: 22px Georgia, "Times New Roman", serif; fill: #16191a; }
+    .l { font: 500 12px ui-monospace, Menlo, Consolas, monospace; fill: #16191a; }
+    .s { font: 11.5px ui-monospace, Menlo, Consolas, monospace; fill: #6b6f6c; }
+    .b { font: 500 12px ui-monospace, Menlo, Consolas, monospace; fill: #2a4f8f; }
+    .fb { transform-box: fill-box; }
+    .vb { transform-box: view-box; }
+    .an { animation-duration: 6s; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
+    /* 1: early touch */
+    .ball { animation-name: fall; animation-timing-function: ease-in; }
+    @keyframes fall { 0%, 10% { transform: translateY(-34px); opacity: 0; } 14% { opacity: 1; } 35%, 90% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(0); opacity: 0; } }
+    .gap { animation-name: gap; }
+    @keyframes gap { 0%, 35% { opacity: 0; } 42%, 90% { opacity: 1; } 100% { opacity: 0; } }
+    /* 2: one contact */
+    .ghost { opacity: .7; animation-name: ghost; }
+    @keyframes ghost { 0%, 8% { opacity: 0; } 22%, 40% { opacity: .8; } 55%, 100% { opacity: 0; } }
+    .bar { transform-origin: 30px 56px; animation-name: tilt; }
+    @keyframes tilt { 0%, 55% { transform: rotate(0deg); } 72%, 84% { transform: rotate(-4deg); } 96%, 100% { transform: rotate(0deg); } }
+    /* 3: huge push */
+    .push { transform-origin: 0 50%; animation-name: grow; }
+    @keyframes grow { 0%, 12% { transform: scaleX(0); opacity: 1; } 34%, 80% { transform: scaleX(1); opacity: 1; } 92%, 100% { transform: scaleX(1); opacity: 0; } }
+    .kick { animation-name: kick; animation-timing-function: ease-in; }
+    @keyframes kick { 0%, 36% { transform: translateX(0); opacity: 1; } 54% { transform: translateX(46px); opacity: 0; } 99% { transform: translateX(46px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+    /* 4: fine cloth limp */
+    .a1 { transform-origin: 26px 26px; } .a2 { transform-origin: 48px 26px; } .a3 { transform-origin: 70px 26px; }
+    .b1 { transform-origin: 112px 26px; } .b2 { transform-origin: 134px 26px; } .b3 { transform-origin: 156px 26px; }
+    .stiff { transform: rotate(6deg); animation-name: stiff; }
+    .limp { transform: rotate(28deg); animation-name: limp; }
+    @keyframes stiff { 0%, 8% { transform: rotate(0deg); } 40%, 85% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
+    @keyframes limp { 0%, 8% { transform: rotate(0deg); } 40%, 85% { transform: rotate(28deg); } 100% { transform: rotate(0deg); } }
+    /* 5: bending meter */
+    .meter { transform-origin: 0 50%; animation-name: meter; }
+    @keyframes meter { 0%, 10% { transform: scaleX(0); } 50%, 92% { transform: scaleX(1); } 100% { transform: scaleX(0); } }
+    /* 6: held cloth drops */
+    .cloth { transform: translateY(22px); animation-name: drop; }
+    @keyframes drop { 0% { transform: translateY(0); opacity: 0; } 8%, 35% { transform: translateY(0); opacity: 1; } 52%, 88% { transform: translateY(22px); opacity: 1; } 97%, 100% { transform: translateY(22px); opacity: 0; } }
+    /* 7: slow film */
+    .film { transform-origin: 0 50%; animation-name: flow; animation-timing-function: linear; }
+    @keyframes flow { 0%, 6% { transform: scaleX(0); opacity: 1; } 66%, 92% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
+    /* 8: too much momentum */
+    .imp { animation-name: imp; }
+    @keyframes imp { 0%, 4% { opacity: 0; transform: translateX(-10px); } 16%, 26% { opacity: 1; transform: translateX(0); } 34%, 100% { opacity: 0; transform: translateX(0); } }
+    .fast { transform: translateX(64px); animation-name: fast; }
+    @keyframes fast { 0%, 22% { transform: translateX(0); opacity: 1; } 56%, 92% { transform: translateX(64px); opacity: 1; } 100% { transform: translateX(64px); opacity: 0; } }
+    .slow { transform: translateX(20px); animation-name: slow; }
+    @keyframes slow { 0%, 22% { transform: translateX(0); opacity: 1; } 56%, 92% { transform: translateX(20px); opacity: 1; } 100% { transform: translateX(20px); opacity: 0; } }
+    .tag { animation-name: tag; }
+    @keyframes tag { 0%, 54% { opacity: 0; } 62%, 92% { opacity: 1; } 100% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <rect width="420" height="592" fill="#f3f2ed"/>
+  <text x="16" y="34" class="t">Eight more physics bugs</text>
+  <text x="16" y="54" class="s">sketches, not to scale</text>
+  <g stroke="#d8d8d0">
+    <line x1="210" y1="68" x2="210" y2="586"/>
+    <line x1="12" y1="198" x2="408" y2="198"/>
+    <line x1="12" y1="328" x2="408" y2="328"/>
+    <line x1="12" y1="458" x2="408" y2="458"/>
+  </g>
+
+  <!-- 1 -->
+  <g transform="translate(8 74)">
+    <line x1="16" y1="70" x2="176" y2="70" stroke="#16191a" stroke-width="1.5"/>
+    <circle cx="96" cy="56" r="14" fill="none" stroke="#6b6f6c" stroke-dasharray="3 3"/>
+    <circle cx="96" cy="48" r="14" fill="#16191a" class="an ball"/>
+    <g class="an gap">
+      <line x1="118" y1="62" x2="118" y2="70" stroke="#2a4f8f" stroke-width="2"/>
+      <text x="124" y="64" class="b">0.1 mm</text>
+    </g>
+    <text x="8" y="100" class="l">Touches 0.1 mm early</text>
+    <text x="8" y="116" class="s">Newton · fixed, #4791</text>
+  </g>
+
+  <!-- 2 -->
+  <g transform="translate(212 74)">
+    <rect x="16" y="56" width="164" height="16" fill="#e6e5de" stroke="#16191a" stroke-width="1.2"/>
+    <rect x="22" y="44" width="150" height="11" fill="#16191a" class="an vb bar"/>
+    <g fill="none" stroke="#6b6f6c" stroke-width="1.5" class="an ghost">
+      <circle cx="62" cy="56" r="3.5"/><circle cx="88" cy="56" r="3.5"/><circle cx="114" cy="56" r="3.5"/><circle cx="140" cy="56" r="3.5"/><circle cx="164" cy="56" r="3.5"/>
+    </g>
+    <circle cx="30" cy="56" r="4.5" fill="#2a4f8f"/>
+    <text x="8" y="100" class="l">One contact, not a line</text>
+    <text x="8" y="116" class="s">MuJoCo · #3755</text>
+  </g>
+
+  <!-- 3 -->
+  <g transform="translate(8 204)">
+    <rect x="16" y="22" width="90" height="50" fill="#e6e5de" stroke="#16191a" stroke-width="1.2"/>
+    <g class="an fb kick"><circle cx="121" cy="47" r="16" fill="#f3f2ed" stroke="#16191a" stroke-width="1.5"/></g>
+    <line x1="122" y1="47" x2="184" y2="47" stroke="#2a4f8f" stroke-width="2.5" marker-end="url(#ab)" class="an fb push"/>
+    <text x="8" y="100" class="l">16.5 µm read as 190 mm</text>
+    <text x="8" y="116" class="s">MuJoCo Warp · fix #1796</text>
+  </g>
+
+  <!-- 4 -->
+  <g transform="translate(212 204)">
+    <text x="12" y="10" class="s">5 mm cells</text>
+    <text x="100" y="10" class="s">0.5 mm</text>
+    <rect x="14" y="17" width="12" height="18" fill="#16191a"/>
+    <g class="an vb a1 stiff"><line x1="26" y1="26" x2="48" y2="26" stroke="#16191a" stroke-width="3.5" stroke-linecap="round"/>
+      <g class="an vb a2 stiff"><line x1="48" y1="26" x2="70" y2="26" stroke="#16191a" stroke-width="3.5" stroke-linecap="round"/>
+        <g class="an vb a3 stiff"><line x1="70" y1="26" x2="92" y2="26" stroke="#16191a" stroke-width="3.5" stroke-linecap="round"/></g></g></g>
+    <rect x="100" y="17" width="12" height="18" fill="#16191a"/>
+    <g class="an vb b1 limp"><line x1="112" y1="26" x2="134" y2="26" stroke="#2a4f8f" stroke-width="3.5" stroke-linecap="round"/>
+      <g class="an vb b2 limp"><line x1="134" y1="26" x2="156" y2="26" stroke="#2a4f8f" stroke-width="3.5" stroke-linecap="round"/>
+        <g class="an vb b3 limp"><line x1="156" y1="26" x2="178" y2="26" stroke="#2a4f8f" stroke-width="3.5" stroke-linecap="round"/></g></g></g>
+    <text x="8" y="100" class="l">Fine cloth won't bend</text>
+    <text x="8" y="116" class="s">Newton VBD · fix #5131</text>
+  </g>
+
+  <!-- 5 -->
+  <g transform="translate(8 334)">
+    <g fill="none" stroke="#16191a" stroke-width="1">
+      <rect x="16" y="6" width="36" height="36"/>
+      <rect x="76" y="6" width="36" height="36"/><path d="M85 6V42M94 6V42M103 6V42M76 15H112M76 24H112M76 33H112"/>
+      <rect x="136" y="6" width="36" height="36"/><path d="M140.5 6V42M145 6V42M149.5 6V42M154 6V42M158.5 6V42M163 6V42M167.5 6V42M136 10.5H172M136 15H172M136 19.5H172M136 24H172M136 28.5H172M136 33H172M136 37.5H172"/>
+    </g>
+    <rect x="16" y="50" width="36" height="8" fill="#16191a" class="an fb meter"/>
+    <rect x="76" y="50" width="3" height="8" fill="#2a4f8f" class="an fb meter"/>
+    <rect x="136" y="50" width="1" height="8" fill="#2a4f8f" class="an fb meter"/>
+    <text x="142" y="58" class="b">10⁻⁴</text>
+    <text x="16" y="76" class="s">1 m</text>
+    <text x="76" y="76" class="s">10 cm</text>
+    <text x="136" y="76" class="s">1 cm</text>
+    <text x="8" y="100" class="l">Small cells, weak bending</text>
+    <text x="8" y="116" class="s">Newton XPBD · #5140</text>
+  </g>
+
+  <!-- 6 -->
+  <g transform="translate(212 334)">
+    <line x1="40" y1="12" x2="150" y2="12" stroke="#16191a" stroke-width="3"/>
+    <circle cx="60" cy="16" r="3" fill="#16191a"/><circle cx="130" cy="16" r="3" fill="#16191a"/>
+    <line x1="16" y1="74" x2="176" y2="74" stroke="#16191a" stroke-width="1.5"/>
+    <rect x="58" y="16" width="74" height="34" fill="#e6e5de" stroke="#2a4f8f" stroke-width="2" class="an cloth"/>
+    <text x="8" y="100" class="l">Held cloth drops</text>
+    <text x="8" y="116" class="s">Newton VBD · fixed, #5146</text>
+  </g>
+
+  <!-- 7 -->
+  <g transform="translate(8 464)">
+    <line x1="170" y1="14" x2="170" y2="68" stroke="#6b6f6c" stroke-dasharray="3 3"/>
+    <text x="170" y="10" class="s" text-anchor="middle">exact</text>
+    <text x="8" y="35" class="s">dense</text>
+    <line x1="58" y1="35" x2="176" y2="35" stroke="#d8d8d0"/>
+    <rect x="60" y="27" width="107" height="8" rx="4" fill="#16191a" class="an fb film"/>
+    <text x="8" y="61" class="s">default</text>
+    <line x1="58" y1="61" x2="176" y2="61" stroke="#d8d8d0"/>
+    <rect x="60" y="53" width="90" height="8" rx="4" fill="#2a4f8f" class="an fb film"/>
+    <text x="8" y="100" class="l">Fluid flows 15 % slow</text>
+    <text x="8" y="116" class="s">Newton MPM · #5206</text>
+  </g>
+
+  <!-- 8 -->
+  <g transform="translate(212 464)">
+    <text x="4" y="38" class="s">push</text>
+    <line x1="6" y1="50" x2="36" y2="50" stroke="#16191a" stroke-width="2" marker-end="url(#ai)" class="an imp"/>
+    <rect x="40" y="36" width="34" height="28" fill="none" stroke="#6b6f6c" stroke-dasharray="3 3" class="an slow"/>
+    <rect x="40" y="36" width="34" height="28" fill="#e6e5de" stroke="#2a4f8f" stroke-width="2" class="an fast"/>
+    <text x="77" y="28" class="s an tag" text-anchor="middle">1×</text>
+    <text x="121" y="28" class="b an tag" text-anchor="middle">3.2×</text>
+    <text x="8" y="100" class="l">Push 1×, moves 3.2×</text>
+    <text x="8" y="116" class="s">Newton VBD · #5129</text>
+  </g>
+</svg>

@@ -102,19 +102,19 @@
 <td>Fix sent</td>
 </tr>
 <tr>
-<td>Slow joints froze, and a held tool walked out of the hand</td>
+<td>A cloth pile sank through the floor</td>
 <td>Newton</td>
 <td>Reported</td>
 </tr>
 <tr>
-<td>Settings in robot files vanished on import</td>
+<td>Pushed cloth gained 3.2 times its momentum</td>
 <td>Newton</td>
-<td>1 of 4 fixed</td>
+<td>Reported</td>
 </tr>
 <tr>
-<td>A light cable broke on step 2</td>
-<td>MuJoCo Warp</td>
-<td>Fix sent</td>
+<td>A held cloth dropped to the floor</td>
+<td>Newton</td>
+<td>Fixed</td>
 </tr>
 <tr>
 <td>Every world shared one bounding box, and a ball fell through its table</td>
@@ -123,7 +123,7 @@
 </tr>
 </tbody>
 </table>
-<p><em>All 20, and how each one works: <a href="../sim-to-real-gap/">What the fuck is the sim-to-real gap?</a></em></p>
+<p><em>The physics bugs, animated: <a href="../sim-to-real-gap/">What the fuck is the sim-to-real gap?</a></em></p>
 <h2 id="why-upstream-fixes-arent-enough">Why upstream fixes aren&rsquo;t enough<a class="headerlink" href="#why-upstream-fixes-arent-enough" title="Link to this section">#</a></h2>
 <p>Newton has merged three of our fixes, two of them within two days. MuJoCo Warp hasn&rsquo;t merged one in three weeks. That is fair. These engines serve thousands of users, mostly teaching robots to walk, and their maintainers must be careful.</p>
 <p>But this is not 20 bugs. It is one pattern: engines tuned for scenes where a millimetre doesn&rsquo;t matter, nobody reruns a world, and speed is measured on falling boxes. Fixing that one patch at a time is like correcting Smeaton&rsquo;s coefficient one wing at a time.</p>

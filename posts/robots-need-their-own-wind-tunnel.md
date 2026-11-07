@@ -62,12 +62,12 @@ In three weeks we reported 20 bugs to Newton, MuJoCo Warp and MuJoCo, with 11 fi
 | A resting block was fired through its board | MuJoCo Warp | Fix open |
 | Stiff cables sagged 40 % too far | Newton | Fix sent |
 | Fine cloth lost its bending, without a warning | Newton | Fix sent |
-| Slow joints froze, and a held tool walked out of the hand | Newton | Reported |
-| Settings in robot files vanished on import | Newton | 1 of 4 fixed |
-| A light cable broke on step 2 | MuJoCo Warp | Fix sent |
+| A cloth pile sank through the floor | Newton | Reported |
+| Pushed cloth gained 3.2 times its momentum | Newton | Reported |
+| A held cloth dropped to the floor | Newton | Fixed |
 | Every world shared one bounding box, and a ball fell through its table | MuJoCo Warp | Fix open |
 
-*All 20, and how each one works: [What the fuck is the sim-to-real gap?](../sim-to-real-gap/)*
+*The physics bugs, animated: [What the fuck is the sim-to-real gap?](../sim-to-real-gap/)*
 
 ## Why upstream fixes aren't enough
 
