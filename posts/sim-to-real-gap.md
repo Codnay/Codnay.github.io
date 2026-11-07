@@ -5,11 +5,17 @@ description: Large-scale distributed training runs thousands of worlds per GPU f
 ---
 <div class="wx-tldr" markdown="1">
 
-**TL;DR** With models like GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator works only if whatever happens inside it would happen outside, thousands of times over. Every major open-source engine we tested breaks this promise. Over the past month we found **about 30 bugs in open-source physics engines**. Most bugs **never raise an error**, they just quietly corrupt your models and surface later as the infamous **sim-to-real gap**.
-
-The worst ones appear **at scale**, when you run billions of steps. **More worlds change the physics**, **objects get launched**, and **cables and cloth don't behave like real materials**. We found them in Newton, MuJoCo Warp and MuJoCo, and **reported 20 upstream**.
+**TL;DR** With GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator only works if what happens inside it would happen outside, thousands of times over, and **every major open-source engine we tested breaks that promise at scale**. Over the past month we found **about 30 bugs** in Newton, MuJoCo Warp and MuJoCo. Run a ten-cube tower in 4,096 worlds and **98 % of the copies fall**. A block resting on a board gets **fired through it**. Cables **sag 40 % too far** and cloth **sinks through the floor**. Most of these **never raise an error**: they quietly corrupt your models and surface later as the infamous **sim-to-real gap**. We **reported 20 upstream**.
 
 </div>
+
+## Simulation is becoming the data
+
+Legged robots already learn to walk in simulation. Robot hands still learn mostly from human demonstrations, which are slow and expensive to collect. **That is changing.** GPU engines run thousands of copies of a world on every GPU, and models like GPT-6 Astra can build the world itself from a prompt. One GPU can now produce billions of steps of robot experience in a day.
+
+**That is why the physics matters now.** In a game, a bad contact is a glitch in one frame. In a training run it is data, repeated across thousands of worlds and billions of steps, and the policy learns it. Nothing flags it, because the engine never raises an error. You find out on the real robot.
+
+So we pushed Newton, MuJoCo Warp and MuJoCo to that scale, on what robot hands care about: stacks, blocks on boards, cables and cloth. Three failures stand out.
 
 ## 1. More worlds, different physics
 
@@ -33,7 +39,7 @@ In our own runs on a tower-stacking task, training was smooth when the towers st
 
 ![Illustration: on the same tower-stacking task, loss falls smoothly when towers stand and keeps spiking when they fall](training.svg)
 
-*Training loss on the same task, sketched: smooth when towers stand, spiking when they fall.*
+*Training loss on block stacking.*
 
 ## 2. Rare poses stop being rare
 
