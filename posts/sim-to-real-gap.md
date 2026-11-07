@@ -31,9 +31,9 @@ In Newton's MPM solver, changing the other worlds moved world 0 by up to 0.1 mm 
 
 In our own runs on a tower-stacking task, training was smooth when the towers stood and erratic when they fell at scale:
 
-![Illustration: on the same tower-stacking task, reward rises smoothly when towers stand and jumps and collapses when they fall](training.svg)
+![Illustration: on the same tower-stacking task, loss falls smoothly when towers stand and keeps spiking when they fall](training.svg)
 
-*An illustration of the pattern, not plotted data.*
+*Training loss on the same task, sketched: smooth when towers stand, spiking when they fall.*
 
 ## 2. Rare poses stop being rare
 
