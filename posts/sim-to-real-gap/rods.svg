@@ -1,53 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 510" width="420" height="510" role="img" aria-label="Top: updating one body at a time, a correction travels about one segment per sweep, so after 10 sweeps it has reached 10 of a 128-segment cable's segments. The fix solves the whole rod in one step. Bottom: a beam under its own weight; stock Newton sags slowly to 40 percent past the exact shape, while the fix lands within 1 percent at once.">
-<defs><g id="o" fill="#f3f2ed" stroke="#16191a" stroke-width="1.2"><rect x="90" width="24" height="10"/><rect x="116" width="24" height="10"/><rect x="142" width="24" height="10"/><rect x="168" width="24" height="10"/><rect x="194" width="24" height="10"/><rect x="220" width="24" height="10"/><rect x="246" width="24" height="10"/><rect x="272" width="24" height="10"/><rect x="298" width="24" height="10"/><rect x="324" width="24" height="10"/><rect x="350" width="24" height="10"/><rect x="376" width="24" height="10"/></g><g id="f" fill="#2a4f8f" stroke="#2a4f8f" stroke-width="1.2"><rect x="90" width="24" height="10"/><rect x="116" width="24" height="10"/><rect x="142" width="24" height="10"/><rect x="168" width="24" height="10"/><rect x="194" width="24" height="10"/><rect x="220" width="24" height="10"/><rect x="246" width="24" height="10"/><rect x="272" width="24" height="10"/><rect x="298" width="24" height="10"/><rect x="324" width="24" height="10"/><rect x="350" width="24" height="10"/><rect x="376" width="24" height="10"/></g></defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 200" width="420" height="200" role="img" aria-label="A stiff beam clamped at one end, bending under its own weight. Stock Newton sags slowly to 40 percent past the exact shape; the fix lands within 1 percent at once.">
 <style>.t{font:22px Georgia,"Times New Roman",serif;fill:#16191a}.h{font:17px Georgia,"Times New Roman",serif;fill:#16191a}.l{font:500 12.5px ui-monospace,Menlo,Consolas,monospace;fill:#16191a}.s{font:12px ui-monospace,Menlo,Consolas,monospace;fill:#6b6f6c}.b{font:500 12.5px ui-monospace,Menlo,Consolas,monospace;fill:#2a4f8f}
-/* 8 s loop: sweeps 1, 2, 3 reach one more segment each and sweep 10 creeps on while the stock beam sags slowly;
-   then the whole-rod solve fills every segment at once and the beam snaps to its exact shape */
 .k{transform-box:fill-box;transform-origin:0 0;animation:8s ease-in-out infinite}
-.s1{animation-name:s1}.s2{animation-name:s2}.s3{animation-name:s3}.s10{animation-name:s10}.fx{animation-name:fx}
 .bs{animation-name:bs;animation-timing-function:ease-out}.be{animation-name:be}.ls{animation-name:ls}.le{animation-name:le}
-@keyframes s1{0%,10%{opacity:1}13%,17%{opacity:0}19%,100%{opacity:1}}
-@keyframes s2{0%,10%{opacity:1}13%,25%{opacity:0}27%,100%{opacity:1}}
-@keyframes s3{0%,10%{opacity:1}13%,33%{opacity:0}35%,100%{opacity:1}}
-@keyframes s10{0%,10%{opacity:1;transform:none}13%{opacity:0;transform:none}14%,38%{opacity:0;transform:scaleX(.02)}39%{opacity:1;transform:scaleX(.02)}54%,100%{opacity:1;transform:none}}
-@keyframes fx{0%,10%{opacity:1}13%,58%{opacity:0}60%,100%{opacity:1}}
 @keyframes bs{0%,10%{opacity:1;transform:none}13%{opacity:0;transform:none}14%{opacity:0;transform:scaleY(.02)}17%{opacity:1;transform:scaleY(.02)}56%,100%{opacity:1;transform:none}}
 @keyframes be{0%,10%{opacity:1;transform:none}13%{opacity:0;transform:none}14%{opacity:0;transform:scaleY(.02)}17%,58%{opacity:1;transform:scaleY(.02)}60%,100%{opacity:1;transform:none}}
 @keyframes ls{0%,10%{opacity:1}13%,54%{opacity:0}57%,100%{opacity:1}}
 @keyframes le{0%,10%{opacity:1}13%,59%{opacity:0}62%,100%{opacity:1}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
-<rect width="420" height="510" fill="#f3f2ed"/>
-<text x="16" y="34" class="t">Stiff cables sag too far</text>
-<text x="16" y="66" class="h">One body at a time</text>
-<text x="16" y="84" class="s">each sweep moves a fix about one segment</text>
-<text x="16" y="114" class="l">sweep 1</text>
-<line x1="86" y1="94" x2="86" y2="124" stroke="#16191a" stroke-width="3"/>
-<use href="#o" y="104"/>
-<g class="k s1" fill="#2a4f8f" stroke="#2a4f8f" stroke-width="1.2"><rect x="90" y="104" width="24" height="10"/></g>
-<text x="16" y="142" class="l">sweep 2</text>
-<line x1="86" y1="122" x2="86" y2="152" stroke="#16191a" stroke-width="3"/>
-<use href="#o" y="132"/>
-<g class="k s2" fill="#2a4f8f" stroke="#2a4f8f" stroke-width="1.2"><rect x="90" y="132" width="24" height="10"/><rect x="116" y="132" width="24" height="10"/></g>
-<text x="16" y="170" class="l">sweep 3</text>
-<line x1="86" y1="150" x2="86" y2="180" stroke="#16191a" stroke-width="3"/>
-<use href="#o" y="160"/>
-<g class="k s3" fill="#2a4f8f" stroke="#2a4f8f" stroke-width="1.2"><rect x="90" y="160" width="24" height="10"/><rect x="116" y="160" width="24" height="10"/><rect x="142" y="160" width="24" height="10"/></g>
-<text x="16" y="206" class="l">sweep 10</text>
-<line x1="86" y1="186" x2="86" y2="216" stroke="#16191a" stroke-width="3"/>
-<rect x="90" y="196" width="312" height="10" fill="#f3f2ed" stroke="#16191a" stroke-width="1.2"/>
-<rect class="k s10" x="90" y="196" width="24.4" height="10" fill="#2a4f8f"/>
-<text x="90" y="226" class="s">a 128-segment cable: 10 of 128 reached</text>
-<text x="16" y="266" class="h">Whole rod at once (the fix)</text>
-<text x="16" y="284" class="s">one exact solve per rod, linear in length</text>
-<line x1="86" y1="294" x2="86" y2="324" stroke="#16191a" stroke-width="3"/>
-<use href="#o" y="304"/><use class="k fx" href="#f" y="304"/>
-<text x="16" y="314" class="l">1 step</text>
-<line x1="16" y1="344" x2="404" y2="344" stroke="#d8d8d0"/>
-<text x="16" y="370" class="h">A beam under its own weight</text>
-<line x1="40" y1="380" x2="40" y2="470" stroke="#16191a" stroke-width="3"/>
-<line x1="40" y1="400" x2="340" y2="400" stroke="#d8d8d0" stroke-dasharray="3 3"/>
-<polyline class="k be" points="40.0,400.0 47.5,400.0 55.0,400.2 62.5,400.4 70.0,400.7 77.5,401.1 85.0,401.6 92.5,402.2 100.0,402.8 107.5,403.5 115.0,404.2 122.5,405.0 130.0,405.9 137.5,406.8 145.0,407.7 152.5,408.7 160.0,409.7 167.5,410.8 175.0,411.9 182.5,413.0 190.0,414.2 197.5,415.3 205.0,416.5 212.5,417.8 220.0,419.0 227.5,420.3 235.0,421.5 242.5,422.8 250.0,424.1 257.5,425.4 265.0,426.7 272.5,428.0 280.0,429.4 287.5,430.7 295.0,432.0 302.5,433.3 310.0,434.7 317.5,436.0 325.0,437.3 332.5,438.7 340.0,440.0" fill="none" stroke="#16191a" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
-<polyline class="k bs" points="40.0,400.0 47.5,400.1 55.0,400.3 62.5,400.6 70.0,401.0 77.5,401.6 85.0,402.3 92.5,403.0 100.0,403.9 107.5,404.9 115.0,405.9 122.5,407.0 130.0,408.2 137.5,409.5 145.0,410.8 152.5,412.2 160.0,413.6 167.5,415.1 175.0,416.6 182.5,418.2 190.0,419.8 197.5,421.5 205.0,423.2 212.5,424.9 220.0,426.6 227.5,428.4 235.0,430.1 242.5,431.9 250.0,433.8 257.5,435.6 265.0,437.4 272.5,439.2 280.0,441.1 287.5,443.0 295.0,444.8 302.5,446.7 310.0,448.5 317.5,450.4 325.0,452.3 332.5,454.1 340.0,456.0" fill="none" stroke="#2a4f8f" stroke-width="2" stroke-dasharray="6 4" vector-effect="non-scaling-stroke"/>
-<g class="k le"><text x="348" y="444" class="l">exact</text><text x="348" y="459" class="s">fix: 1 %</text></g>
-<g class="k ls"><text x="348" y="478" class="b">stock:</text><text x="348" y="493" class="b">+40 %</text></g>
+<rect width="420" height="200" fill="#f3f2ed"/>
+<text x="16" y="34" class="t">A beam under its own weight</text>
+<text x="16" y="56" class="s">stiff cable, clamped at one end</text>
+<line x1="40" y1="70" x2="40" y2="160" stroke="#16191a" stroke-width="3"/>
+<line x1="40" y1="90" x2="340" y2="90" stroke="#d8d8d0" stroke-dasharray="3 3"/>
+<polyline class="k be" points="40.0,90.0 47.5,90.0 55.0,90.2 62.5,90.4 70.0,90.7 77.5,91.1 85.0,91.6 92.5,92.2 100.0,92.8 107.5,93.5 115.0,94.2 122.5,95.0 130.0,95.9 137.5,96.8 145.0,97.7 152.5,98.7 160.0,99.7 167.5,100.8 175.0,101.9 182.5,103.0 190.0,104.2 197.5,105.3 205.0,106.5 212.5,107.8 220.0,109.0 227.5,110.3 235.0,111.5 242.5,112.8 250.0,114.1 257.5,115.4 265.0,116.7 272.5,118.0 280.0,119.4 287.5,120.7 295.0,122.0 302.5,123.3 310.0,124.7 317.5,126.0 325.0,127.3 332.5,128.7 340.0,130.0" fill="none" stroke="#16191a" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+<polyline class="k bs" points="40.0,90.0 47.5,90.1 55.0,90.3 62.5,90.6 70.0,91.0 77.5,91.6 85.0,92.3 92.5,93.0 100.0,93.9 107.5,94.9 115.0,95.9 122.5,97.0 130.0,98.2 137.5,99.5 145.0,100.8 152.5,102.2 160.0,103.6 167.5,105.1 175.0,106.6 182.5,108.2 190.0,109.8 197.5,111.5 205.0,113.2 212.5,114.9 220.0,116.6 227.5,118.4 235.0,120.1 242.5,121.9 250.0,123.8 257.5,125.6 265.0,127.4 272.5,129.2 280.0,131.1 287.5,133.0 295.0,134.8 302.5,136.7 310.0,138.5 317.5,140.4 325.0,142.3 332.5,144.1 340.0,146.0" fill="none" stroke="#2a4f8f" stroke-width="2" stroke-dasharray="6 4" vector-effect="non-scaling-stroke"/>
+<g class="k le"><text x="348" y="134" class="l">exact</text><text x="348" y="149" class="s">fix: 1 %</text></g>
+<g class="k ls"><text x="348" y="168" class="b">stock:</text><text x="348" y="183" class="b">+40 %</text></g>
 </svg>
