@@ -6,35 +6,34 @@
     <description>Notes on robot learning, simulation and RL post-training.</description>
     <language>en</language>
     <item>
-      <title>What the fuck is the sim-to-real gap?</title>
+      <title>Your physics engine breaks at scale</title>
       <link>https://codnay.github.io/blog/sim-to-real-gap/</link>
       <guid>https://codnay.github.io/blog/sim-to-real-gap/</guid>
       <pubDate>Sat, 07 Nov 2026 12:00:00 +0000</pubDate>
-      <description>We found 20 bugs in open-source physics engines. The three that hurt large-scale robot training most, and the rest in one picture.</description>
+      <description>Large-scale distributed training runs thousands of worlds per GPU for billions of steps. That is exactly where open-source physics engines quietly break.</description>
       <content:encoded><![CDATA[<p>Over the past month we found 20 bugs in open-source physics engines. Most never raise an error. They quietly corrupt what your robot learns in simulation, and show up later as the sim-to-real gap: a robot that works in sim and fails on the real thing.</p>
-<p>Large-scale training makes it worse. A policy trains on thousands of copies of a world, running side by side on GPUs for billions of steps. That is where these bugs live: they appear only when many worlds run at once, in poses too rare for any unit test, or in thin and soft things. We found them in Newton, MuJoCo Warp and MuJoCo, and reported all of them upstream. Here are the three that matter most for training at scale, then the rest in one picture.</p>
+<p>The worst of them only appear at scale. Large-scale distributed training packs thousands of copies of a world onto every GPU, spreads them across many GPUs, and runs them for billions of steps. That is the whole point of simulation, and it is exactly where the physics breaks: when many worlds run at once, in poses too rare for any unit test, and in the cables and cloth that need the most data. We found these bugs in Newton, MuJoCo Warp and MuJoCo, and reported every one upstream.</p>
 <h2 id="1-more-worlds-different-physics">1. More worlds, different physics<a class="headerlink" href="#1-more-worlds-different-physics" title="Link to this section">#</a></h2>
 <p>A ten-cube tower stands on its own. Run it in thousands of worlds at once, and most of the copies fall.</p>
 <p><img alt="The same tower copied more and more times: the more copies, the more fall" src="towers.svg" /></p>
 <p><em>MuJoCo Warp, CG solver: 0 of 16 copies fall, then 92 of 256, 882 of 1,024 and 4,031 of 4,096.</em></p>
-<p>Worlds also leak into each other. In MuJoCo Warp, every world wrote its bounding box to one shared slot, and a ball fell through its own table.</p>
+<p>Worlds also leak into each other. In MuJoCo Warp, every world wrote its bounding box to one shared slot, and a ball fell through its own table (<a href="https://github.com/google-deepmind/mujoco_warp/issues/1795">#1795</a>; fix <a href="https://github.com/google-deepmind/mujoco_warp/pull/1800">#1800</a> by another contributor).</p>
 <p><img alt="Two worlds write their bounding boxes into one slot; world 0 is checked against world 1's narrower box and its ball falls through" src="aabb.svg" /></p>
-<p>In Newton&rsquo;s MPM solver, changing the other worlds moved world 0 by up to 0.1 mm. And at 4,096 worlds, Newton&rsquo;s mesh contact buffer filled up without a warning, and pegs sank 28.9 mm into a 20 mm hole.</p>
-<p><strong>What it does to training:</strong> at 4,096 worlds the policy learns physics you never see when you debug in one.</p>
-<h2 id="2-resting-objects-get-launched">2. Resting objects get launched<a class="headerlink" href="#2-resting-objects-get-launched" title="Link to this section">#</a></h2>
+<p>In Newton&rsquo;s MPM solver, changing the other worlds moved world 0 by up to 0.1 mm (<a href="https://github.com/newton-physics/newton/issues/5207">#5207</a>). And at 4,096 worlds, Newton&rsquo;s mesh contact buffer filled up without a warning, and pegs sank 28.9 mm into a 20 mm hole.</p>
+<p><strong>What it does to training:</strong> the more worlds you run, the further your physics drifts from the one world you debugged.</p>
+<h2 id="2-rare-poses-stop-being-rare">2. Rare poses stop being rare<a class="headerlink" href="#2-rare-poses-stop-being-rare" title="Link to this section">#</a></h2>
 <p>In a two-arm task, a 15 mm block resting on a 12.7 mm board was fired straight down through it at several metres per second.</p>
 <p><img alt="The same pose through two routines: 0.009 mm and up, or 27.7 mm and down" src="boxflip.svg" /></p>
 <p>MuJoCo Warp&rsquo;s general collision routine returned the contact upside down and 27.7 mm deep: both thicknesses added. Its own box-box routine and MuJoCo both say 0.009 mm, pointing up. Only a sliver of heights triggers it:</p>
 <p><img alt="A height scan of the block: only a 0.35 µm band flips" src="band.svg" /></p>
 <p><em>130 of 2,001 heights, 2 nm apart, all inside 0.35 µm.</em></p>
-<p><strong>What it does to training:</strong> a unit test never lands in that band. A training run visits billions of poses, so it does, and the policy learns that blocks sometimes explode. We reported it as <a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a>. Two open PRs from other contributors, <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> and <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>, together remove every flip on our scan and on 8,000 random poses.</p>
-<h2 id="3-cables-and-cloth-behave-like-no-real-material">3. Cables and cloth behave like no real material<a class="headerlink" href="#3-cables-and-cloth-behave-like-no-real-material" title="Link to this section">#</a></h2>
+<p><strong>What it does to training:</strong> a unit test never lands in that band. Billions of steps across thousands of worlds land in it all the time, and the policy learns that blocks sometimes explode. Reported as <a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a>. Two open PRs from other contributors, <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> and <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>, together remove every flip on our scan and on 8,000 random poses.</p>
+<h2 id="3-the-tasks-that-need-scale-most-get-the-worst-physics">3. The tasks that need scale most get the worst physics<a class="headerlink" href="#3-the-tasks-that-need-scale-most-get-the-worst-physics" title="Link to this section">#</a></h2>
+<p>Cables and cloth are why you need millions of rollouts: they have more ways to move than any rigid object. They are also where the engines are furthest from reality.</p>
 <p><strong>Stiff cables sag 40 % too far</strong> (Newton, VBD solver<sup id="fnref:vbd"><a class="footnote-ref" href="#fn:vbd">1</a></sup>). VBD corrects one body at a time, so a correction crawls one segment per sweep. Our <a href="https://github.com/newton-physics/newton/pull/4795">#4795</a> solves each rod at once and lands within 1–2 % of the exact shape.</p>
 <p><img alt="One body at a time, a fix travels about a segment per sweep; solving the whole rod at once lands the beam on its exact shape" src="rods.svg" /></p>
-<p><strong>A cloth pile sinks through the floor</strong> (Newton, VBD with self-contact). 271 of 1,681 particles end up below the ground, the lowest 74 mm down. <a href="https://github.com/newton-physics/newton/issues/5143">#5143</a>.</p>
-<p><strong>What it does to training:</strong> a policy that learns to route a cable or fold a towel learns a material that doesn&rsquo;t exist.</p>
-<h2 id="the-rest">The rest<a class="headerlink" href="#the-rest" title="Link to this section">#</a></h2>
-<p><img alt="Eight looping sketches: early touch, one contact on a line, a tiny overlap read as huge, fine cloth that won't bend, bending that weakens with mesh size, held cloth that drops, fluid that flows slow, and cloth that moves 3.2 times too fast" src="others.svg" /></p>
+<p><strong>A cloth pile sinks through the floor</strong> (Newton, VBD with self-contact). 271 of 1,681 particles end up below the ground, the lowest 74 mm down (<a href="https://github.com/newton-physics/newton/issues/5143">#5143</a>).</p>
+<p><strong>What it does to training:</strong> a policy that learns to route a cable or fold a towel, at scale, learns a material that doesn&rsquo;t exist.</p>
 <h2 id="if-you-train-at-scale-check-this">If you train at scale, check this<a class="headerlink" href="#if-you-train-at-scale-check-this" title="Link to this section">#</a></h2>
 <ol>
 <li><strong>Run one scene at 1 and at 4,096 worlds.</strong> The physics must match.</li>
@@ -44,86 +43,21 @@
 <li><strong>Test soft things at your real mesh size.</strong></li>
 <li><strong>In MuJoCo Warp, route box pairs to the box-box routine</strong> (turn <code>NATIVECCD</code> off) until #1845 and #1866 land.</li>
 </ol>
-<h2 id="the-ledger">The ledger<a class="headerlink" href="#the-ledger" title="Link to this section">#</a></h2>
-<table>
-<thead>
-<tr>
-<th>Bug</th>
-<th>Engine</th>
-<th>Report / fix</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Round shapes touch 0.1 mm early</td>
-<td>Newton</td>
-<td><a href="https://github.com/newton-physics/newton/issues/4790">#4790</a> / <a href="https://github.com/newton-physics/newton/pull/4791">#4791</a> ✓</td>
-</tr>
-<tr>
-<td>Held cloth drops (deterministic mode)</td>
-<td>Newton</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5145">#5145</a> / <a href="https://github.com/newton-physics/newton/pull/5146">#5146</a> ✓</td>
-</tr>
-<tr>
-<td>Stiff cables sag 40 %</td>
-<td>Newton</td>
-<td><a href="https://github.com/newton-physics/newton/issues/4794">#4794</a> / <a href="https://github.com/newton-physics/newton/pull/4795">#4795</a></td>
-</tr>
-<tr>
-<td>Fine cloth won&rsquo;t bend</td>
-<td>Newton</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5130">#5130</a> / <a href="https://github.com/newton-physics/newton/pull/5131">#5131</a></td>
-</tr>
-<tr>
-<td>Bending weakens with mesh size</td>
-<td>Newton</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5140">#5140</a></td>
-</tr>
-<tr>
-<td>Cloth pile sinks through the floor</td>
-<td>Newton</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5143">#5143</a></td>
-</tr>
-<tr>
-<td>Pushed cloth gains 3.2× the momentum</td>
-<td>Newton</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5129">#5129</a></td>
-</tr>
-<tr>
-<td>Fluid flows 15 % slow</td>
-<td>Newton</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5206">#5206</a></td>
-</tr>
-<tr>
-<td>MPM worlds move each other</td>
-<td>Newton</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5207">#5207</a></td>
-</tr>
-<tr>
-<td>Worlds share one bounding box</td>
-<td>MJ Warp</td>
-<td><a href="https://github.com/google-deepmind/mujoco_warp/issues/1795">#1795</a> / <a href="https://github.com/google-deepmind/mujoco_warp/pull/1800">#1800</a>*</td>
-</tr>
-<tr>
-<td>16.5 µm overlap read as 190 mm</td>
-<td>MJ Warp</td>
-<td><a href="https://github.com/google-deepmind/mujoco_warp/pull/1796">#1796</a></td>
-</tr>
-<tr>
-<td>Resting block launched</td>
-<td>MJ Warp</td>
-<td><a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a> / <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> + <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>*</td>
-</tr>
-<tr>
-<td>One contact on a line</td>
-<td>MuJoCo</td>
-<td><a href="https://github.com/google-deepmind/mujoco/issues/3755">#3755</a></td>
-</tr>
-</tbody>
-</table>
-<p><em>✓ merged. * by other contributors. MJ Warp is MuJoCo Warp. Every report links a script that reproduces it.</em></p>
 <h2 id="whats-next">What&rsquo;s next<a class="headerlink" href="#whats-next" title="Link to this section">#</a></h2>
-<p>These bugs share one cause. The engines are tuned for scenes where a millimetre doesn&rsquo;t matter, nobody reruns a world, and speed is measured on falling boxes. That is the right tuning for most of their users, and the wrong one for robot hands. So we are building Alloy, a physics engine for robot hands, around the checks above. It launches soon. Why we are building it, in plain words: <a href="../robots-need-their-own-wind-tunnel/">Robots need their own wind tunnel</a>.</p>
+<p>These bugs share one cause. The engines are tuned for scenes where a millimetre doesn&rsquo;t matter, nobody reruns a world, and speed is measured on falling boxes. That is the right tuning for most of their users, and the wrong one for training robot hands at scale. So we are building Alloy, a physics engine for robot hands at scale, around the checks above. It launches soon. Why we are building it, in plain words: <a href="../robots-need-their-own-wind-tunnel/">Robots need their own wind tunnel</a>.</p>
+<h2 id="footnotes">Footnotes<a class="headerlink" href="#footnotes" title="Link to this section">#</a></h2>
+<p><img alt="Eight looping sketches: early touch, one contact on a line, a tiny overlap read as huge, fine cloth that won't bend, bending that weakens with mesh size, held cloth that drops, fluid that flows slow, and cloth that moves 3.2 times too fast" src="others.svg" /></p>
+<ol>
+<li><strong>Round shapes touch 0.1 mm early</strong> (Newton). A 0.1 mm collision margin was counted twice for spheres and capsules. <a href="https://github.com/newton-physics/newton/issues/4790">#4790</a>, fix <a href="https://github.com/newton-physics/newton/pull/4791">#4791</a>, merged.</li>
+<li><strong>One contact on a line</strong> (MuJoCo). A box lying across another box&rsquo;s edge gets one contact at one end instead of a row along the edge. <a href="https://github.com/google-deepmind/mujoco/issues/3755">#3755</a>.</li>
+<li><strong>16.5 µm overlap read as 190 mm</strong> (MuJoCo Warp). A face built on two near-identical corners points anywhere, so a tiny overlap becomes a huge sideways push. Fix <a href="https://github.com/google-deepmind/mujoco_warp/pull/1796">#1796</a>.</li>
+<li><strong>Fine cloth won&rsquo;t bend</strong> (Newton VBD). Folds with edges under about 1 mm fail a fixed-size check, so bending switches off. <a href="https://github.com/newton-physics/newton/issues/5130">#5130</a>, fix <a href="https://github.com/newton-physics/newton/pull/5131">#5131</a>.</li>
+<li><strong>Bending weakens with mesh size</strong> (Newton XPBD and semi-implicit). Bending is scaled by triangle area, so 1 cm cells bend 10⁴ times weaker than 1 m cells. <a href="https://github.com/newton-physics/newton/issues/5140">#5140</a>.</li>
+<li><strong>Held cloth drops</strong> (Newton VBD). In deterministic mode, the forces pinning cloth to a body were overwritten. <a href="https://github.com/newton-physics/newton/issues/5145">#5145</a>, fix <a href="https://github.com/newton-physics/newton/pull/5146">#5146</a>, merged.</li>
+<li><strong>Fluid flows 15 % slow</strong> (Newton MPM). On the default sparse grid, the floor cuts a grid cell in half and drags on the film. <a href="https://github.com/newton-physics/newton/issues/5206">#5206</a>.</li>
+<li><strong>Pushed cloth gains 3.2× the momentum</strong> (Newton VBD). Solving one vertex at a time doesn&rsquo;t conserve momentum. <a href="https://github.com/newton-physics/newton/issues/5129">#5129</a>.</li>
+</ol>
+<p>Every report links a script that reproduces it.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Link to this section">#</a></h2>
 <div class="footnote">
 <hr />
@@ -135,9 +69,9 @@
 </div>
 <h2 id="citation">Citation<a class="headerlink" href="#citation" title="Link to this section">#</a></h2>
 <p>Please cite this work as:</p>
-<pre><code class="language-bibtex">@article{gupta2026simtoreal,
+<pre><code class="language-bibtex">@article{gupta2026scale,
   author  = {Pranay Gupta},
-  title   = {{What the fuck is the sim-to-real gap?}},
+  title   = {{Your physics engine breaks at scale}},
   journal = {codnay.github.io},
   year    = {2026},
   month   = {November},
@@ -232,7 +166,7 @@
 </tr>
 </tbody>
 </table>
-<p><em>The physics bugs, animated: <a href="../sim-to-real-gap/">What the fuck is the sim-to-real gap?</a></em></p>
+<p><em>The physics bugs, animated: <a href="../sim-to-real-gap/">Your physics engine breaks at scale</a></em></p>
 <h2 id="why-upstream-fixes-arent-enough">Why upstream fixes aren&rsquo;t enough<a class="headerlink" href="#why-upstream-fixes-arent-enough" title="Link to this section">#</a></h2>
 <p>Newton has merged three of our fixes, two of them within two days. MuJoCo Warp hasn&rsquo;t merged one in three weeks. That is fair. These engines serve thousands of users, mostly teaching robots to walk, and their maintainers must be careful.</p>
 <p>But this is not 20 bugs. It is one pattern: engines tuned for scenes where a millimetre doesn&rsquo;t matter, nobody reruns a world, and speed is measured on falling boxes. Fixing that one patch at a time is like correcting Smeaton&rsquo;s coefficient one wing at a time.</p>
