@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 480" width="420" height="480" role="img" aria-label="Timeline of what each simulator was built for: games in the 2000s, controllers in 2012, walking robots in 2021, GPU robot learning in 2025, and the gap: robot hands, which no engine was built for.">
+  <style>
+    .yr { font: 500 12px ui-monospace, Menlo, Consolas, monospace; fill: #6b6f6c; }
+    .nm { font: 20px Georgia, "Times New Roman", serif; fill: #16191a; }
+    .sub { font: 12px ui-monospace, Menlo, Consolas, monospace; fill: #6b6f6c; }
+    .for { font: 13px ui-monospace, Menlo, Consolas, monospace; fill: #2a4f8f; }
+    .gap-nm { font: 20px Georgia, "Times New Roman", serif; fill: #f3f2ed; }
+    .gap-t { font: 13px ui-monospace, Menlo, Consolas, monospace; fill: #f3f2ed; }
+    .ttl { font: 22px Georgia, "Times New Roman", serif; fill: #16191a; }
+    /* 8 s loop, one era at a time down the timeline: a crate bounces, a planner tries rollouts,
+       a legged robot steps, many copies step at once, a gripper closes on a thin plate */
+    .m { transform-box: fill-box; transform-origin: 50% 50%; animation: 8s ease-in-out infinite; }
+    .crate { animation-name: crate; }
+    .r1 { animation-name: r1; } .r2 { animation-name: r2; } .r3 { animation-name: r3; } .rc { animation-name: rc; }
+    .la, .lb { transform-origin: 50% 0; }
+    .la { transform: rotate(12deg); animation-name: la; } .lb { transform: rotate(-12deg); animation-name: lb; }
+    .cp { animation-name: cp; }
+    .fl { animation-name: fl; } .fr { animation-name: fr; }
+    @keyframes crate {
+      0%,4% { transform: none; animation-timing-function: cubic-bezier(.3,.6,.5,1); }
+      9% { transform: translateY(-14px); animation-timing-function: cubic-bezier(.5,0,.7,.4); }
+      14% { transform: none; animation-timing-function: cubic-bezier(.3,.6,.5,1); }
+      16.5% { transform: translateY(-5px); animation-timing-function: cubic-bezier(.5,0,.7,.4); }
+      19%,100% { transform: none; }
+    }
+    @keyframes r1 { 0%,20% { opacity: 1; } 23%,26% { opacity: 0; } 28%,100% { opacity: 1; } }
+    @keyframes r2 { 0%,20% { opacity: 1; } 23%,30% { opacity: 0; } 32%,100% { opacity: 1; } }
+    @keyframes r3 { 0%,20% { opacity: 1; } 23%,34% { opacity: 0; } 36%,100% { opacity: 1; } }
+    @keyframes rc { 0%,20% { opacity: 1; } 23%,38% { opacity: 0; } 41%,100% { opacity: 1; } }
+    @keyframes la { 0%,44% { transform: rotate(12deg); } 48.5% { transform: rotate(-12deg); } 53% { transform: rotate(12deg); } 57.5% { transform: rotate(-12deg); } 62%,100% { transform: rotate(12deg); } }
+    @keyframes lb { 0%,44% { transform: rotate(-12deg); } 48.5% { transform: rotate(12deg); } 53% { transform: rotate(-12deg); } 57.5% { transform: rotate(12deg); } 62%,100% { transform: rotate(-12deg); } }
+    @keyframes cp {
+      0%,63% { transform: none; animation-timing-function: cubic-bezier(.3,.6,.5,1); }
+      65.5% { transform: translateY(-4px); animation-timing-function: cubic-bezier(.5,0,.7,.4); }
+      68% { transform: none; animation-timing-function: cubic-bezier(.3,.6,.5,1); }
+      69.5% { transform: translateY(-1.5px); animation-timing-function: cubic-bezier(.5,0,.7,.4); }
+      71%,100% { transform: none; }
+    }
+    @keyframes fl { 0%,75% { transform: none; } 79%,83% { transform: translateX(-7px); } 92%,100% { transform: none; } }
+    @keyframes fr { 0%,75% { transform: none; } 79%,83% { transform: translateX(7px); } 92%,100% { transform: none; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <rect width="420" height="480" fill="#f3f2ed"/>
+  <text x="16" y="34" class="ttl">What simulators were built for</text>
+  <line x1="86" y1="70" x2="86" y2="392" stroke="#d8d8d0" stroke-width="2"/>
+  <line x1="86" y1="392" x2="86" y2="424" stroke="#2a4f8f" stroke-width="2" stroke-dasharray="4 4"/>
+
+  <g>
+    <text x="72" y="86" text-anchor="end" class="yr">2000s</text>
+    <circle cx="86" cy="82" r="6" fill="#f3f2ed" stroke="#16191a" stroke-width="2"/>
+    <text x="104" y="88" class="nm">Game engines</text>
+    <text x="104" y="107" class="sub">Havok, PhysX, Bullet</text>
+    <text x="104" y="126" class="for">→ look right, 60 times a second</text>
+    <!-- a crate that bounces -->
+    <line x1="358" y1="111.25" x2="404" y2="111.25" stroke="#d8d8d0" stroke-width="1.5"/>
+    <g class="m crate" fill="none" stroke="#16191a">
+      <rect x="373" y="94" width="16" height="16" fill="#e6e5de" stroke-width="1.5"/>
+      <path d="M376 97h10v10h-10z M376 107l10-10" stroke-width="1"/>
+    </g>
+  </g>
+  <g>
+    <text x="72" y="164" text-anchor="end" class="yr">2012</text>
+    <circle cx="86" cy="160" r="6" fill="#f3f2ed" stroke="#16191a" stroke-width="2"/>
+    <text x="104" y="166" class="nm">MuJoCo</text>
+    <text x="104" y="185" class="sub">Todorov, Erez, Tassa</text>
+    <text x="104" y="204" class="for">→ smooth, fast maths for controllers</text>
+    <!-- a planner asking "what if?": rollouts branch out, one is chosen -->
+    <g fill="none" stroke="#6b6f6c" stroke-width="1.2" stroke-dasharray="2 2">
+      <path class="m r1" d="M356 168 Q378 166 398 150"/>
+      <path class="m r2" d="M356 168 Q377 166 398 167"/>
+      <path class="m r3" d="M356 168 Q378 172 398 184"/>
+    </g>
+    <path class="m rc" d="M356 168 Q377 166 398 167" fill="none" stroke="#2a4f8f" stroke-width="2"/>
+    <circle cx="356" cy="168" r="2.5" fill="#16191a"/>
+  </g>
+  <g>
+    <text x="72" y="242" text-anchor="end" class="yr">2021</text>
+    <circle cx="86" cy="238" r="6" fill="#f3f2ed" stroke="#16191a" stroke-width="2"/>
+    <text x="104" y="244" class="nm">Isaac Gym</text>
+    <text x="104" y="263" class="sub">thousands of robots on one GPU</text>
+    <text x="104" y="282" class="for">→ teach legged robots to walk</text>
+    <!-- a four-legged robot stepping in place (diagonal legs move together) -->
+    <line x1="352" y1="260.75" x2="404" y2="260.75" stroke="#d8d8d0" stroke-width="1.5"/>
+    <g stroke-width="1.8" stroke-linecap="round">
+      <line class="m la" x1="384" y1="243" x2="384" y2="259" stroke="#6b6f6c"/>
+      <line class="m lb" x1="364" y1="243" x2="364" y2="259" stroke="#6b6f6c"/>
+      <line class="m la" x1="364" y1="243" x2="364" y2="259" stroke="#16191a"/>
+      <line class="m lb" x1="384" y1="243" x2="384" y2="259" stroke="#16191a"/>
+    </g>
+    <rect x="359" y="237" width="30" height="7" rx="1.5" fill="#e6e5de" stroke="#16191a" stroke-width="1.5"/>
+    <rect x="387" y="231" width="8" height="6" rx="1" fill="#e6e5de" stroke="#16191a" stroke-width="1.5"/>
+  </g>
+  <g>
+    <text x="72" y="320" text-anchor="end" class="yr">2025</text>
+    <circle cx="86" cy="316" r="6" fill="#f3f2ed" stroke="#16191a" stroke-width="2"/>
+    <text x="104" y="322" class="nm">Newton, MuJoCo Warp</text>
+    <text x="104" y="341" class="sub">open, GPU-first</text>
+    <text x="104" y="360" class="for">→ robot learning at scale</text>
+    <!-- many copies of one world, all stepping at once -->
+    <g fill="none" stroke="#6b6f6c">
+      <rect x="352.5" y="306.5" width="10" height="10"/><rect x="365.5" y="306.5" width="10" height="10"/>
+      <rect x="378.5" y="306.5" width="10" height="10"/><rect x="391.5" y="306.5" width="10" height="10"/>
+      <rect x="352.5" y="319.5" width="10" height="10"/><rect x="365.5" y="319.5" width="10" height="10"/>
+      <rect x="378.5" y="319.5" width="10" height="10"/><rect x="391.5" y="319.5" width="10" height="10"/>
+    </g>
+    <g fill="#16191a">
+      <circle class="m cp" cx="357.5" cy="314" r="1.8"/><circle class="m cp" cx="370.5" cy="314" r="1.8"/>
+      <circle class="m cp" cx="383.5" cy="314" r="1.8"/><circle class="m cp" cx="396.5" cy="314" r="1.8"/>
+      <circle class="m cp" cx="357.5" cy="327" r="1.8"/><circle class="m cp" cx="370.5" cy="327" r="1.8"/>
+      <circle class="m cp" cx="383.5" cy="327" r="1.8"/><circle class="m cp" cx="396.5" cy="327" r="1.8"/>
+    </g>
+  </g>
+
+  <g>
+    <text x="72" y="428" text-anchor="end" class="yr" style="fill:#2a4f8f">now</text>
+    <circle cx="86" cy="424" r="7" fill="#2a4f8f"/>
+    <rect x="100" y="388" width="306" height="80" fill="#2a4f8f"/>
+    <text x="114" y="414" class="gap-nm">Robot hands</text>
+    <text x="114" y="435" class="gap-t">thin, tight, soft things, and the</text>
+    <text x="114" y="454" class="gap-t">same answer every time you ask</text>
+    <!-- a gripper opening, then closing gently on a thin plate -->
+    <g stroke="#f3f2ed" stroke-width="2">
+      <line x1="384" y1="393" x2="384" y2="400"/>
+      <line x1="370" y1="400" x2="398" y2="400"/>
+    </g>
+    <rect x="382.7" y="404" width="2.6" height="16" fill="#2a4f8f" stroke="#f3f2ed" stroke-width="1"/>
+    <rect class="m fl" x="379" y="401" width="3" height="14" fill="#f3f2ed"/>
+    <rect class="m fr" x="386" y="401" width="3" height="14" fill="#f3f2ed"/>
+  </g>
+</svg>

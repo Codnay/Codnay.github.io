@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 210" width="420" height="210" role="img" aria-label="A scan of the block's depth from 7 to 11 micrometres in 2 nanometre steps. A cursor sweeps the heights; the contact normal points up everywhere except inside a band about 0.35 micrometres wide just below 9 micrometres deep, where it flips down. 130 of the 2,001 heights flip, all inside that band.">
+  <defs>
+    <marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2a4f8f"/></marker>
+    <clipPath id="bar"><rect x="40.75" y="110.75" width="338.5" height="32.5"/></clipPath>
+  </defs>
+  <style>
+    .t { font: 22px Georgia, "Times New Roman", serif; fill: #16191a; }
+    .l { font: 500 12.5px ui-monospace, Menlo, Consolas, monospace; fill: #16191a; }
+    .s { font: 12px ui-monospace, Menlo, Consolas, monospace; fill: #6b6f6c; }
+    .b { font: 500 12.5px ui-monospace, Menlo, Consolas, monospace; fill: #2a4f8f; }
+    /* 8 s loop: a cursor scans the heights left to right, revealing the result behind it;
+       its normal readout points up, and flips down only while inside the band */
+    .cov, .cur { opacity: 0; transform-box: fill-box; animation: 8s linear infinite; }
+    .cov { animation-name: cov; } .cur { animation-name: cur; }
+    .up, .dn, .lab { animation: 8s linear infinite; }
+    .up { animation-name: up; } .dn { opacity: 0; animation-name: dn; } .lab { animation-name: lab; }
+    @keyframes cov {
+      0%,12% { opacity: 0; transform: none; } 15%,16% { opacity: 1; transform: none; }
+      40% { transform: translateX(142px); } 50% { transform: translateX(172px); }
+      78%,100% { opacity: 1; transform: translateX(340px); }
+    }
+    @keyframes cur {
+      0%,13% { opacity: 0; transform: none; } 15%,16% { opacity: 1; transform: none; }
+      40% { transform: translateX(142px); } 50% { transform: translateX(172px); }
+      78% { opacity: 1; transform: translateX(340px); } 81%,100% { opacity: 0; transform: translateX(340px); }
+    }
+    @keyframes up { 0%,39.6% { opacity: 1; } 40.6%,49.4% { opacity: 0; } 50.4%,100% { opacity: 1; } }
+    @keyframes dn { 0%,39.6% { opacity: 0; } 40.6%,49.4% { opacity: 1; } 50.4%,100% { opacity: 0; } }
+    @keyframes lab { 0%,12% { opacity: 1; } 15%,50% { opacity: 0; } 54%,100% { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <rect width="420" height="210" fill="#f3f2ed"/>
+  <text x="16" y="34" class="t">Only a sliver flips</text>
+  <text x="16" y="56" class="s">2,001 heights of the block, 2 nm apart</text>
+
+  <!-- 7 µm -> x 40, 11 µm -> x 380 : 85 px per µm -->
+  <rect x="40" y="110" width="340" height="34" fill="#e6e5de" stroke="#16191a" stroke-width="1.5"/>
+  <rect x="182" y="110" width="30" height="34" fill="#2a4f8f"/>
+  <g class="lab">
+    <line x1="197" y1="104" x2="197" y2="80" stroke="#2a4f8f" stroke-width="1.5" marker-start="url(#ab)" transform="rotate(180 197 92)"/>
+    <text x="206" y="82" class="b">130 flip, all in 0.35 µm</text>
+    <text x="206" y="99" class="s">normal down, 27.7 mm</text>
+  </g>
+  <text x="48" y="132" class="s">correct</text>
+  <text x="314" y="132" class="s">correct</text>
+
+  <!-- scan: a paper cover hides what the cursor has not reached yet -->
+  <g clip-path="url(#bar)"><rect class="cov" x="40" y="110" width="340" height="34" fill="#f3f2ed"/></g>
+  <g class="cur">
+    <line x1="40" y1="106" x2="40" y2="148" stroke="#16191a" stroke-width="1.5"/>
+    <g class="up"><path d="M49 138V122" stroke="#16191a" stroke-width="1.6"/><path d="M45 124l4-7 4 7z" fill="#16191a"/></g>
+    <g class="dn"><path d="M49 116V132" stroke="#2a4f8f" stroke-width="1.6"/><path d="M45 130l4 7 4-7z" fill="#2a4f8f"/></g>
+  </g>
+
+  <g class="s" text-anchor="middle">
+    <line x1="40" y1="144" x2="40" y2="150" stroke="#16191a"/><text x="40" y="166">7</text>
+    <line x1="125" y1="144" x2="125" y2="150" stroke="#16191a"/><text x="125" y="166">8</text>
+    <line x1="210" y1="144" x2="210" y2="150" stroke="#16191a"/><text x="210" y="166">9</text>
+    <line x1="295" y1="144" x2="295" y2="150" stroke="#16191a"/><text x="295" y="166">10</text>
+    <line x1="380" y1="144" x2="380" y2="150" stroke="#16191a"/><text x="380" y="166">11</text>
+  </g>
+  <text x="210" y="190" text-anchor="middle" class="s">µm into the board</text>
+</svg>
