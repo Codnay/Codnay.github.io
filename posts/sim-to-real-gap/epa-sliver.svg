@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 360" width="420" height="360" role="img" aria-label="A two-dimensional sketch of EPA's shape around the origin, built face by face. The bottom face is the right answer: shallow, pointing down, and its direction is steady. Two corners that coincide up to rounding make a sliver face whose direction is noise; EPA picked it and returned 190 mm sideways. The fix never picks a face whose shortest edge is under a millionth of its longest.">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#16191a"/></marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2a4f8f"/></marker>
+  </defs>
+  <style>
+    .t { font: 22px Georgia, "Times New Roman", serif; fill: #16191a; }
+    .l { font: 500 12.5px ui-monospace, Menlo, Consolas, monospace; fill: #16191a; }
+    .s { font: 12px ui-monospace, Menlo, Consolas, monospace; fill: #6b6f6c; }
+    .b { font: 500 12.5px ui-monospace, Menlo, Consolas, monospace; fill: #2a4f8f; }
+    /* 7 s loop: EPA adds faces one by one, the sliver last; its normal wobbles (noise), the right face's stays put */
+    .e { stroke: #16191a; stroke-width: 1.5; stroke-linecap: round; }
+    .k { animation: 7s ease-in-out infinite; }
+    .f0 { animation-name: f0; } .f1 { animation-name: f1; } .f2 { animation-name: f2; } .f3 { animation-name: f3; }
+    .f4 { animation-name: f4; } .f5 { animation-name: f5; } .f6 { animation-name: f6; } .f7 { animation-name: f7; }
+    .fill { animation-name: fill; } .pick { animation-name: pick; }
+    @keyframes f0 { 0%,12% { opacity: 1; } 15%,20% { opacity: 0; } 23%,100% { opacity: 1; } }
+    @keyframes f1 { 0%,12% { opacity: 1; } 15%,24% { opacity: 0; } 27%,100% { opacity: 1; } }
+    @keyframes f2 { 0%,12% { opacity: 1; } 15%,28% { opacity: 0; } 31%,100% { opacity: 1; } }
+    @keyframes f3 { 0%,12% { opacity: 1; } 15%,32% { opacity: 0; } 35%,100% { opacity: 1; } }
+    @keyframes f4 { 0%,12% { opacity: 1; } 15%,36% { opacity: 0; } 39%,100% { opacity: 1; } }
+    @keyframes f5 { 0%,12% { opacity: 1; } 15%,40% { opacity: 0; } 43%,100% { opacity: 1; } }
+    @keyframes f6 { 0%,12% { opacity: 1; } 15%,44% { opacity: 0; } 47%,100% { opacity: 1; } }
+    @keyframes f7 { 0%,12% { opacity: 1; } 15%,48% { opacity: 0; } 51%,100% { opacity: 1; } }
+    @keyframes fill { 0%,12% { opacity: 1; } 15%,51% { opacity: 0; } 56%,100% { opacity: 1; } }
+    @keyframes pick { 0%,12% { opacity: 1; } 15%,54% { opacity: 0; } 58%,100% { opacity: 1; } }
+    .wob { transform-box: fill-box; transform-origin: 0 50%; animation: wob 2.4s ease-in-out infinite; }
+    @keyframes wob {
+      0% { transform: rotate(0); } 12% { transform: rotate(-26deg); } 25% { transform: rotate(12deg); }
+      37% { transform: rotate(-8deg); } 50% { transform: rotate(29deg); } 62% { transform: rotate(-32deg); }
+      75% { transform: rotate(7deg); } 87% { transform: rotate(-15deg); } 100% { transform: rotate(0); }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <rect width="420" height="360" fill="#f3f2ed"/>
+  <text x="16" y="34" class="t">A sliver face points anywhere</text>
+
+  <g transform="translate(-24 0)">
+<!-- EPA's polytope around the origin (2D sketch), one line per face -->
+  <polygon class="k fill" points="58,122 146,86 228,112 233,117 246,196 206,236 86,236 50,188" fill="#e6e5de"/>
+  <line class="e k f0" x1="50" y1="188" x2="58" y2="122"/>
+  <line class="e k f1" x1="58" y1="122" x2="146" y2="86"/>
+  <line class="e k f2" x1="146" y1="86" x2="228" y2="112"/>
+  <line class="e k f3" x1="86" y1="236" x2="50" y2="188"/>
+  <line class="e k f5" x1="233" y1="117" x2="246" y2="196"/>
+  <line class="e k f6" x1="246" y1="196" x2="206" y2="236"/>
+  <circle cx="148" cy="172" r="3" fill="#16191a"/>
+  <text x="156" y="168" class="s">origin</text>
+
+  <!-- the right face -->
+  <g class="k f4">
+  <line x1="86" y1="236" x2="206" y2="236" stroke="#16191a" stroke-width="3.5"/>
+  <line x1="146" y1="238" x2="146" y2="276" stroke="#16191a" stroke-width="2" marker-end="url(#a)"/>
+  <text x="156" y="262" class="l">right face</text>
+  <text x="156" y="279" class="s">0.0165 mm, down</text>
+  </g>
+
+  <!-- the sliver -->
+  <g class="k f7">
+  <line x1="228" y1="112" x2="233" y2="117" stroke="#2a4f8f" stroke-width="3.5"/>
+  <circle cx="228" cy="112" r="3.5" fill="#2a4f8f"/>
+  <circle cx="233" cy="117" r="3.5" fill="#2a4f8f"/>
+  <line class="wob" x1="236" y1="114" x2="292" y2="114" stroke="#2a4f8f" stroke-width="2" marker-end="url(#ab)"/>
+  <line x1="236" y1="114" x2="276" y2="86" stroke="#2a4f8f" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#ab)"/>
+  <line x1="236" y1="114" x2="280" y2="140" stroke="#2a4f8f" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#ab)"/>
+  <text x="298" y="104" class="b">sliver face</text>
+  <text x="298" y="121" class="s">two corners one</text>
+  <text x="298" y="136" class="s">rounding step apart</text>
+  </g>
+  <g class="k pick">
+  <text x="298" y="160" class="l">EPA picked it:</text>
+  <text x="298" y="177" class="b">190 mm, sideways</text>
+  </g>
+
+  </g>
+  <!-- the fix -->
+  <rect x="16" y="300" width="388" height="48" fill="none" stroke="#2a4f8f" stroke-width="1.5"/>
+  <text x="28" y="320" class="l">Fix: never pick a face whose shortest</text>
+  <text x="28" y="338" class="l">edge is under 10⁻⁶ of its longest</text>
+</svg>

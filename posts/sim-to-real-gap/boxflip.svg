@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 260" width="420" height="260" role="img" aria-label="A thin block resting on a board. The box-box routine returns contacts 0.009 mm deep with the normal pointing up, and the block stays put. The convex path returns the normal pointing down and a depth of 27.7 mm, the block and board thicknesses added together, and the block is fired down through the board.">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#16191a"/>
+    </marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2a4f8f"/>
+    </marker>
+    <marker id="tb" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 5 H10" stroke="#2a4f8f" stroke-width="2"/>
+    </marker>
+  </defs>
+  <style>
+    .t { font: 22px Georgia, "Times New Roman", serif; fill: #16191a; }
+    .h { font: 18px Georgia, "Times New Roman", serif; fill: #16191a; }
+    .l { font: 500 12.5px ui-monospace, Menlo, Consolas, monospace; fill: #16191a; }
+    .s { font: 12px ui-monospace, Menlo, Consolas, monospace; fill: #6b6f6c; }
+    .b { font: 500 12.5px ui-monospace, Menlo, Consolas, monospace; fill: #2a4f8f; }
+    /* 6 s loop: both routines return their normal at once; the right block is then fired down through the board */
+    .m { transform-box: fill-box; transform-origin: 50% 50%; animation: 6s ease-in-out infinite; }
+    .nu { animation-name: nu; } .nd { animation-name: nd; } .fire { animation-name: fire; }
+    @keyframes nu { 0%,20% { opacity: 1; transform: none; } 25%,30% { opacity: 0; transform: translateY(6px); } 36%,100% { opacity: 1; transform: none; } }
+    @keyframes nd { 0%,20% { opacity: 1; transform: none; } 25%,30% { opacity: 0; transform: translateY(-6px); } 36%,100% { opacity: 1; transform: none; } }
+    @keyframes fire {
+      0%,44% { opacity: 1; transform: none; animation-timing-function: ease-in; }
+      50% { opacity: 1; transform: translateY(34px); animation-timing-function: linear; }
+      53% { opacity: 0; transform: translateY(40px); }
+      72% { opacity: 0; transform: none; }
+      80%,100% { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <rect width="420" height="260" fill="#f3f2ed"/>
+  <text x="16" y="34" class="t">Same pose, two answers</text>
+
+  <!-- left: box-box routine -->
+  <text x="16" y="66" class="h">Box-box routine</text>
+  <text x="16" y="84" class="s">and MuJoCo C</text>
+  <rect x="16" y="160" width="180" height="26" fill="#e6e5de" stroke="#16191a" stroke-width="1.5"/>
+  <rect x="98" y="129" width="17" height="31" fill="#f3f2ed" stroke="#16191a" stroke-width="1.5"/>
+  <g class="m nu">
+    <line x1="60" y1="160" x2="60" y2="112" stroke="#16191a" stroke-width="2" marker-end="url(#a)"/>
+    <text x="68" y="122" class="s">normal</text>
+  </g>
+  <text x="16" y="210" class="l">depth 0.009 mm</text>
+  <text x="16" y="228" class="s">2 contacts, pointing up</text>
+
+  <!-- right: convex path (block drawn first so the board hides it as it passes through) -->
+  <text x="224" y="66" class="h">Convex path</text>
+  <text x="224" y="84" class="s">GJK, then EPA</text>
+  <rect class="m fire" x="306" y="129" width="17" height="31" fill="#f3f2ed" stroke="#16191a" stroke-width="1.5"/>
+  <rect x="224" y="160" width="180" height="26" fill="#e6e5de" stroke="#16191a" stroke-width="1.5"/>
+  <g class="m nd">
+    <line x1="268" y1="122" x2="268" y2="196" stroke="#2a4f8f" stroke-width="2" marker-end="url(#ab)"/>
+    <text x="276" y="118" class="b">normal</text>
+  </g>
+  <line x1="342" y1="129" x2="342" y2="186" stroke="#2a4f8f" stroke-width="1.5" marker-start="url(#tb)" marker-end="url(#tb)"/>
+  <text x="350" y="162" class="b">27.7</text>
+  <text x="350" y="177" class="b">mm</text>
+  <text x="224" y="210" class="b">depth 27.7 mm</text>
+  <text x="224" y="228" class="s">4 contacts, reversed:</text>
+  <text x="224" y="244" class="s">block + board thickness</text>
+</svg>
