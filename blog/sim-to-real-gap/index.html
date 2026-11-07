@@ -43,17 +43,21 @@
     </header>
     <div class="prose">
 <div class="wx-tldr">
-<p><strong>TL;DR</strong> Over the past month we found <strong>20 bugs in open-source physics engines</strong>. Most <strong>never raise an error</strong>. They quietly corrupt what your robot learns in simulation, and show up later as the <strong>sim-to-real gap</strong>: a robot that works in sim and fails on the real thing.</p>
-<p>The worst only appear <strong>at scale</strong>, the way large-scale distributed training runs: thousands of worlds per GPU, many GPUs, billions of steps. <strong>More worlds change the physics</strong>, <strong>rare poses launch objects</strong>, and <strong>cables and cloth behave like no real material</strong>. We found them in Newton, MuJoCo Warp and MuJoCo, and <strong>reported every one upstream</strong>.</p>
+<p><strong>TL;DR</strong> With models like GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator works only if whatever happens inside it would happen outside, thousands of times over. Every major open-source engine we tested breaks this promise. Over the past month we found <strong>about 30 bugs in open-source physics engines</strong>. Most bugs <strong>never raise an error</strong>, they just quietly corrupt your models and surface later as the infamous <strong>sim-to-real gap</strong>.</p>
+<p>The worst ones appear <strong>at scale</strong>, when you run billions of steps. <strong>More worlds change the physics</strong>, <strong>objects get launched</strong>, and <strong>cables and cloth don&rsquo;t behave like real materials</strong>. We found them in Newton, MuJoCo Warp and MuJoCo, and <strong>reported 20 upstream</strong>.</p>
 </div>
 <h2 id="1-more-worlds-different-physics">1. More worlds, different physics<a class="headerlink" href="#1-more-worlds-different-physics" title="Link to this section">#</a></h2>
 <p>A ten-cube tower stands on its own. Run it in thousands of worlds at once, and most of the copies fall.</p>
 <p><img alt="The same tower copied more and more times: the more copies, the more fall" src="towers.svg" /></p>
 <p><em>MuJoCo Warp, CG solver: 0 of 16 copies fall, then 92 of 256, 882 of 1,024 and 4,031 of 4,096.</em></p>
+<p><strong>Why?</strong> Each copy is meant to be solved on its own; the solver even checks convergence world by world. Yet the more copies run, the more towers fall, so something in the batched solve leaks between worlds. We haven&rsquo;t pinned down what yet.</p>
 <p>Worlds also leak into each other. In MuJoCo Warp, every world wrote its bounding box to one shared slot, and a ball fell through its own table (<a href="https://github.com/google-deepmind/mujoco_warp/issues/1795">#1795</a>; fix <a href="https://github.com/google-deepmind/mujoco_warp/pull/1800">#1800</a> by another contributor).</p>
 <p><img alt="Two worlds write their bounding boxes into one slot; world 0 is checked against world 1's narrower box and its ball falls through" src="aabb.svg" /></p>
 <p>In Newton&rsquo;s MPM solver, changing the other worlds moved world 0 by up to 0.1 mm (<a href="https://github.com/newton-physics/newton/issues/5207">#5207</a>). And at 4,096 worlds, Newton&rsquo;s mesh contact buffer filled up without a warning, and pegs sank 28.9 mm into a 20 mm hole.</p>
 <p><strong>What it does to training:</strong> the more worlds you run, the further your physics drifts from the one world you debugged.</p>
+<p>In our own runs on a tower-stacking task, training was smooth when the towers stood and erratic when they fell at scale:</p>
+<p><img alt="Illustration: on the same tower-stacking task, reward rises smoothly when towers stand and jumps and collapses when they fall" src="training.svg" /></p>
+<p><em>An illustration of the pattern, not plotted data.</em></p>
 <h2 id="2-rare-poses-stop-being-rare">2. Rare poses stop being rare<a class="headerlink" href="#2-rare-poses-stop-being-rare" title="Link to this section">#</a></h2>
 <p>In a two-arm task, a 15 mm block resting on a 12.7 mm board was fired straight down through it at several metres per second.</p>
 <p><img alt="The same pose through two routines: 0.009 mm and up, or 27.7 mm and down" src="boxflip.svg" /></p>

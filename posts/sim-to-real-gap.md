@@ -5,9 +5,9 @@ description: Large-scale distributed training runs thousands of worlds per GPU f
 ---
 <div class="wx-tldr" markdown="1">
 
-**TL;DR** Over the past month we found **20 bugs in open-source physics engines**. Most **never raise an error**. They quietly corrupt what your robot learns in simulation, and show up later as the **sim-to-real gap**: a robot that works in sim and fails on the real thing.
+**TL;DR** With models like GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator works only if whatever happens inside it would happen outside, thousands of times over. Every major open-source engine we tested breaks this promise. Over the past month we found **about 30 bugs in open-source physics engines**. Most bugs **never raise an error**, they just quietly corrupt your models and surface later as the infamous **sim-to-real gap**.
 
-The worst only appear **at scale**, the way large-scale distributed training runs: thousands of worlds per GPU, many GPUs, billions of steps. **More worlds change the physics**, **rare poses launch objects**, and **cables and cloth behave like no real material**. We found them in Newton, MuJoCo Warp and MuJoCo, and **reported every one upstream**.
+The worst ones appear **at scale**, when you run billions of steps. **More worlds change the physics**, **objects get launched**, and **cables and cloth don't behave like real materials**. We found them in Newton, MuJoCo Warp and MuJoCo, and **reported 20 upstream**.
 
 </div>
 
@@ -19,6 +19,8 @@ A ten-cube tower stands on its own. Run it in thousands of worlds at once, and m
 
 *MuJoCo Warp, CG solver: 0 of 16 copies fall, then 92 of 256, 882 of 1,024 and 4,031 of 4,096.*
 
+**Why?** Each copy is meant to be solved on its own; the solver even checks convergence world by world. Yet the more copies run, the more towers fall, so something in the batched solve leaks between worlds. We haven't pinned down what yet.
+
 Worlds also leak into each other. In MuJoCo Warp, every world wrote its bounding box to one shared slot, and a ball fell through its own table ([#1795](https://github.com/google-deepmind/mujoco_warp/issues/1795); fix [#1800](https://github.com/google-deepmind/mujoco_warp/pull/1800) by another contributor).
 
 ![Two worlds write their bounding boxes into one slot; world 0 is checked against world 1's narrower box and its ball falls through](aabb.svg)
@@ -26,6 +28,12 @@ Worlds also leak into each other. In MuJoCo Warp, every world wrote its bounding
 In Newton's MPM solver, changing the other worlds moved world 0 by up to 0.1 mm ([#5207](https://github.com/newton-physics/newton/issues/5207)). And at 4,096 worlds, Newton's mesh contact buffer filled up without a warning, and pegs sank 28.9 mm into a 20 mm hole.
 
 **What it does to training:** the more worlds you run, the further your physics drifts from the one world you debugged.
+
+In our own runs on a tower-stacking task, training was smooth when the towers stood and erratic when they fell at scale:
+
+![Illustration: on the same tower-stacking task, reward rises smoothly when towers stand and jumps and collapses when they fall](training.svg)
+
+*An illustration of the pattern, not plotted data.*
 
 ## 2. Rare poses stop being rare
 
