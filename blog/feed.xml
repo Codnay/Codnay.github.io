@@ -10,295 +10,126 @@
       <link>https://codnay.github.io/blog/sim-to-real-gap/</link>
       <guid>https://codnay.github.io/blog/sim-to-real-gap/</guid>
       <pubDate>Sat, 07 Nov 2026 12:00:00 +0000</pubDate>
-      <description>We found and reported 20 bugs in open-source physics engines. Most never raise an error. They quietly break what robots learn in simulation.</description>
+      <description>We found 20 bugs in open-source physics engines. The three that hurt large-scale robot training most, and the rest in one picture.</description>
       <content:encoded><![CDATA[<p>Over the past month we found 20 bugs in open-source physics engines. Most never raise an error. They quietly corrupt what your robot learns in simulation, and show up later as the sim-to-real gap: a robot that works in sim and fails on the real thing.</p>
-<p>We found them by pushing Newton, MuJoCo Warp and MuJoCo to the scale robot hands work at: tenths of a millimetre, thin cables, fine cloth, blocks resting on boards. We reported all 20 upstream with 11 fixes. Three are merged so far.</p>
-<p><strong>Read this if you build in sim.</strong> Comparing policies? See <a href="#failure-1-the-same-world-different-answers">failure 1</a>. Simulating thin, light or tight things? See <a href="#failure-2-a-resting-block-shot-through-the-floor">failure 2</a> and <a href="#cables-cloth-and-fluids">cables and cloth</a>. Loading MJCF files into Newton? See <a href="#settings-the-importer-drops">the importer</a>. Short on time? Skip to the <a href="#if-you-build-in-sim-check-this">checklist</a>.</p>
-<p><strong>Four words.</strong> A <em>contact</em> has a <em>normal</em>, the direction two shapes push apart, and a <em>depth</em>, how far they overlap. A <em>world</em> is one copy of the scene, and GPU engines run thousands at once. <em>float32</em> keeps about 7 digits, <em>float64</em> about 16. <em>NaN</em> is what a broken calculation returns, and it spreads.</p>
-<h2 id="failure-1-the-same-world-different-answers">Failure 1: the same world, different answers<a class="headerlink" href="#failure-1-the-same-world-different-answers" title="Link to this section">#</a></h2>
-<p>GPU engines add contact forces with <em>atomic adds</em>: thousands of threads add into one total, in whatever order they finish. In floating point, a different order gives a different answer.<sup id="fnref:goldberg"><a class="footnote-ref" href="#fn:goldberg">1</a></sup></p>
-<p><img alt="The same three numbers added in two orders give 1 and 0 in float32, and the same total as integers" src="float-order.svg" /></p>
-<p>In a stack or a grasp, that last digit decides which way a cube tips, and the difference grows.</p>
+<p>Large-scale training makes it worse. A policy trains on thousands of copies of a world, running side by side on GPUs for billions of steps. That is where these bugs live: they appear only when many worlds run at once, in poses too rare for any unit test, or in thin and soft things. We found them in Newton, MuJoCo Warp and MuJoCo, and reported all of them upstream. Here are the three that matter most for training at scale, then the rest in one picture.</p>
+<h2 id="1-more-worlds-different-physics">1. More worlds, different physics<a class="headerlink" href="#1-more-worlds-different-physics" title="Link to this section">#</a></h2>
+<p>A ten-cube tower stands on its own. Run it in thousands of worlds at once, and most of the copies fall.</p>
 <p><img alt="The same tower copied more and more times: the more copies, the more fall" src="towers.svg" /></p>
-<p><em>One ten-cube tower under MuJoCo Warp&rsquo;s CG solver: 0 of 16 copies fall, then 92 of 256, 882 of 1,024 and 4,031 of 4,096. We have not yet pinned the cause.</em></p>
-<ul>
-<li>Only <strong>42 %</strong> of the GPU configurations we reran repeated bit for bit.</li>
-<li>One VBD tower, run seven times on one GPU, drifted anywhere from 0.44 mm to 6.7 m in 10 s. On the CPU it drifts 0.00013 mm, every time.</li>
-<li><strong>One policy, graded three times</strong> on 200 episodes, changing only how its inputs were rounded, placed the plate in 49.6 % to 62.7 % of episodes. From one pair of runs, a sim A/B difference under about 15 points is noise.</li>
-</ul>
-<p><strong>The fix and its price.</strong> MuJoCo Warp&rsquo;s deterministic mode costs 40–146 times the step time. The open <a href="https://github.com/google-deepmind/mujoco_warp/pull/1422">#1422</a> costs about 44 times. Our version sorts contacts and adds the big sums as 64-bit integers, which add exactly in any order. Our two-arm scene now repeats bit for bit across 1,024 worlds at 1.10–1.26 times the step time.</p>
-<h2 id="failure-2-a-resting-block-shot-through-the-floor">Failure 2: a resting block shot through the floor<a class="headerlink" href="#failure-2-a-resting-block-shot-through-the-floor" title="Link to this section">#</a></h2>
-<p>In a GPU rollout of a two-arm task, a 15 mm block resting on a 12.7 mm board was fired straight down through the board at several metres per second.</p>
-<p><img alt="The same pose through two routines: 0.009 mm and up, or 27.7 mm and down" src="boxflip.svg" /></p>
-<p>MuJoCo Warp&rsquo;s general convex path returned the contact upside down and 27.7 mm deep: the two thicknesses added together. MuJoCo C and MuJoCo Warp&rsquo;s own box-box routine both say 0.009 mm, pointing up.</p>
-<p><strong>Why.</strong> EPA<sup id="fnref:epa"><a class="footnote-ref" href="#fn:epa">3</a></sup> measures an overlap by growing a shape of faces around the origin. The block was barely touching, so EPA&rsquo;s new faces sat 0.05–0.2 µm from the origin of a shape 0.7 m across. In float32 they fell outside its accepted range and were thrown away. The only face left pointed down.</p>
-<p><img alt="EPA's shape around the origin: the right face points down; a sliver face built on two near-identical corners points anywhere" src="epa-sliver.svg" /></p>
-<p><em>A 2-D sketch. A related degeneracy, a face built on two near-identical corners, made a cylinder 16.5 µm into a box come back 190 mm deep. Our fix: <a href="https://github.com/google-deepmind/mujoco_warp/pull/1796">#1796</a>.</em></p>
-<p><strong>Why tests miss it.</strong> Only a sliver of heights flips:</p>
-<p><img alt="A height scan of the block: only a 0.35 µm band flips" src="band.svg" /></p>
-<p><em>130 of 2,001 heights, scanned in 2 nm steps. Unit tests never land there. Rollouts visit millions of poses, and they do.</em></p>
-<p>We reported it as <a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a>. Two open PRs from other contributors, <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> and <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>, fix it together. We checked on the scan and on 8,000 random poses:</p>
-<table>
-<thead>
-<tr>
-<th>Applied on main</th>
-<th>Flipped heights</th>
-<th>Reversed normals</th>
-<th>Missed contacts</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>nothing</td>
-<td>130 of 2,001</td>
-<td>5</td>
-<td>9</td>
-</tr>
-<tr>
-<td>#1845</td>
-<td>0</td>
-<td>0</td>
-<td>5</td>
-</tr>
-<tr>
-<td>#1866</td>
-<td>130 of 2,001</td>
-<td>8</td>
-<td>4</td>
-</tr>
-<tr>
-<td>#1845 + #1866</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-<tr>
-<td>box-box routine</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-<h2 id="eighteen-more">Eighteen more<a class="headerlink" href="#eighteen-more" title="Link to this section">#</a></h2>
-<h3 id="contacts-in-the-wrong-place">Contacts in the wrong place<a class="headerlink" href="#contacts-in-the-wrong-place" title="Link to this section">#</a></h3>
-<p><strong>Round shapes touched 0.1 mm early</strong> (Newton). Spheres and capsules went to GJK<sup id="fnref:gjk"><a class="footnote-ref" href="#fn:gjk">2</a></sup> as a core inflated by 0.1 mm. Then the whole radius was added back, so the 0.1 mm counted twice: 12 % of a 0.85 mm cable&rsquo;s radius. Fixed and merged: <a href="https://github.com/newton-physics/newton/pull/4791">newton#4791</a>.</p>
-<p><img alt="The capsule's core is inflated by r_s before GJK, so GJK already leaves r_s out" src="radius.svg" /></p>
-<p><strong>A box lying across an edge gets one contact</strong> (MuJoCo). A thin box crossing a slab&rsquo;s edge, 0.9–3.6 mm deep along 70 mm, got a single contact at one end. The rest of the line was dropped. <a href="https://github.com/google-deepmind/mujoco/issues/3755">mujoco#3755</a>.</p>
-<h3 id="settings-the-importer-drops">Settings the importer drops<a class="headerlink" href="#settings-the-importer-drops" title="Link to this section">#</a></h3>
-<p>Newton&rsquo;s MJCF importer loses or changes four settings without a warning.</p>
-<p><img alt="Four MJCF settings go through Newton's importer: two are lost, two arrive changed" src="importer.svg" /></p>
-<p><em>A one-value <code>solref</code> came in with damping 0 instead of 1, an undamped spring: reference accelerations of 9.5×10¹¹ instead of 65.79. Explicit contact pairs picked up another pair&rsquo;s friction after MuJoCo&rsquo;s compiler reordered them.</em></p>
-<h3 id="cables-cloth-and-fluids">Cables, cloth and fluids<a class="headerlink" href="#cables-cloth-and-fluids" title="Link to this section">#</a></h3>
-<p><strong>Stiff cables sagged 40 % too far</strong> (Newton VBD<sup id="fnref:vbd"><a class="footnote-ref" href="#fn:vbd">4</a></sup>). VBD solves one body at a time, so a correction moves about one segment per sweep. <a href="https://github.com/newton-physics/newton/pull/4795">newton#4795</a> solves each rod at once, and beams land within 1–2 % of their exact shape.</p>
-<p><img alt="One body at a time, a fix travels about a segment per sweep; solving the whole rod at once lands the beam on its exact shape" src="rods.svg" /></p>
-<p><strong>Fine cloth lost its bending</strong> (Newton VBD). Triangles with edges under about 1 mm failed a fixed-size degeneracy test, so bending switched off. In 0.5 mm cells, a strip came out bit for bit the same at bending stiffnesses 10,000 times apart. Fix: <a href="https://github.com/newton-physics/newton/pull/5131">newton#5131</a>.</p>
-<p><img alt="The same strip: in 5 mm cells it bends; in 0.5 mm cells bending is off and it hangs limp" src="bending.svg" /></p>
-<p><strong>Bending depended on mesh size</strong> (Newton semi-implicit and XPBD). At 1 cm cells it was 10⁴ times weaker than at 1 m. <a href="https://github.com/newton-physics/newton/issues/5140">newton#5140</a>.</p>
-<p><strong>A cloth pile sank through the floor</strong> (Newton VBD, self-contact on). 271 of 1,681 particles ended below the ground, the lowest 74 mm down. <a href="https://github.com/newton-physics/newton/issues/5143">newton#5143</a>.</p>
-<p><strong>Pushed cloth gained 3.2 times the momentum</strong> it was given (Newton VBD). <a href="https://github.com/newton-physics/newton/issues/5129">newton#5129</a>.</p>
-<p><strong>Hanging cloth fell in deterministic mode</strong> (Newton VBD). Attachment forces were overwritten when contacts were passed in. Fixed and merged: <a href="https://github.com/newton-physics/newton/pull/5146">newton#5146</a>.</p>
-<p><strong>A fluid film flowed 15 % too slow</strong> (Newton MPM). On the default sparse grid it reached 0.82 of the exact speed, against 0.97 on the dense grid. <a href="https://github.com/newton-physics/newton/issues/5206">newton#5206</a>.</p>
-<h3 id="rounding">Rounding<a class="headerlink" href="#rounding" title="Link to this section">#</a></h3>
-<p><strong>A light cable became NaN on step 2</strong> (MuJoCo Warp). The solver factors H = M + JᵀDJ, which needs every eigenvalue above zero. On light bodies with stiff contacts, float32 rounding is bigger than the smallest one. <a href="https://github.com/google-deepmind/mujoco_warp/pull/1801">#1801</a> builds H in float64 as an option, for 25 % more step time.</p>
-<p><img alt="A bowl factors, a saddle does not; float32 rounding sits far above the smallest eigenvalue, float64 rounding far below" src="hessian.svg" /></p>
-<p><strong>Slow joints froze</strong> (Newton with MuJoCo or MuJoCo Warp). Joint positions are stored in float32. A joint that moves less than half a float32 gap per step never moves, yet keeps its velocity, and contacts feel that phantom speed. <a href="https://github.com/newton-physics/newton/issues/5177">newton#5177</a>.</p>
-<p><img alt="Each step adds less than half a float32 gap and rounds away; the hand stays still and a held tool walks out" src="freeze.svg" /></p>
-<p><em>A Franka gripper&rsquo;s tool walked 1.4 mm out of the grasp in 2 s at a 32.6 µs step.</em></p>
-<p><strong>Empty worlds read leftover memory</strong> (MuJoCo Warp). A world with no constraints could return NaN. Fix: <a href="https://github.com/google-deepmind/mujoco_warp/pull/1802">#1802</a>.</p>
-<h3 id="worlds-that-leak-into-each-other">Worlds that leak into each other<a class="headerlink" href="#worlds-that-leak-into-each-other" title="Link to this section">#</a></h3>
-<p><strong>Every world shared one bounding box</strong> (MuJoCo Warp). With object sizes set per world but bounding boxes not, all worlds wrote to one slot, and a ball fell through its own table. <a href="https://github.com/google-deepmind/mujoco_warp/issues/1795">#1795</a>; another contributor&rsquo;s <a href="https://github.com/google-deepmind/mujoco_warp/pull/1800">#1800</a> fixes it.</p>
+<p><em>MuJoCo Warp, CG solver: 0 of 16 copies fall, then 92 of 256, 882 of 1,024 and 4,031 of 4,096.</em></p>
+<p>Worlds also leak into each other. In MuJoCo Warp, every world wrote its bounding box to one shared slot, and a ball fell through its own table.</p>
 <p><img alt="Two worlds write their bounding boxes into one slot; world 0 is checked against world 1's narrower box and its ball falls through" src="aabb.svg" /></p>
-<p><strong>One world moved another</strong> (Newton MPM). With <code>separate_worlds=True</code>, changing the other worlds moved world 0 by up to 0.1 mm. <a href="https://github.com/newton-physics/newton/issues/5207">newton#5207</a>.</p>
-<h2 id="where-the-compute-goes">Where the compute goes<a class="headerlink" href="#where-the-compute-goes" title="Link to this section">#</a></h2>
-<p><img alt="Best world-steps per second, log scale: simple scenes run at millions to a hundred million; a bin of 64 bodies at thousands, and MuJoCo Warp at 630" src="compute.svg" /></p>
-<ul>
-<li><strong>Piles run slower on the GPU.</strong> A 256-body pile takes MuJoCo Warp 764 ms per step, and MuJoCo on a CPU 365 ms.</li>
-<li><strong>Anti-slip is the biggest single cost:</strong> 20–84 % of a CPU step.</li>
-<li><strong>Overflow is silent.</strong> At 4,096 worlds, Newton&rsquo;s mesh contact buffer filled up unnoticed, and pegs sank 28.9 mm into a 20 mm hole.</li>
-</ul>
-<h2 id="if-you-build-in-sim-check-this">If you build in sim, check this<a class="headerlink" href="#if-you-build-in-sim-check-this" title="Link to this section">#</a></h2>
+<p>In Newton&rsquo;s MPM solver, changing the other worlds moved world 0 by up to 0.1 mm. And at 4,096 worlds, Newton&rsquo;s mesh contact buffer filled up without a warning, and pegs sank 28.9 mm into a 20 mm hole.</p>
+<p><strong>What it does to training:</strong> at 4,096 worlds the policy learns physics you never see when you debug in one.</p>
+<h2 id="2-resting-objects-get-launched">2. Resting objects get launched<a class="headerlink" href="#2-resting-objects-get-launched" title="Link to this section">#</a></h2>
+<p>In a two-arm task, a 15 mm block resting on a 12.7 mm board was fired straight down through it at several metres per second.</p>
+<p><img alt="The same pose through two routines: 0.009 mm and up, or 27.7 mm and down" src="boxflip.svg" /></p>
+<p>MuJoCo Warp&rsquo;s general collision routine returned the contact upside down and 27.7 mm deep: both thicknesses added. Its own box-box routine and MuJoCo both say 0.009 mm, pointing up. Only a sliver of heights triggers it:</p>
+<p><img alt="A height scan of the block: only a 0.35 µm band flips" src="band.svg" /></p>
+<p><em>130 of 2,001 heights, 2 nm apart, all inside 0.35 µm.</em></p>
+<p><strong>What it does to training:</strong> a unit test never lands in that band. A training run visits billions of poses, so it does, and the policy learns that blocks sometimes explode. We reported it as <a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a>. Two open PRs from other contributors, <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> and <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>, together remove every flip on our scan and on 8,000 random poses.</p>
+<h2 id="3-cables-and-cloth-behave-like-no-real-material">3. Cables and cloth behave like no real material<a class="headerlink" href="#3-cables-and-cloth-behave-like-no-real-material" title="Link to this section">#</a></h2>
+<p><strong>Stiff cables sag 40 % too far</strong> (Newton, VBD solver<sup id="fnref:vbd"><a class="footnote-ref" href="#fn:vbd">1</a></sup>). VBD corrects one body at a time, so a correction crawls one segment per sweep. Our <a href="https://github.com/newton-physics/newton/pull/4795">#4795</a> solves each rod at once and lands within 1–2 % of the exact shape.</p>
+<p><img alt="One body at a time, a fix travels about a segment per sweep; solving the whole rod at once lands the beam on its exact shape" src="rods.svg" /></p>
+<p><strong>A cloth pile sinks through the floor</strong> (Newton, VBD with self-contact). 271 of 1,681 particles end up below the ground, the lowest 74 mm down. <a href="https://github.com/newton-physics/newton/issues/5143">#5143</a>.</p>
+<p><strong>What it does to training:</strong> a policy that learns to route a cable or fold a towel learns a material that doesn&rsquo;t exist.</p>
+<h2 id="the-rest">The rest<a class="headerlink" href="#the-rest" title="Link to this section">#</a></h2>
+<p><img alt="Eight looping sketches: early touch, one contact on a line, a tiny overlap read as huge, fine cloth that won't bend, bending that weakens with mesh size, held cloth that drops, fluid that flows slow, and cloth that moves 3.2 times too fast" src="others.svg" /></p>
+<h2 id="if-you-train-at-scale-check-this">If you train at scale, check this<a class="headerlink" href="#if-you-train-at-scale-check-this" title="Link to this section">#</a></h2>
 <ol>
-<li><strong>Run everything twice</strong> and compare final states bit for bit. Replicate every A/B test.</li>
-<li><strong>Vary the world count.</strong> One world&rsquo;s answer must not change when 4,095 others run beside it.</li>
-<li><strong>Scan awkward poses against float64:</strong> thin shapes, shallow overlaps, near-parallel faces.</li>
-<li><strong>Read back what you imported</strong> and compare it with MuJoCo&rsquo;s own compile of the same file.</li>
-<li><strong>Test at your real scale:</strong> your mesh size, your slowest joint, your lightest body.</li>
+<li><strong>Run one scene at 1 and at 4,096 worlds.</strong> The physics must match.</li>
+<li><strong>Scan awkward poses:</strong> thin things resting on each other, shallow overlaps, edges across edges.</li>
+<li><strong>Check momentum:</strong> push a free object with a known impulse. Its momentum must change by exactly that.</li>
 <li><strong>Size contact buffers yourself</strong> and check them for overflow every step.</li>
+<li><strong>Test soft things at your real mesh size.</strong></li>
 <li><strong>In MuJoCo Warp, route box pairs to the box-box routine</strong> (turn <code>NATIVECCD</code> off) until #1845 and #1866 land.</li>
 </ol>
 <h2 id="the-ledger">The ledger<a class="headerlink" href="#the-ledger" title="Link to this section">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>Engine</th>
 <th>Bug</th>
-<th>Report</th>
-<th>Fix</th>
-<th>Status</th>
+<th>Engine</th>
+<th>Report / fix</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td>Round shapes touch 0.1 mm early</td>
 <td>Newton</td>
-<td>Round shapes 0.1 mm early</td>
-<td><a href="https://github.com/newton-physics/newton/issues/4790">#4790</a></td>
-<td><a href="https://github.com/newton-physics/newton/pull/4791">#4791</a></td>
-<td>Merged 27 Oct</td>
+<td><a href="https://github.com/newton-physics/newton/issues/4790">#4790</a> / <a href="https://github.com/newton-physics/newton/pull/4791">#4791</a> ✓</td>
 </tr>
 <tr>
+<td>Held cloth drops (deterministic mode)</td>
 <td>Newton</td>
-<td>Hanging cloth falls, deterministic mode</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5145">#5145</a></td>
-<td><a href="https://github.com/newton-physics/newton/pull/5146">#5146</a></td>
-<td>Merged 5 Nov</td>
+<td><a href="https://github.com/newton-physics/newton/issues/5145">#5145</a> / <a href="https://github.com/newton-physics/newton/pull/5146">#5146</a> ✓</td>
 </tr>
 <tr>
+<td>Stiff cables sag 40 %</td>
 <td>Newton</td>
-<td>MJCF noslip options dropped</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5136">#5136</a></td>
-<td><a href="https://github.com/newton-physics/newton/pull/5137">#5137</a></td>
-<td>Merged 6 Nov</td>
+<td><a href="https://github.com/newton-physics/newton/issues/4794">#4794</a> / <a href="https://github.com/newton-physics/newton/pull/4795">#4795</a></td>
 </tr>
 <tr>
+<td>Fine cloth won&rsquo;t bend</td>
 <td>Newton</td>
-<td>Stiff rods sag</td>
-<td><a href="https://github.com/newton-physics/newton/issues/4794">#4794</a></td>
-<td><a href="https://github.com/newton-physics/newton/pull/4795">#4795</a></td>
-<td>Open</td>
+<td><a href="https://github.com/newton-physics/newton/issues/5130">#5130</a> / <a href="https://github.com/newton-physics/newton/pull/5131">#5131</a></td>
 </tr>
 <tr>
+<td>Bending weakens with mesh size</td>
 <td>Newton</td>
-<td>One-value solref: damping 0</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5127">#5127</a></td>
-<td><a href="https://github.com/newton-physics/newton/pull/5128">#5128</a></td>
-<td>Open</td>
-</tr>
-<tr>
-<td>Newton</td>
-<td>Pair properties on the wrong pair</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5120">#5120</a></td>
-<td><a href="https://github.com/newton-physics/newton/pull/5121">#5121</a></td>
-<td>Open</td>
-</tr>
-<tr>
-<td>Newton</td>
-<td>MJCF adhesion dropped</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5189">#5189</a></td>
-<td><a href="https://github.com/newton-physics/newton/pull/5190">#5190</a></td>
-<td>Open</td>
-</tr>
-<tr>
-<td>Newton</td>
-<td>Bending off below ~1 mm</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5130">#5130</a></td>
-<td><a href="https://github.com/newton-physics/newton/pull/5131">#5131</a></td>
-<td>Open</td>
-</tr>
-<tr>
-<td>Newton</td>
-<td>Bending scales with mesh size</td>
 <td><a href="https://github.com/newton-physics/newton/issues/5140">#5140</a></td>
-<td></td>
-<td>Open</td>
 </tr>
 <tr>
+<td>Cloth pile sinks through the floor</td>
 <td>Newton</td>
-<td>Cloth pile sinks through floor</td>
 <td><a href="https://github.com/newton-physics/newton/issues/5143">#5143</a></td>
-<td></td>
-<td>Open</td>
 </tr>
 <tr>
+<td>Pushed cloth gains 3.2× the momentum</td>
 <td>Newton</td>
-<td>Cloth gains 3.2× the impulse</td>
 <td><a href="https://github.com/newton-physics/newton/issues/5129">#5129</a></td>
-<td></td>
-<td>Open</td>
 </tr>
 <tr>
+<td>Fluid flows 15 % slow</td>
 <td>Newton</td>
-<td>Slow joints freeze</td>
-<td><a href="https://github.com/newton-physics/newton/issues/5177">#5177</a></td>
-<td></td>
-<td>Open</td>
-</tr>
-<tr>
-<td>Newton</td>
-<td>MPM film 15 % slow</td>
 <td><a href="https://github.com/newton-physics/newton/issues/5206">#5206</a></td>
-<td></td>
-<td>Open</td>
 </tr>
 <tr>
+<td>MPM worlds move each other</td>
 <td>Newton</td>
-<td>MPM worlds affect each other</td>
 <td><a href="https://github.com/newton-physics/newton/issues/5207">#5207</a></td>
-<td></td>
-<td>Open</td>
 </tr>
 <tr>
-<td>MuJoCo Warp</td>
-<td>Shared bounding box</td>
-<td><a href="https://github.com/google-deepmind/mujoco_warp/issues/1795">#1795</a></td>
-<td><a href="https://github.com/google-deepmind/mujoco_warp/pull/1800">#1800</a>*</td>
-<td>Open</td>
+<td>Worlds share one bounding box</td>
+<td>MJ Warp</td>
+<td><a href="https://github.com/google-deepmind/mujoco_warp/issues/1795">#1795</a> / <a href="https://github.com/google-deepmind/mujoco_warp/pull/1800">#1800</a>*</td>
 </tr>
 <tr>
-<td>MuJoCo Warp</td>
-<td>EPA sliver faces</td>
-<td></td>
+<td>16.5 µm overlap read as 190 mm</td>
+<td>MJ Warp</td>
 <td><a href="https://github.com/google-deepmind/mujoco_warp/pull/1796">#1796</a></td>
-<td>Open</td>
 </tr>
 <tr>
-<td>MuJoCo Warp</td>
-<td>Light cable NaN</td>
-<td></td>
-<td><a href="https://github.com/google-deepmind/mujoco_warp/pull/1801">#1801</a></td>
-<td>Open</td>
+<td>Resting block launched</td>
+<td>MJ Warp</td>
+<td><a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a> / <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> + <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>*</td>
 </tr>
 <tr>
-<td>MuJoCo Warp</td>
-<td>Empty worlds read old memory</td>
-<td></td>
-<td><a href="https://github.com/google-deepmind/mujoco_warp/pull/1802">#1802</a></td>
-<td>Open</td>
-</tr>
-<tr>
-<td>MuJoCo Warp</td>
-<td>Resting box contact flipped</td>
-<td><a href="https://github.com/google-deepmind/mujoco_warp/issues/1883">#1883</a></td>
-<td><a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> + <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a>*</td>
-<td>Open</td>
-</tr>
-<tr>
+<td>One contact on a line</td>
 <td>MuJoCo</td>
-<td>Box across an edge, one contact</td>
 <td><a href="https://github.com/google-deepmind/mujoco/issues/3755">#3755</a></td>
-<td></td>
-<td>Open</td>
 </tr>
 </tbody>
 </table>
-<p><em>* by other contributors. Every report links a script that reproduces it. Tested on Newton 1.8.0.dev0, MuJoCo Warp 3.16.0 and main, and Warp 1.18, on one NVIDIA L4.</em></p>
+<p><em>✓ merged. * by other contributors. MJ Warp is MuJoCo Warp. Every report links a script that reproduces it.</em></p>
 <h2 id="whats-next">What&rsquo;s next<a class="headerlink" href="#whats-next" title="Link to this section">#</a></h2>
-<p>These bugs share one cause. The engines are tuned for scenes where a millimetre doesn&rsquo;t matter, nobody reruns a world, and speed is measured on falling boxes. That is the right tuning for most of their users and the wrong one for robot hands. So we are building Alloy, a physics engine for robot hands, around the checks above. It launches soon. Why we are building it, in plain words: <a href="../robots-need-their-own-wind-tunnel/">Robots need their own wind tunnel</a>.</p>
+<p>These bugs share one cause. The engines are tuned for scenes where a millimetre doesn&rsquo;t matter, nobody reruns a world, and speed is measured on falling boxes. That is the right tuning for most of their users, and the wrong one for robot hands. So we are building Alloy, a physics engine for robot hands, around the checks above. It launches soon. Why we are building it, in plain words: <a href="../robots-need-their-own-wind-tunnel/">Robots need their own wind tunnel</a>.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Link to this section">#</a></h2>
 <div class="footnote">
 <hr />
 <ol>
-<li id="fn:goldberg">
-<p>David Goldberg. &ldquo;What Every Computer Scientist Should Know About Floating-Point Arithmetic.&rdquo; <em>ACM Computing Surveys</em> 23(1), 1991, pp. 5–48.&#160;<a class="footnote-backref" href="#fnref:goldberg" title="Jump back to footnote 1 in the text">&#8617;</a></p>
-</li>
-<li id="fn:gjk">
-<p>Elmer G. Gilbert, Daniel W. Johnson, S. Sathiya Keerthi. &ldquo;A Fast Procedure for Computing the Distance Between Complex Objects in Three-Dimensional Space.&rdquo; <em>IEEE Journal on Robotics and Automation</em> 4(2), 1988, pp. 193–203.&#160;<a class="footnote-backref" href="#fnref:gjk" title="Jump back to footnote 2 in the text">&#8617;</a></p>
-</li>
-<li id="fn:epa">
-<p>Gino van den Bergen. &ldquo;Proximity Queries and Penetration Depth Computation on 3D Game Objects.&rdquo; Game Developers Conference, 2001.&#160;<a class="footnote-backref" href="#fnref:epa" title="Jump back to footnote 3 in the text">&#8617;</a></p>
-</li>
 <li id="fn:vbd">
-<p>Anka He Chen, Ziheng Liu, Yin Yang, Cem Yuksel. &ldquo;Vertex Block Descent.&rdquo; <em>ACM Transactions on Graphics</em> (SIGGRAPH), 2024. <a href="https://arxiv.org/abs/2403.06321">arXiv:2403.06321</a>.&#160;<a class="footnote-backref" href="#fnref:vbd" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+<p>Anka He Chen, Ziheng Liu, Yin Yang, Cem Yuksel. &ldquo;Vertex Block Descent.&rdquo; <em>ACM Transactions on Graphics</em> (SIGGRAPH), 2024. <a href="https://arxiv.org/abs/2403.06321">arXiv:2403.06321</a>.&#160;<a class="footnote-backref" href="#fnref:vbd" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
@@ -380,19 +211,19 @@
 <td>Fix sent</td>
 </tr>
 <tr>
-<td>Slow joints froze, and a held tool walked out of the hand</td>
+<td>A cloth pile sank through the floor</td>
 <td>Newton</td>
 <td>Reported</td>
 </tr>
 <tr>
-<td>Settings in robot files vanished on import</td>
+<td>Pushed cloth gained 3.2 times its momentum</td>
 <td>Newton</td>
-<td>1 of 4 fixed</td>
+<td>Reported</td>
 </tr>
 <tr>
-<td>A light cable broke on step 2</td>
-<td>MuJoCo Warp</td>
-<td>Fix sent</td>
+<td>A held cloth dropped to the floor</td>
+<td>Newton</td>
+<td>Fixed</td>
 </tr>
 <tr>
 <td>Every world shared one bounding box, and a ball fell through its table</td>
@@ -401,7 +232,7 @@
 </tr>
 </tbody>
 </table>
-<p><em>All 20, and how each one works: <a href="../sim-to-real-gap/">What the fuck is the sim-to-real gap?</a></em></p>
+<p><em>The physics bugs, animated: <a href="../sim-to-real-gap/">What the fuck is the sim-to-real gap?</a></em></p>
 <h2 id="why-upstream-fixes-arent-enough">Why upstream fixes aren&rsquo;t enough<a class="headerlink" href="#why-upstream-fixes-arent-enough" title="Link to this section">#</a></h2>
 <p>Newton has merged three of our fixes, two of them within two days. MuJoCo Warp hasn&rsquo;t merged one in three weeks. That is fair. These engines serve thousands of users, mostly teaching robots to walk, and their maintainers must be careful.</p>
 <p>But this is not 20 bugs. It is one pattern: engines tuned for scenes where a millimetre doesn&rsquo;t matter, nobody reruns a world, and speed is measured on falling boxes. Fixing that one patch at a time is like correcting Smeaton&rsquo;s coefficient one wing at a time.</p>
