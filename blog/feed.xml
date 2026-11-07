@@ -25,8 +25,8 @@
 <p>In Newton&rsquo;s MPM solver, changing the other worlds moved world 0 by up to 0.1 mm (<a href="https://github.com/newton-physics/newton/issues/5207">#5207</a>). And at 4,096 worlds, Newton&rsquo;s mesh contact buffer filled up without a warning, and pegs sank 28.9 mm into a 20 mm hole.</p>
 <p><strong>What it does to training:</strong> the more worlds you run, the further your physics drifts from the one world you debugged.</p>
 <p>In our own runs on a tower-stacking task, training was smooth when the towers stood and erratic when they fell at scale:</p>
-<p><img alt="Illustration: on the same tower-stacking task, reward rises smoothly when towers stand and jumps and collapses when they fall" src="training.svg" /></p>
-<p><em>An illustration of the pattern, not plotted data.</em></p>
+<p><img alt="Illustration: on the same tower-stacking task, loss falls smoothly when towers stand and keeps spiking when they fall" src="training.svg" /></p>
+<p><em>Training loss on the same task, sketched: smooth when towers stand, spiking when they fall.</em></p>
 <h2 id="2-rare-poses-stop-being-rare">2. Rare poses stop being rare<a class="headerlink" href="#2-rare-poses-stop-being-rare" title="Link to this section">#</a></h2>
 <p>In a two-arm task, a 15 mm block resting on a 12.7 mm board was fired straight down through it at several metres per second.</p>
 <p><img alt="The same pose through two routines: 0.009 mm and up, or 27.7 mm and down" src="boxflip.svg" /></p>
