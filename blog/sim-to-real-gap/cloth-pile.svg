@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" width="420" height="300" role="img" aria-label="A pile of cloth rests on the floor, then slowly sinks into it. In the end 271 of its 1,681 particles are below the floor, the lowest 74 mm down. Newton's VBD solver with cloth self-contact on.">
+  <defs>
+    <clipPath id="cp-above"><rect x="0" y="0" width="420" height="170"/></clipPath>
+    <clipPath id="cp-below"><rect x="0" y="170" width="420" height="130"/></clipPath>
+    <g id="cp-pile">
+      <path d="M100 168 Q112 128 150 118 Q176 98 210 102 Q252 96 274 120 Q306 128 318 168 Z"/>
+      <path d="M118 150 Q150 138 182 146 Q214 156 246 142 Q278 132 302 150" fill="none"/>
+      <path d="M132 130 Q160 120 190 128 Q222 136 252 124 Q272 118 288 130" fill="none"/>
+      <path d="M156 114 Q184 106 210 114 Q236 120 262 110" fill="none"/>
+      <path d="M110 162 Q160 156 210 162 Q262 168 312 160" fill="none"/>
+    </g>
+  </defs>
+  <style>
+    .t { font: 22px Georgia, "Times New Roman", serif; fill: #16191a; }
+    .l { font: 500 12.5px ui-monospace, Menlo, Consolas, monospace; fill: #16191a; }
+    .s { font: 12px ui-monospace, Menlo, Consolas, monospace; fill: #6b6f6c; }
+    .b { font: 500 12.5px ui-monospace, Menlo, Consolas, monospace; fill: #2a4f8f; }
+    .sink { transform: translateY(40px); animation: sink 8s ease-in-out infinite; }
+    @keyframes sink { 0%, 10% { transform: translateY(0); opacity: 1; } 75%, 92% { transform: translateY(40px); opacity: 1; } 98% { transform: translateY(40px); opacity: 0; } 100% { transform: translateY(0); opacity: 0; } }
+    .tag { animation: tag 8s ease-in-out infinite; }
+    @keyframes tag { 0%, 70% { opacity: 0; } 78%, 92% { opacity: 1; } 100% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <rect width="420" height="300" fill="#f3f2ed"/>
+  <text x="16" y="34" class="t">Cloth sinks through the floor</text>
+  <text x="16" y="56" class="s">a resting pile, Newton VBD, self-contact on</text>
+
+  <!-- floor -->
+  <rect x="40" y="170" width="340" height="70" fill="#e6e5de"/>
+  <line x1="40" y1="170" x2="380" y2="170" stroke="#16191a" stroke-width="2.5"/>
+  <text x="44" y="162" class="s">floor</text>
+
+  <!-- pile above the floor: ink; below the floor: blue -->
+  <g clip-path="url(#cp-above)">
+    <g class="sink"><use href="#cp-pile" fill="#f3f2ed" stroke="#16191a" stroke-width="1.6"/></g>
+  </g>
+  <g clip-path="url(#cp-below)">
+    <g class="sink"><use href="#cp-pile" fill="#f3f2ed" stroke="#2a4f8f" stroke-width="2"/></g>
+  </g>
+
+  <!-- depth bracket -->
+  <g class="tag">
+    <line x1="334" y1="170" x2="334" y2="208" stroke="#2a4f8f" stroke-width="2"/>
+    <line x1="328" y1="208" x2="340" y2="208" stroke="#2a4f8f" stroke-width="2"/>
+    <text x="344" y="194" class="b">74 mm</text>
+  </g>
+  <text x="40" y="266" class="b">271 of 1,681 particles</text>
+  <text x="40" y="284" class="s">end up below the floor</text>
+</svg>
