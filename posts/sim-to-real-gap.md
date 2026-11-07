@@ -51,7 +51,7 @@ Cables and cloth are why you need millions of rollouts: they have more ways to m
 
 **Stiff cables sag 40 % too far** (Newton, VBD solver[^vbd]). VBD corrects one body at a time, so a correction crawls one segment per sweep. Our [#4795](https://github.com/newton-physics/newton/pull/4795) solves each rod at once and lands within 1–2 % of the exact shape.
 
-![One body at a time, a fix travels about a segment per sweep; solving the whole rod at once lands the beam on its exact shape](rods.svg)
+![A stiff beam under its own weight: stock sags 40 % past the exact shape; the fix lands within 1 %](rods.svg)
 
 **A cloth pile sinks through the floor** (Newton, VBD with self-contact). Nothing pushes it. It just sinks, until 271 of its 1,681 particles are below the ground, the lowest 74 mm down ([#5143](https://github.com/newton-physics/newton/issues/5143)).
 
