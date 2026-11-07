@@ -7,7 +7,7 @@
 
 ## Posts
 
-- [What the fuck is the sim-to-real gap?](https://codnay.github.io/blog/sim-to-real-gap/) (2026-11-07): We found 20 bugs in open-source physics engines. The three that hurt large-scale robot training most, and the rest in one picture.
+- [Your physics engine breaks at scale](https://codnay.github.io/blog/sim-to-real-gap/) (2026-11-07): Large-scale distributed training runs thousands of worlds per GPU for billions of steps. That is exactly where open-source physics engines quietly break.
 - [Robots need their own wind tunnel](https://codnay.github.io/blog/robots-need-their-own-wind-tunnel/) (2026-11-07): Physics engines were built for games, controllers and walking. Robot hands need something else, so we are building it.
 - [Can frontier LLMs fix robots by editing their weights?](https://codnay.github.io/blog/llms-fix-robots-by-editing-weights/) (2026-11-04): We asked Opus to improve π0.5 by editing its weights directly, with no gradient training. Laundry folding went from 51% to 75%, and a mahjong task from 23% to 36%.
 - [Discovery-0: zero-shot sim-to-real](https://www.argonrobotics.ai/discovery) (2026-10-21): A model trained only on trajectories from our simulated kitchens closed a commercial dishwasher in a live customer kitchen, with no real-world data for the task.
