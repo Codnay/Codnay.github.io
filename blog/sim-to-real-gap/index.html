@@ -43,7 +43,7 @@
     </header>
     <div class="prose">
 <div class="wx-tldr">
-<p><strong>TL;DR</strong> Over the past month we found <strong>20 bugs in open-source physics engines</strong>. Most <strong>never raise an error</strong>. They quietly corrupt what your robot learns in simulation, and show up later as the <strong>sim-to-real gap</strong>: a robot that works in sim and fails on the real thing.</p>
+<p><strong>TL;DR</strong> With the arrival of Astra, simulations have been all the hype, considering how well it can one shot 3d scenes. But all of thaOver the past month we found <strong>20 bugs in open-source physics engines</strong>. Most <strong>never raise an error</strong>. They quietly corrupt what your robot learns in simulation, and show up later as the <strong>sim-to-real gap</strong>: a robot that works in sim and fails on the real thing.</p>
 <p>The worst only appear <strong>at scale</strong>, the way large-scale distributed training runs: thousands of worlds per GPU, many GPUs, billions of steps. <strong>More worlds change the physics</strong>, <strong>rare poses launch objects</strong>, and <strong>cables and cloth behave like no real material</strong>. We found them in Newton, MuJoCo Warp and MuJoCo, and <strong>reported every one upstream</strong>.</p>
 </div>
 <h2 id="1-more-worlds-different-physics">1. More worlds, different physics<a class="headerlink" href="#1-more-worlds-different-physics" title="Link to this section">#</a></h2>
@@ -79,14 +79,8 @@
 <h2 id="whats-next">What&rsquo;s next<a class="headerlink" href="#whats-next" title="Link to this section">#</a></h2>
 <p>These bugs share one cause. The engines are tuned for scenes where a millimetre doesn&rsquo;t matter, nobody reruns a world, and speed is measured on falling boxes. That is the right tuning for most of their users, and the wrong one for training robot hands at scale. So we are building Alloy, a physics engine for robot hands at scale, around the checks above. It launches soon. Why we are building it, in plain words: <a href="../robots-need-their-own-wind-tunnel/">Robots need their own wind tunnel</a>.</p>
 <h2 id="footnotes">Footnotes<a class="headerlink" href="#footnotes" title="Link to this section">#</a></h2>
-<div class="ox-fig">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 592" class="ox" role="group" style="display:block;width:100%;max-width:420px;height:auto" aria-label="Eight more physics bugs, each as a small looping sketch. Newton: round shapes stop 0.1 mm above what they touch (fixed); fine cloth meshes lose their bending; bending weakens with mesh size, 10 to the minus 4 at 1 cm cells; cloth held by attachments drops (fixed); a fluid film on the default grid flows 15 % slower; pushed cloth moves 3.2 times as fast as the push allows. MuJoCo: a box lying across an edge gets one contact instead of a line. MuJoCo Warp: a 16.5 micrometre overlap is read as 190 mm and kicks the shape sideways.">
-  <defs>
-    <marker id="ox-ai" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#16191a"/></marker>
-    <marker id="ox-ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2a4f8f"/></marker>
-  </defs>
-  <style>
-    .ox-t { font: 22px Georgia, "Times New Roman", serif; fill: #16191a; }
+<div class="ox-list">
+<style>
     .ox-l { font: 500 12px ui-monospace, Menlo, Consolas, monospace; fill: #16191a; }
     .ox-s { font: 11.5px ui-monospace, Menlo, Consolas, monospace; fill: #6b6f6c; }
     .ox-b { font: 500 12px ui-monospace, Menlo, Consolas, monospace; fill: #2a4f8f; }
@@ -133,22 +127,23 @@
     @keyframes ox-slow { 0%, 22% { transform: translateX(0); opacity: 1; } 56%, 92% { transform: translateX(20px); opacity: 1; } 100% { transform: translateX(20px); opacity: 0; } }
     .ox-tag { animation-name: ox-tag; }
     @keyframes ox-tag { 0%, 54% { opacity: 0; } 62%, 92% { opacity: 1; } 100% { opacity: 0; } }
-    @media (prefers-reduced-motion: reduce) { .ox * { animation: none !important; } }
-      .ox a text { fill: #2a4f8f; text-decoration: underline; }
-    .ox a:hover text { fill: #16191a; }
-  </style>
-  <rect width="420" height="592" fill="#f3f2ed"/>
-  <text x="16" y="34" class="ox-t">Eight more physics bugs</text>
-  <text x="16" y="54" class="ox-s">sketches, not to scale</text>
-  <g stroke="#d8d8d0">
-    <line x1="210" y1="68" x2="210" y2="586"/>
-    <line x1="12" y1="198" x2="408" y2="198"/>
-    <line x1="12" y1="328" x2="408" y2="328"/>
-    <line x1="12" y1="458" x2="408" y2="458"/>
-  </g>
+    @media (prefers-reduced-motion: reduce) { .ox-list * { animation: none !important; } }
 
-  <!-- 1 -->
-  <g transform="translate(8 74)">
+    .ox-list { display: flex; flex-direction: column; max-width: 66ch; }
+    .ox-head { font-size: 12px; line-height: 18px; color: var(--ink-2); padding-bottom: 10px; }
+    .ox-item { display: grid; grid-template-columns: minmax(120px, 210px) 1fr; gap: 22px; align-items: center; padding: 22px 0; border-top: 1px solid var(--line); }
+    .ox-item svg { display: block; width: 100%; height: auto; background: var(--paper); border-radius: 4px; overflow: visible; }
+    .ox-text { display: flex; flex-direction: column; gap: 4px; }
+    .ox-text b { font-weight: 600; font-size: 14px; line-height: 20px; color: var(--ink); }
+    .ox-text span { font-size: 13px; line-height: 20px; color: var(--ink); }
+    .ox-text .ox-meta { font-size: 12px; color: var(--ink-2); }
+    .ox-text a { color: var(--box); border-bottom: 1px solid var(--line); }
+    @media (max-width: 600px) { .ox-item { grid-template-columns: 42% 1fr; gap: 14px; padding: 18px 0; } }
+</style>
+  <div class="ox-head">Eight more physics bugs. Sketches, not to scale.</div>
+  <div class="ox-item">
+    <svg viewBox="0 0 192 84" role="img" aria-label="Touches 0.1 mm early: Spheres and capsules stop 0.1 mm above whatever they land on.">
+
     <line x1="16" y1="70" x2="176" y2="70" stroke="#16191a" stroke-width="1.5"/>
     <circle cx="96" cy="56" r="14" fill="none" stroke="#6b6f6c" stroke-dasharray="3 3"/>
     <circle cx="96" cy="48" r="14" fill="#16191a" class="ox-an ox-ball"/>
@@ -156,33 +151,48 @@
       <line x1="118" y1="62" x2="118" y2="70" stroke="#2a4f8f" stroke-width="2"/>
       <text x="124" y="64" class="ox-b">0.1 mm</text>
     </g>
-    <text x="8" y="100" class="ox-l">Touches 0.1 mm early</text>
-    <text x="8" y="116" class="ox-s">Newton · fixed</text><a href="https://github.com/newton-physics/newton/pull/4791" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#4791</text></a>
-  </g>
 
-  <!-- 2 -->
-  <g transform="translate(212 74)">
+    </svg>
+    <div class="ox-text">
+      <b>Touches 0.1 mm early</b>
+      <span>Spheres and capsules stop 0.1 mm above whatever they land on.</span>
+      <span class="ox-meta">Newton · fixed in <a href="https://github.com/newton-physics/newton/pull/4791" target="_blank" rel="noopener">#4791</a></span>
+    </div>
+  </div>
+  <div class="ox-item">
+    <svg viewBox="0 0 192 84" role="img" aria-label="One contact, not a line: A box lying across another box's edge rests on one contact at its end, not a row.">
+
     <rect x="16" y="56" width="164" height="16" fill="#e6e5de" stroke="#16191a" stroke-width="1.2"/>
     <rect x="22" y="44" width="150" height="11" fill="#16191a" class="ox-an ox-vb ox-bar"/>
     <g fill="none" stroke="#6b6f6c" stroke-width="1.5" class="ox-an ox-ghost">
       <circle cx="62" cy="56" r="3.5"/><circle cx="88" cy="56" r="3.5"/><circle cx="114" cy="56" r="3.5"/><circle cx="140" cy="56" r="3.5"/><circle cx="164" cy="56" r="3.5"/>
     </g>
     <circle cx="30" cy="56" r="4.5" fill="#2a4f8f"/>
-    <text x="8" y="100" class="ox-l">One contact, not a line</text>
-    <text x="8" y="116" class="ox-s">MuJoCo</text><a href="https://github.com/google-deepmind/mujoco/issues/3755" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#3755</text></a>
-  </g>
 
-  <!-- 3 -->
-  <g transform="translate(8 204)">
+    </svg>
+    <div class="ox-text">
+      <b>One contact, not a line</b>
+      <span>A box lying across another box's edge rests on one contact at its end, not a row.</span>
+      <span class="ox-meta">MuJoCo · <a href="https://github.com/google-deepmind/mujoco/issues/3755" target="_blank" rel="noopener">#3755</a></span>
+    </div>
+  </div>
+  <div class="ox-item">
+    <svg viewBox="0 0 192 84" role="img" aria-label="16.5 µm read as 190 mm: A cylinder barely touching a box gets a huge sideways kick.">
+<defs><marker id="ox-ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2a4f8f"/></marker></defs>
     <rect x="16" y="22" width="90" height="50" fill="#e6e5de" stroke="#16191a" stroke-width="1.2"/>
     <g class="ox-an ox-fb ox-kick"><circle cx="121" cy="47" r="16" fill="#f3f2ed" stroke="#16191a" stroke-width="1.5"/></g>
     <line x1="122" y1="47" x2="184" y2="47" stroke="#2a4f8f" stroke-width="2.5" marker-end="url(#ox-ab)" class="ox-an ox-fb ox-push"/>
-    <text x="8" y="100" class="ox-l">16.5 µm read as 190 mm</text>
-    <text x="8" y="116" class="ox-s">MuJoCo Warp · fix</text><a href="https://github.com/google-deepmind/mujoco_warp/pull/1796" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#1796</text></a>
-  </g>
 
-  <!-- 4 -->
-  <g transform="translate(212 204)">
+    </svg>
+    <div class="ox-text">
+      <b>16.5 µm read as 190 mm</b>
+      <span>A cylinder barely touching a box gets a huge sideways kick.</span>
+      <span class="ox-meta">MuJoCo Warp · fix <a href="https://github.com/google-deepmind/mujoco_warp/pull/1796" target="_blank" rel="noopener">#1796</a></span>
+    </div>
+  </div>
+  <div class="ox-item">
+    <svg viewBox="0 0 192 84" role="img" aria-label="Fine cloth won't bend: Cloth meshed finer than about 1 mm loses all its bending stiffness.">
+
     <text x="12" y="10" class="ox-s">5 mm cells</text>
     <text x="100" y="10" class="ox-s">0.5 mm</text>
     <rect x="14" y="17" width="12" height="18" fill="#16191a"/>
@@ -193,12 +203,17 @@
     <g class="ox-an ox-vb ox-b1 ox-limp"><line x1="112" y1="26" x2="134" y2="26" stroke="#2a4f8f" stroke-width="3.5" stroke-linecap="round"/>
       <g class="ox-an ox-vb ox-b2 ox-limp"><line x1="134" y1="26" x2="156" y2="26" stroke="#2a4f8f" stroke-width="3.5" stroke-linecap="round"/>
         <g class="ox-an ox-vb ox-b3 ox-limp"><line x1="156" y1="26" x2="178" y2="26" stroke="#2a4f8f" stroke-width="3.5" stroke-linecap="round"/></g></g></g>
-    <text x="8" y="100" class="ox-l">Fine cloth won't bend</text>
-    <text x="8" y="116" class="ox-s">Newton VBD · fix</text><a href="https://github.com/newton-physics/newton/pull/5131" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5131</text></a>
-  </g>
 
-  <!-- 5 -->
-  <g transform="translate(8 334)">
+    </svg>
+    <div class="ox-text">
+      <b>Fine cloth won't bend</b>
+      <span>Cloth meshed finer than about 1 mm loses all its bending stiffness.</span>
+      <span class="ox-meta">Newton VBD · fix <a href="https://github.com/newton-physics/newton/pull/5131" target="_blank" rel="noopener">#5131</a></span>
+    </div>
+  </div>
+  <div class="ox-item">
+    <svg viewBox="0 0 192 84" role="img" aria-label="Small cells, weak bending: The finer the mesh, the softer the cloth: 10⁴ times softer at 1 cm cells than at 1 m.">
+
     <g fill="none" stroke="#16191a" stroke-width="1">
       <rect x="16" y="6" width="36" height="36"/>
       <rect x="76" y="6" width="36" height="36"/><path d="M85 6V42M94 6V42M103 6V42M76 15H112M76 24H112M76 33H112"/>
@@ -211,22 +226,32 @@
     <text x="16" y="76" class="ox-s">1 m</text>
     <text x="76" y="76" class="ox-s">10 cm</text>
     <text x="136" y="76" class="ox-s">1 cm</text>
-    <text x="8" y="100" class="ox-l">Small cells, weak bending</text>
-    <text x="8" y="116" class="ox-s">Newton XPBD</text><a href="https://github.com/newton-physics/newton/issues/5140" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5140</text></a>
-  </g>
 
-  <!-- 6 -->
-  <g transform="translate(212 334)">
+    </svg>
+    <div class="ox-text">
+      <b>Small cells, weak bending</b>
+      <span>The finer the mesh, the softer the cloth: 10⁴ times softer at 1 cm cells than at 1 m.</span>
+      <span class="ox-meta">Newton XPBD · <a href="https://github.com/newton-physics/newton/issues/5140" target="_blank" rel="noopener">#5140</a></span>
+    </div>
+  </div>
+  <div class="ox-item">
+    <svg viewBox="0 0 192 84" role="img" aria-label="Held cloth drops: Cloth pinned to a body falls off in deterministic mode.">
+
     <line x1="40" y1="12" x2="150" y2="12" stroke="#16191a" stroke-width="3"/>
     <circle cx="60" cy="16" r="3" fill="#16191a"/><circle cx="130" cy="16" r="3" fill="#16191a"/>
     <line x1="16" y1="74" x2="176" y2="74" stroke="#16191a" stroke-width="1.5"/>
     <rect x="58" y="16" width="74" height="34" fill="#e6e5de" stroke="#2a4f8f" stroke-width="2" class="ox-an ox-cloth"/>
-    <text x="8" y="100" class="ox-l">Held cloth drops</text>
-    <text x="8" y="116" class="ox-s">Newton VBD · fixed</text><a href="https://github.com/newton-physics/newton/pull/5146" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5146</text></a>
-  </g>
 
-  <!-- 7 -->
-  <g transform="translate(8 464)">
+    </svg>
+    <div class="ox-text">
+      <b>Held cloth drops</b>
+      <span>Cloth pinned to a body falls off in deterministic mode.</span>
+      <span class="ox-meta">Newton VBD · fixed in <a href="https://github.com/newton-physics/newton/pull/5146" target="_blank" rel="noopener">#5146</a></span>
+    </div>
+  </div>
+  <div class="ox-item">
+    <svg viewBox="0 0 192 84" role="img" aria-label="Fluid flows 15 % slow: A thin film on the floor drags on the default grid.">
+
     <line x1="170" y1="14" x2="170" y2="68" stroke="#6b6f6c" stroke-dasharray="3 3"/>
     <text x="170" y="10" class="ox-s" text-anchor="middle">exact</text>
     <text x="8" y="35" class="ox-s">dense</text>
@@ -235,22 +260,31 @@
     <text x="8" y="61" class="ox-s">default</text>
     <line x1="58" y1="61" x2="176" y2="61" stroke="#d8d8d0"/>
     <rect x="60" y="53" width="90" height="8" rx="4" fill="#2a4f8f" class="ox-an ox-fb ox-film"/>
-    <text x="8" y="100" class="ox-l">Fluid flows 15 % slow</text>
-    <text x="8" y="116" class="ox-s">Newton MPM</text><a href="https://github.com/newton-physics/newton/issues/5206" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5206</text></a>
-  </g>
 
-  <!-- 8 -->
-  <g transform="translate(212 464)">
+    </svg>
+    <div class="ox-text">
+      <b>Fluid flows 15 % slow</b>
+      <span>A thin film on the floor drags on the default grid.</span>
+      <span class="ox-meta">Newton MPM · <a href="https://github.com/newton-physics/newton/issues/5206" target="_blank" rel="noopener">#5206</a></span>
+    </div>
+  </div>
+  <div class="ox-item">
+    <svg viewBox="0 0 192 84" role="img" aria-label="Push 1×, moves 3.2×: Pushed cloth flies off 3.2 times faster than the push allows.">
+<defs><marker id="ox-ai" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#16191a"/></marker></defs>
     <text x="4" y="38" class="ox-s">push</text>
     <line x1="6" y1="50" x2="36" y2="50" stroke="#16191a" stroke-width="2" marker-end="url(#ox-ai)" class="ox-an ox-imp"/>
     <rect x="40" y="36" width="34" height="28" fill="none" stroke="#6b6f6c" stroke-dasharray="3 3" class="ox-an ox-slow"/>
     <rect x="40" y="36" width="34" height="28" fill="#e6e5de" stroke="#2a4f8f" stroke-width="2" class="ox-an ox-fast"/>
     <text x="77" y="28" class="ox-s ox-an ox-tag" text-anchor="middle">1×</text>
     <text x="121" y="28" class="ox-b ox-an ox-tag" text-anchor="middle">3.2×</text>
-    <text x="8" y="100" class="ox-l">Push 1×, moves 3.2×</text>
-    <text x="8" y="116" class="ox-s">Newton VBD</text><a href="https://github.com/newton-physics/newton/issues/5129" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5129</text></a>
-  </g>
-</svg>
+
+    </svg>
+    <div class="ox-text">
+      <b>Push 1×, moves 3.2×</b>
+      <span>Pushed cloth flies off 3.2 times faster than the push allows.</span>
+      <span class="ox-meta">Newton VBD · <a href="https://github.com/newton-physics/newton/issues/5129" target="_blank" rel="noopener">#5129</a></span>
+    </div>
+  </div>
 </div>
 
 <p>Every report links a script that reproduces it.</p>
