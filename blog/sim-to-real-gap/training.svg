@@ -12,8 +12,8 @@
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
   </style>
   <rect width="420" height="276" fill="#f3f2ed"/>
-  <text x="16" y="34" class="t">Training loss, two physics</text>
-  <text x="16" y="56" class="s">tower stacking · illustration</text>
+  <text x="16" y="34" class="t">Two physics</text>
+  <text x="16" y="56" class="s">training loss for tower stacking</text>
   <line x1="44" y1="238" x2="336" y2="238" stroke="#16191a" stroke-width="1.5"/>
   <line x1="44" y1="238" x2="44" y2="78" stroke="#16191a" stroke-width="1.5"/>
   <text x="36" y="90" class="s" text-anchor="end" transform="rotate(-90 36 90)">loss</text>
