@@ -41,12 +41,185 @@
 <li><strong>Check momentum:</strong> push a free object with a known impulse. Its momentum must change by exactly that.</li>
 <li><strong>Size contact buffers yourself</strong> and check them for overflow every step.</li>
 <li><strong>Test soft things at your real mesh size.</strong></li>
-<li><strong>In MuJoCo Warp, route box pairs to the box-box routine</strong> (turn <code>NATIVECCD</code> off) until #1845 and #1866 land.</li>
+<li><strong>In MuJoCo Warp, route box pairs to the box-box routine</strong> (turn <code>NATIVECCD</code> off) until <a href="https://github.com/google-deepmind/mujoco_warp/pull/1845">#1845</a> and <a href="https://github.com/google-deepmind/mujoco_warp/pull/1866">#1866</a> land.</li>
 </ol>
 <h2 id="whats-next">What&rsquo;s next<a class="headerlink" href="#whats-next" title="Link to this section">#</a></h2>
 <p>These bugs share one cause. The engines are tuned for scenes where a millimetre doesn&rsquo;t matter, nobody reruns a world, and speed is measured on falling boxes. That is the right tuning for most of their users, and the wrong one for training robot hands at scale. So we are building Alloy, a physics engine for robot hands at scale, around the checks above. It launches soon. Why we are building it, in plain words: <a href="../robots-need-their-own-wind-tunnel/">Robots need their own wind tunnel</a>.</p>
 <h2 id="footnotes">Footnotes<a class="headerlink" href="#footnotes" title="Link to this section">#</a></h2>
-<p><img alt="Eight looping sketches: early touch, one contact on a line, a tiny overlap read as huge, fine cloth that won't bend, bending that weakens with mesh size, held cloth that drops, fluid that flows slow, and cloth that moves 3.2 times too fast" src="others.svg" /></p>
+<div class="ox-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 592" class="ox" role="group" style="display:block;width:100%;max-width:420px;height:auto" aria-label="Eight more physics bugs, each as a small looping sketch. Newton: round shapes stop 0.1 mm above what they touch (fixed); fine cloth meshes lose their bending; bending weakens with mesh size, 10 to the minus 4 at 1 cm cells; cloth held by attachments drops (fixed); a fluid film on the default grid flows 15 % slower; pushed cloth moves 3.2 times as fast as the push allows. MuJoCo: a box lying across an edge gets one contact instead of a line. MuJoCo Warp: a 16.5 micrometre overlap is read as 190 mm and kicks the shape sideways.">
+  <defs>
+    <marker id="ox-ai" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#16191a"/></marker>
+    <marker id="ox-ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2a4f8f"/></marker>
+  </defs>
+  <style>
+    .ox-t { font: 22px Georgia, "Times New Roman", serif; fill: #16191a; }
+    .ox-l { font: 500 12px ui-monospace, Menlo, Consolas, monospace; fill: #16191a; }
+    .ox-s { font: 11.5px ui-monospace, Menlo, Consolas, monospace; fill: #6b6f6c; }
+    .ox-b { font: 500 12px ui-monospace, Menlo, Consolas, monospace; fill: #2a4f8f; }
+    .ox-fb { transform-box: fill-box; }
+    .ox-vb { transform-box: view-box; }
+    .ox-an { animation-duration: 6s; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
+    /* 1: early touch */
+    .ox-ball { animation-name: ox-fall; animation-timing-function: ease-in; }
+    @keyframes ox-fall { 0%, 10% { transform: translateY(-34px); opacity: 0; } 14% { opacity: 1; } 35%, 90% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(0); opacity: 0; } }
+    .ox-gap { animation-name: ox-gap; }
+    @keyframes ox-gap { 0%, 35% { opacity: 0; } 42%, 90% { opacity: 1; } 100% { opacity: 0; } }
+    /* 2: one contact */
+    .ox-ghost { opacity: .7; animation-name: ox-ghost; }
+    @keyframes ox-ghost { 0%, 8% { opacity: 0; } 22%, 40% { opacity: .8; } 55%, 100% { opacity: 0; } }
+    .ox-bar { transform-origin: 30px 56px; animation-name: ox-tilt; }
+    @keyframes ox-tilt { 0%, 55% { transform: rotate(0deg); } 72%, 84% { transform: rotate(-4deg); } 96%, 100% { transform: rotate(0deg); } }
+    /* 3: huge push */
+    .ox-push { transform-origin: 0 50%; animation-name: ox-grow; }
+    @keyframes ox-grow { 0%, 12% { transform: scaleX(0); opacity: 1; } 34%, 80% { transform: scaleX(1); opacity: 1; } 92%, 100% { transform: scaleX(1); opacity: 0; } }
+    .ox-kick { animation-name: ox-kick; animation-timing-function: ease-in; }
+    @keyframes ox-kick { 0%, 36% { transform: translateX(0); opacity: 1; } 54% { transform: translateX(46px); opacity: 0; } 99% { transform: translateX(46px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+    /* 4: fine cloth limp */
+    .ox-a1 { transform-origin: 26px 26px; } .ox-a2 { transform-origin: 48px 26px; } .ox-a3 { transform-origin: 70px 26px; }
+    .ox-b1 { transform-origin: 112px 26px; } .ox-b2 { transform-origin: 134px 26px; } .ox-b3 { transform-origin: 156px 26px; }
+    .ox-stiff { transform: rotate(6deg); animation-name: ox-stiff; }
+    .ox-limp { transform: rotate(28deg); animation-name: ox-limp; }
+    @keyframes ox-stiff { 0%, 8% { transform: rotate(0deg); } 40%, 85% { transform: rotate(6deg); } 100% { transform: rotate(0deg); } }
+    @keyframes ox-limp { 0%, 8% { transform: rotate(0deg); } 40%, 85% { transform: rotate(28deg); } 100% { transform: rotate(0deg); } }
+    /* 5: bending meter */
+    .ox-meter { transform-origin: 0 50%; animation-name: ox-meter; }
+    @keyframes ox-meter { 0%, 10% { transform: scaleX(0); } 50%, 92% { transform: scaleX(1); } 100% { transform: scaleX(0); } }
+    /* 6: held cloth drops */
+    .ox-cloth { transform: translateY(22px); animation-name: ox-drop; }
+    @keyframes ox-drop { 0% { transform: translateY(0); opacity: 0; } 8%, 35% { transform: translateY(0); opacity: 1; } 52%, 88% { transform: translateY(22px); opacity: 1; } 97%, 100% { transform: translateY(22px); opacity: 0; } }
+    /* 7: slow film */
+    .ox-film { transform-origin: 0 50%; animation-name: ox-flow; animation-timing-function: linear; }
+    @keyframes ox-flow { 0%, 6% { transform: scaleX(0); opacity: 1; } 66%, 92% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
+    /* 8: too much momentum */
+    .ox-imp { animation-name: ox-imp; }
+    @keyframes ox-imp { 0%, 4% { opacity: 0; transform: translateX(-10px); } 16%, 26% { opacity: 1; transform: translateX(0); } 34%, 100% { opacity: 0; transform: translateX(0); } }
+    .ox-fast { transform: translateX(64px); animation-name: ox-fast; }
+    @keyframes ox-fast { 0%, 22% { transform: translateX(0); opacity: 1; } 56%, 92% { transform: translateX(64px); opacity: 1; } 100% { transform: translateX(64px); opacity: 0; } }
+    .ox-slow { transform: translateX(20px); animation-name: ox-slow; }
+    @keyframes ox-slow { 0%, 22% { transform: translateX(0); opacity: 1; } 56%, 92% { transform: translateX(20px); opacity: 1; } 100% { transform: translateX(20px); opacity: 0; } }
+    .ox-tag { animation-name: ox-tag; }
+    @keyframes ox-tag { 0%, 54% { opacity: 0; } 62%, 92% { opacity: 1; } 100% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { .ox * { animation: none !important; } }
+      .ox a text { fill: #2a4f8f; text-decoration: underline; }
+    .ox a:hover text { fill: #16191a; }
+  </style>
+  <rect width="420" height="592" fill="#f3f2ed"/>
+  <text x="16" y="34" class="ox-t">Eight more physics bugs</text>
+  <text x="16" y="54" class="ox-s">sketches, not to scale</text>
+  <g stroke="#d8d8d0">
+    <line x1="210" y1="68" x2="210" y2="586"/>
+    <line x1="12" y1="198" x2="408" y2="198"/>
+    <line x1="12" y1="328" x2="408" y2="328"/>
+    <line x1="12" y1="458" x2="408" y2="458"/>
+  </g>
+
+  <!-- 1 -->
+  <g transform="translate(8 74)">
+    <line x1="16" y1="70" x2="176" y2="70" stroke="#16191a" stroke-width="1.5"/>
+    <circle cx="96" cy="56" r="14" fill="none" stroke="#6b6f6c" stroke-dasharray="3 3"/>
+    <circle cx="96" cy="48" r="14" fill="#16191a" class="ox-an ox-ball"/>
+    <g class="ox-an ox-gap">
+      <line x1="118" y1="62" x2="118" y2="70" stroke="#2a4f8f" stroke-width="2"/>
+      <text x="124" y="64" class="ox-b">0.1 mm</text>
+    </g>
+    <text x="8" y="100" class="ox-l">Touches 0.1 mm early</text>
+    <text x="8" y="116" class="ox-s">Newton · fixed</text><a href="https://github.com/newton-physics/newton/pull/4791" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#4791</text></a>
+  </g>
+
+  <!-- 2 -->
+  <g transform="translate(212 74)">
+    <rect x="16" y="56" width="164" height="16" fill="#e6e5de" stroke="#16191a" stroke-width="1.2"/>
+    <rect x="22" y="44" width="150" height="11" fill="#16191a" class="ox-an ox-vb ox-bar"/>
+    <g fill="none" stroke="#6b6f6c" stroke-width="1.5" class="ox-an ox-ghost">
+      <circle cx="62" cy="56" r="3.5"/><circle cx="88" cy="56" r="3.5"/><circle cx="114" cy="56" r="3.5"/><circle cx="140" cy="56" r="3.5"/><circle cx="164" cy="56" r="3.5"/>
+    </g>
+    <circle cx="30" cy="56" r="4.5" fill="#2a4f8f"/>
+    <text x="8" y="100" class="ox-l">One contact, not a line</text>
+    <text x="8" y="116" class="ox-s">MuJoCo</text><a href="https://github.com/google-deepmind/mujoco/issues/3755" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#3755</text></a>
+  </g>
+
+  <!-- 3 -->
+  <g transform="translate(8 204)">
+    <rect x="16" y="22" width="90" height="50" fill="#e6e5de" stroke="#16191a" stroke-width="1.2"/>
+    <g class="ox-an ox-fb ox-kick"><circle cx="121" cy="47" r="16" fill="#f3f2ed" stroke="#16191a" stroke-width="1.5"/></g>
+    <line x1="122" y1="47" x2="184" y2="47" stroke="#2a4f8f" stroke-width="2.5" marker-end="url(#ox-ab)" class="ox-an ox-fb ox-push"/>
+    <text x="8" y="100" class="ox-l">16.5 µm read as 190 mm</text>
+    <text x="8" y="116" class="ox-s">MuJoCo Warp · fix</text><a href="https://github.com/google-deepmind/mujoco_warp/pull/1796" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#1796</text></a>
+  </g>
+
+  <!-- 4 -->
+  <g transform="translate(212 204)">
+    <text x="12" y="10" class="ox-s">5 mm cells</text>
+    <text x="100" y="10" class="ox-s">0.5 mm</text>
+    <rect x="14" y="17" width="12" height="18" fill="#16191a"/>
+    <g class="ox-an ox-vb ox-a1 ox-stiff"><line x1="26" y1="26" x2="48" y2="26" stroke="#16191a" stroke-width="3.5" stroke-linecap="round"/>
+      <g class="ox-an ox-vb ox-a2 ox-stiff"><line x1="48" y1="26" x2="70" y2="26" stroke="#16191a" stroke-width="3.5" stroke-linecap="round"/>
+        <g class="ox-an ox-vb ox-a3 ox-stiff"><line x1="70" y1="26" x2="92" y2="26" stroke="#16191a" stroke-width="3.5" stroke-linecap="round"/></g></g></g>
+    <rect x="100" y="17" width="12" height="18" fill="#16191a"/>
+    <g class="ox-an ox-vb ox-b1 ox-limp"><line x1="112" y1="26" x2="134" y2="26" stroke="#2a4f8f" stroke-width="3.5" stroke-linecap="round"/>
+      <g class="ox-an ox-vb ox-b2 ox-limp"><line x1="134" y1="26" x2="156" y2="26" stroke="#2a4f8f" stroke-width="3.5" stroke-linecap="round"/>
+        <g class="ox-an ox-vb ox-b3 ox-limp"><line x1="156" y1="26" x2="178" y2="26" stroke="#2a4f8f" stroke-width="3.5" stroke-linecap="round"/></g></g></g>
+    <text x="8" y="100" class="ox-l">Fine cloth won't bend</text>
+    <text x="8" y="116" class="ox-s">Newton VBD · fix</text><a href="https://github.com/newton-physics/newton/pull/5131" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5131</text></a>
+  </g>
+
+  <!-- 5 -->
+  <g transform="translate(8 334)">
+    <g fill="none" stroke="#16191a" stroke-width="1">
+      <rect x="16" y="6" width="36" height="36"/>
+      <rect x="76" y="6" width="36" height="36"/><path d="M85 6V42M94 6V42M103 6V42M76 15H112M76 24H112M76 33H112"/>
+      <rect x="136" y="6" width="36" height="36"/><path d="M140.5 6V42M145 6V42M149.5 6V42M154 6V42M158.5 6V42M163 6V42M167.5 6V42M136 10.5H172M136 15H172M136 19.5H172M136 24H172M136 28.5H172M136 33H172M136 37.5H172"/>
+    </g>
+    <rect x="16" y="50" width="36" height="8" fill="#16191a" class="ox-an ox-fb ox-meter"/>
+    <rect x="76" y="50" width="3" height="8" fill="#2a4f8f" class="ox-an ox-fb ox-meter"/>
+    <rect x="136" y="50" width="1" height="8" fill="#2a4f8f" class="ox-an ox-fb ox-meter"/>
+    <text x="142" y="58" class="ox-b">10⁻⁴</text>
+    <text x="16" y="76" class="ox-s">1 m</text>
+    <text x="76" y="76" class="ox-s">10 cm</text>
+    <text x="136" y="76" class="ox-s">1 cm</text>
+    <text x="8" y="100" class="ox-l">Small cells, weak bending</text>
+    <text x="8" y="116" class="ox-s">Newton XPBD</text><a href="https://github.com/newton-physics/newton/issues/5140" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5140</text></a>
+  </g>
+
+  <!-- 6 -->
+  <g transform="translate(212 334)">
+    <line x1="40" y1="12" x2="150" y2="12" stroke="#16191a" stroke-width="3"/>
+    <circle cx="60" cy="16" r="3" fill="#16191a"/><circle cx="130" cy="16" r="3" fill="#16191a"/>
+    <line x1="16" y1="74" x2="176" y2="74" stroke="#16191a" stroke-width="1.5"/>
+    <rect x="58" y="16" width="74" height="34" fill="#e6e5de" stroke="#2a4f8f" stroke-width="2" class="ox-an ox-cloth"/>
+    <text x="8" y="100" class="ox-l">Held cloth drops</text>
+    <text x="8" y="116" class="ox-s">Newton VBD · fixed</text><a href="https://github.com/newton-physics/newton/pull/5146" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5146</text></a>
+  </g>
+
+  <!-- 7 -->
+  <g transform="translate(8 464)">
+    <line x1="170" y1="14" x2="170" y2="68" stroke="#6b6f6c" stroke-dasharray="3 3"/>
+    <text x="170" y="10" class="ox-s" text-anchor="middle">exact</text>
+    <text x="8" y="35" class="ox-s">dense</text>
+    <line x1="58" y1="35" x2="176" y2="35" stroke="#d8d8d0"/>
+    <rect x="60" y="27" width="107" height="8" rx="4" fill="#16191a" class="ox-an ox-fb ox-film"/>
+    <text x="8" y="61" class="ox-s">default</text>
+    <line x1="58" y1="61" x2="176" y2="61" stroke="#d8d8d0"/>
+    <rect x="60" y="53" width="90" height="8" rx="4" fill="#2a4f8f" class="ox-an ox-fb ox-film"/>
+    <text x="8" y="100" class="ox-l">Fluid flows 15 % slow</text>
+    <text x="8" y="116" class="ox-s">Newton MPM</text><a href="https://github.com/newton-physics/newton/issues/5206" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5206</text></a>
+  </g>
+
+  <!-- 8 -->
+  <g transform="translate(212 464)">
+    <text x="4" y="38" class="ox-s">push</text>
+    <line x1="6" y1="50" x2="36" y2="50" stroke="#16191a" stroke-width="2" marker-end="url(#ox-ai)" class="ox-an ox-imp"/>
+    <rect x="40" y="36" width="34" height="28" fill="none" stroke="#6b6f6c" stroke-dasharray="3 3" class="ox-an ox-slow"/>
+    <rect x="40" y="36" width="34" height="28" fill="#e6e5de" stroke="#2a4f8f" stroke-width="2" class="ox-an ox-fast"/>
+    <text x="77" y="28" class="ox-s ox-an ox-tag" text-anchor="middle">1×</text>
+    <text x="121" y="28" class="ox-b ox-an ox-tag" text-anchor="middle">3.2×</text>
+    <text x="8" y="100" class="ox-l">Push 1×, moves 3.2×</text>
+    <text x="8" y="116" class="ox-s">Newton VBD</text><a href="https://github.com/newton-physics/newton/issues/5129" target="_blank" rel="noopener"><rect x="128" y="102" width="60" height="22" fill="transparent"/><text x="184" y="116" class="ox-b" text-anchor="end">#5129</text></a>
+  </g>
+</svg>
+</div>
+
 <ol>
 <li><strong>Round shapes touch 0.1 mm early</strong> (Newton). A 0.1 mm collision margin was counted twice for spheres and capsules. <a href="https://github.com/newton-physics/newton/issues/4790">#4790</a>, fix <a href="https://github.com/newton-physics/newton/pull/4791">#4791</a>, merged.</li>
 <li><strong>One contact on a line</strong> (MuJoCo). A box lying across another box&rsquo;s edge gets one contact at one end instead of a row along the edge. <a href="https://github.com/google-deepmind/mujoco/issues/3755">#3755</a>.</li>
