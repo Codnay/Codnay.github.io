@@ -43,7 +43,7 @@
     </header>
     <div class="prose">
 <div class="wx-tldr">
-<p><strong>TL;DR</strong> With the arrival of Astra, simulations have been all the hype, considering how well it can one shot 3d scenes. But all of thaOver the past month we found <strong>20 bugs in open-source physics engines</strong>. Most <strong>never raise an error</strong>. They quietly corrupt what your robot learns in simulation, and show up later as the <strong>sim-to-real gap</strong>: a robot that works in sim and fails on the real thing.</p>
+<p><strong>TL;DR</strong> Over the past month we found <strong>20 bugs in open-source physics engines</strong>. Most <strong>never raise an error</strong>. They quietly corrupt what your robot learns in simulation, and show up later as the <strong>sim-to-real gap</strong>: a robot that works in sim and fails on the real thing.</p>
 <p>The worst only appear <strong>at scale</strong>, the way large-scale distributed training runs: thousands of worlds per GPU, many GPUs, billions of steps. <strong>More worlds change the physics</strong>, <strong>rare poses launch objects</strong>, and <strong>cables and cloth behave like no real material</strong>. We found them in Newton, MuJoCo Warp and MuJoCo, and <strong>reported every one upstream</strong>.</p>
 </div>
 <h2 id="1-more-worlds-different-physics">1. More worlds, different physics<a class="headerlink" href="#1-more-worlds-different-physics" title="Link to this section">#</a></h2>
