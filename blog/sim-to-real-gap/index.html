@@ -37,18 +37,15 @@
   <article class="post-view" aria-labelledby="post-title">
     <a class="back" href="../">← writing</a>
     <header class="post-head">
-      <span class="kicker"><time datetime="2026-11-07">November 7, 2026</time> · 6 min read</span>
+      <span class="kicker"><time datetime="2026-11-07">November 7, 2026</time> · 5 min read</span>
       <h1 id="post-title">What really is the sim-to-real gap?</h1>
       <span class="byline">Pranay Gupta</span>
     </header>
     <div class="prose">
 <div class="wx-tldr">
-<p><strong>TL;DR</strong> With GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator only works if what happens inside it would happen outside, thousands of times over, and <strong>every major open-source engine we tested breaks that promise at scale</strong>. Over the past month we found <strong>about 30 bugs</strong> in Newton, MuJoCo Warp and MuJoCo. Run a ten-cube tower in 4,096 worlds and <strong>98 % of the copies fall</strong>. A block resting on a board gets <strong>fired through it</strong>. Cables <strong>sag 40 % too far</strong> and cloth <strong>sinks through the floor</strong>. Most of these <strong>never raise an error</strong>: they quietly corrupt your models and surface later as the infamous <strong>sim-to-real gap</strong>. We <strong>reported 20 upstream</strong>.</p>
+<p><strong>TL;DR</strong> GPT-6 Astra one-shotting 3D scenes, simulation is all the hype. But a simulator works only if whatever happens inside it would happen outside, thousands of times over. Every major open-source engine we tested breaks this promise. Over the past month we found <strong>about 30 bugs in open-source physics engines</strong>. Most bugs <strong>never raise an error</strong>, they just quietly corrupt your models and surface later as the infamous <strong>sim-to-real gap</strong>.</p>
+<p>The worst ones appear <strong>at scale</strong>, when you run billions of steps. <strong>More worlds change the physics</strong>, <strong>objects get launched</strong>, and <strong>cables and cloth don&rsquo;t behave like real materials</strong>. We found them in Newton, MuJoCo Warp and MuJoCo, and <strong>reported 20 upstream</strong>.</p>
 </div>
-<h2 id="simulation-is-becoming-the-data">Simulation is becoming the data<a class="headerlink" href="#simulation-is-becoming-the-data" title="Link to this section">#</a></h2>
-<p>Legged robots already learn to walk in simulation. Robot hands still learn mostly from human demonstrations, which are slow and expensive to collect. <strong>That is changing.</strong> GPU engines run thousands of copies of a world on every GPU, and models like GPT-6 Astra can build the world itself from a prompt. One GPU can now produce billions of steps of robot experience in a day.</p>
-<p><strong>That is why the physics matters now.</strong> In a game, a bad contact is a glitch in one frame. In a training run it is data, repeated across thousands of worlds and billions of steps, and the policy learns it. Nothing flags it, because the engine never raises an error. You find out on the real robot.</p>
-<p>So we pushed Newton, MuJoCo Warp and MuJoCo to that scale, on what robot hands care about: stacks, blocks on boards, cables and cloth. Three failures stand out.</p>
 <h2 id="1-more-worlds-different-physics">1. More worlds, different physics<a class="headerlink" href="#1-more-worlds-different-physics" title="Link to this section">#</a></h2>
 <p>A ten-cube tower stands on its own. Run it in thousands of worlds at once, and most of the copies fall.</p>
 <p><img alt="The same tower copied more and more times: the more copies, the more fall" src="towers.svg" /></p>
